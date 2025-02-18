@@ -1,4 +1,4 @@
-package kr.ac.knu.cse.domain;
+package kr.ac.knu.cse.student.domain;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -9,6 +9,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
+import kr.ac.knu.cse.global.domain.BaseEntity;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -44,6 +45,14 @@ public class Student extends BaseEntity {
 
 	@NotNull
 	@Column(
+		name = "major",
+		nullable = false
+	)
+	@Enumerated(EnumType.STRING)
+	private Major major;
+
+	@NotNull
+	@Column(
 		name = "role",
 		nullable = false
 	)
@@ -54,10 +63,12 @@ public class Student extends BaseEntity {
 	public Student(
 		final String studentNumber,
 		final String name,
+		final Major major,
 		final Role role
 	) {
 		this.studentNumber = studentNumber;
 		this.name = name;
 		this.role = role;
+		this.major = major;
 	}
 }

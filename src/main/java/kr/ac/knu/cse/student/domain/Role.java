@@ -1,4 +1,4 @@
-package kr.ac.knu.cse.domain;
+package kr.ac.knu.cse.student.domain;
 
 /**
  * ROLE_STUDENT: 일반 사용자
