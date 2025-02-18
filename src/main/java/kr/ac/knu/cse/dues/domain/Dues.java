@@ -1,7 +1,9 @@
-package kr.ac.knu.cse.domain;
+package kr.ac.knu.cse.dues.domain;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
+import kr.ac.knu.cse.global.domain.BaseEntity;
+import kr.ac.knu.cse.student.domain.Student;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;

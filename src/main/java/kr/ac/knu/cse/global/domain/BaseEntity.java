@@ -1,4 +1,4 @@
-package kr.ac.knu.cse.domain;
+package kr.ac.knu.cse.global.domain;
 
 import jakarta.persistence.*;
 import lombok.Getter;
