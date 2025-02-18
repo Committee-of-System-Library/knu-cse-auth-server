@@ -35,7 +35,6 @@ public class Student extends BaseEntity {
 	)
 	private String studentNumber;
 
-
 	@NotNull
 	@Column(
 		name = "name",

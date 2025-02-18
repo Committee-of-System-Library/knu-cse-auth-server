@@ -1,7 +1,10 @@
 package kr.ac.knu.cse.dues.domain;
 
 import kr.ac.knu.cse.student.domain.Major;
+import kr.ac.knu.cse.student.domain.Role;
 import kr.ac.knu.cse.student.domain.Student;
+import kr.ac.knu.cse.student.persistence.StudentRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.io.BufferedReader;
@@ -15,12 +18,16 @@ import java.util.List;
 import java.util.Locale;
 
 @Component
+@RequiredArgsConstructor
 public class CsvDuesReader {
 
     private static final String DELIM = ",";
     private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern(
         "yyyy. M. d a h:m:s", Locale.KOREAN
     );
+    private static final Integer AMOUNT_PER_SEMESTER = 22_000;
+
+    private final StudentRepository studentRepository;
 
     public List<Dues> read(final InputStream in) {
         try (final BufferedReader br = new BufferedReader(new InputStreamReader(in))) {
@@ -36,16 +43,21 @@ public class CsvDuesReader {
                 final String depositorName = line.get(4);
                 final Integer remainingSemesters = Integer.parseInt(line.get(5));
 
+                if (studentRepository.existsByStudentNumber(studentNumber)) {
+                    throw new IllegalArgumentException("이미 등록된 학번입니다.");
+                }
+
                 final Student student = Student.builder()
                     .name(name)
                     .studentNumber(studentNumber)
                     .major(major)
+                    .role(Role.ROLE_STUDENT)
                     .build();
 
                 final Dues dues = Dues.builder()
                     .student(student)
                     .depositorName(depositorName)
-                    .amount(100000)
+                    .amount(AMOUNT_PER_SEMESTER * remainingSemesters)
                     .remainingSemesters(remainingSemesters)
                     .submittedAt(submittedAt)
                     .build();

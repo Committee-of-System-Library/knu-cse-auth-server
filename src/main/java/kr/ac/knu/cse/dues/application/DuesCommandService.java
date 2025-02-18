@@ -5,6 +5,7 @@ import kr.ac.knu.cse.dues.persistence.DuesRepository;
 import kr.ac.knu.cse.dues.domain.CsvDuesReader;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.InputStream;
 import java.util.List;
@@ -16,7 +17,8 @@ public class DuesCommandService {
     private final CsvDuesReader duesReader;
     private final DuesRepository duesRepository;
 
-    public void submit(final InputStream in) {
+    @Transactional
+    public void submitAll(final InputStream in) {
         final List<Dues> dues = duesReader.read(in);
         duesRepository.saveAll(dues);
     }

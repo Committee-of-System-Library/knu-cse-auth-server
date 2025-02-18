@@ -21,7 +21,7 @@ public class DuesCommandController {
     @PostMapping
     public void submitDues(@RequestParam("file") final MultipartFile file) {
         try (final InputStream in = file.getInputStream()) {
-            duesCommandService.submit(in);
+            duesCommandService.submitAll(in);
         } catch (final IOException exception) {
             throw new IllegalArgumentException("파일을 읽는 중 오류가 발생했습니다.");
         }

@@ -23,7 +23,7 @@ public class Dues extends BaseEntity {
 	private Long id;
 
 	@NotNull
-	@OneToOne
+	@OneToOne(cascade = CascadeType.PERSIST)
 	@JoinColumn(
 		name = "student_id",
 		nullable = false
