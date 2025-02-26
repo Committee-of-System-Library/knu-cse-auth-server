@@ -1,6 +1,5 @@
 package kr.ac.knu.cse.global.exception.handler;
 
-import org.springframework.core.annotation.Order;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;

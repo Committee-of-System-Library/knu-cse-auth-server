@@ -1,19 +1,20 @@
 package kr.ac.knu.cse.global.exception.security;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import kr.ac.knu.cse.global.api.ApiErrorResult;
-import kr.ac.knu.cse.global.api.ApiResponse;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import java.io.IOException;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.security.web.AuthenticationEntryPoint;
-import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.stereotype.Component;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import java.io.IOException;
+import kr.ac.knu.cse.global.api.ApiErrorResult;
+import kr.ac.knu.cse.global.api.ApiResponse;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * 인증이 필요한 자원에 미인증(anonymous) 상태로 접근할 경우

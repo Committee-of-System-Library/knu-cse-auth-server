@@ -1,12 +1,5 @@
 package kr.ac.knu.cse.dues.domain;
 
-import kr.ac.knu.cse.student.domain.Major;
-import kr.ac.knu.cse.student.domain.Role;
-import kr.ac.knu.cse.student.domain.Student;
-import kr.ac.knu.cse.student.persistence.StudentRepository;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Component;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -16,6 +9,14 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+
+import org.springframework.stereotype.Component;
+
+import kr.ac.knu.cse.student.domain.Major;
+import kr.ac.knu.cse.student.domain.Role;
+import kr.ac.knu.cse.student.domain.Student;
+import kr.ac.knu.cse.student.persistence.StudentRepository;
+import lombok.RequiredArgsConstructor;
 
 @Component
 @RequiredArgsConstructor
