@@ -18,6 +18,8 @@ import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import kr.ac.knu.cse.token.application.JwtTokenService;
+import kr.ac.knu.cse.token.exception.TokenExpiredException;
+import kr.ac.knu.cse.token.exception.TokenInvalidException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -55,15 +57,15 @@ public class AuthorizationFilter extends GenericFilterBean {
         } catch (ExpiredJwtException e) {
             log.error("[AuthorizationFilter] 토큰 만료", e);
             servletResponse.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Token expired");
-            return;
+            throw new TokenExpiredException();
         } catch (JwtException e) {
             log.error("[AuthorizationFilter] 토큰 파싱 오류", e);
             servletResponse.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Invalid token");
-            return;
+            throw new TokenInvalidException();
         } catch (Exception e) {
             log.error("[AuthorizationFilter] 토큰 검사 중 예외 발생", e);
             servletResponse.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Token error");
-            return;
+            throw new TokenInvalidException();
         }
 
         chain.doFilter(request, response);

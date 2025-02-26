@@ -20,7 +20,6 @@ public class GoogleResponseDto implements Oauth2ResponseDto {
 
     @Override
     public String getProviderId() {
-
         return attributes.get("sub").toString();
     }
 
@@ -38,8 +37,8 @@ public class GoogleResponseDto implements Oauth2ResponseDto {
     public Provider toEntity() {
         return Provider.builder()
             .email(getEmail())
-            .provider(getProvider())
-            .providerId(getProviderId())
+            .providerName(getProvider())
+            .providerKey(getProviderId())
             .build();
     }
 }

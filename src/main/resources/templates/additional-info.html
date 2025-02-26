@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>추가 정보 입력</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .card {
+            max-width: 400px;
+            margin: 80px auto;
+            border: none;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+        }
+        .card-header {
+            background-color: #fff;
+            border-bottom: none;
+            text-align: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+        .card-body label {
+            font-weight: 500;
+        }
+        .error-message {
+            color: #dc3545;
+            text-align: center;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+<div class="card">
+    <div class="card-header">
+        학생번호 입력
+    </div>
+    <div class="card-body">
+        <form action="/additional-info" method="post">
+            <input type="hidden" name="email" value="[[${email}]]">
+            <div class="mb-3">
+                <label for="studentNumber" class="form-label">학번</label>
+                <input type="text" class="form-control" id="studentNumber" name="studentNumber" required>
+            </div>
+            <button type="submit" class="btn btn-primary w-100">제출</button>
+        </form>
+        <div th:if="${error}" class="error-message">
+            <p th:text="${error}"></p>
+        </div>
+    </div>
+</div>
+</body>
+</html>

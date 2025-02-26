@@ -26,20 +26,6 @@ spring:
           time_zone: Asia/Seoul
         default_batch_fetch_size: 20
 
-app:
-  jwt:
-    secret: iy9mezMgQvVfRMPACkVtsnftFnrUK8pn
-    bearer-type: Bearer
-    auth-header: Authorization
-    expiration:
-      access: 300 # 60 * 5  (5 minute)
-      refresh: 300 # 60 * 5 (5 minute)
-
-  access-control:
-    allowed-redirects:
-      - "http://localhost:3000"
-      - "http://localhost:5173"
-      - "https://example.com"
 logging:
   level:
     kr.ac.knu.cse: DEBUG

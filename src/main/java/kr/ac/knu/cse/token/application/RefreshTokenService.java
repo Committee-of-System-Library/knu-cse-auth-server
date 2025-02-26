@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import kr.ac.knu.cse.token.domain.RefreshToken;
+import kr.ac.knu.cse.token.exception.TokenInvalidException;
 import kr.ac.knu.cse.token.persistence.RefreshTokenRepository;
 import lombok.RequiredArgsConstructor;
 
@@ -14,6 +15,14 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class RefreshTokenService {
 	private final RefreshTokenRepository refreshTokenRepository;
+
+	// refresh token validation 검증
+	@Transactional(readOnly = true)
+	public void validateRefreshToken(String email, String refreshToken) {
+		refreshTokenRepository.findByEmail(email)
+			.filter(token -> token.getRefreshToken().equals(refreshToken))
+			.orElseThrow(TokenInvalidException::new);
+	}
 
 	@Transactional(readOnly = true)
 	@Cacheable(value = "refreshTokens", key = "#p0", unless = "#result == null")
@@ -24,10 +33,13 @@ public class RefreshTokenService {
 	}
 
 	@Transactional
-	@CachePut(value = "refreshTokens", key = "#p0.email")
-	public String updateRefreshToken(RefreshToken refreshToken) {
-		refreshTokenRepository.save(refreshToken);
-		return refreshToken.getRefreshToken();
+	@CachePut(value = "refreshTokens", key = "#p0")
+	public void updateRefreshToken(String email, String refreshToken) {
+		RefreshToken savedRefreshToken = RefreshToken.builder()
+			.email(email)
+			.refreshToken(refreshToken)
+			.build();
+		refreshTokenRepository.save(savedRefreshToken);
 	}
 
 	@Transactional

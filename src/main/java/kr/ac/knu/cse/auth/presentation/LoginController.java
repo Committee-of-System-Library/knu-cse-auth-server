@@ -15,17 +15,15 @@ public class LoginController {
 
 	@GetMapping("/login")
 	public String showLoginPage(String redirectUrl, HttpSession session, Model model) {
-
-		if (redirectUrl == null || redirectUrl.isBlank()) {
+		// redirectUrl 유효성 검사
+		if (redirectUrl == null || redirectUrl.isBlank())
 			redirectUrl = "/";
-		}
 
-		if (!appProperties.getAllowedRedirects().contains(redirectUrl)) {
+		if (!appProperties.getAllowedRedirects().contains(redirectUrl))
 			throw new IllegalArgumentException("허용되지 않은 redirectUrl 입니다: " + redirectUrl);
-		}
 
+		// redirectUrl 세션에 저장
 		session.setAttribute("redirectUrl", redirectUrl);
-		
 		return "login";
 	}
 }

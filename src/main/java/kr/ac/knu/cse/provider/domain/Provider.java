@@ -39,17 +39,17 @@ public class Provider extends BaseEntity {
 
 	@NotNull
 	@Column(
-		name = "provider",
+		name = "provider_name",
 		nullable = false
 	)
-	private String provider;
+	private String providerName;
 
 	@NotNull
 	@Column(
-		name = "provider_id",
+		name = "provider_key",
 		nullable = false
 	)
-	private String providerId;
+	private String providerKey;
 
 	@OneToOne(fetch = FetchType.LAZY)
 	@JoinColumn(
@@ -61,11 +61,15 @@ public class Provider extends BaseEntity {
 	@Builder
 	public Provider(
 		final String email,
-		final String provider,
-		final String providerId
+		final String providerName,
+		final String providerKey
 	) {
 		this.email = email;
-		this.provider = provider;
-		this.providerId = providerId;
+		this.providerName = providerName;
+		this.providerKey = providerKey;
+	}
+
+	public void connectStudent(Student student) {
+		this.student = student;
 	}
 }
