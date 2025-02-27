@@ -32,6 +32,7 @@ logging:
     org:
       springframework:
         security: DEBUG
+        security.oauth2: TRACE
       type:
         descriptor:
           sql:

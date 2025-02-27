@@ -12,7 +12,7 @@ spring:
           google:
             client-id: ${GOOGLE_CLIENT_ID}
             client-secret: ${GOOGLE_CLIENT_SECRET}
-            scope: openid, profile, email
+            scope: profile, email
             redirect-uri: ${GOOGLE_REDIRECT_URI}
 app:
   jwt: # JWT Configuration
@@ -25,7 +25,7 @@ app:
 
   access-control: # Login redirect allowed domains
     allowed-redirects:
-      - ""
+      - "/"
       - "http://localhost:3000"
       - "http://localhost:5173"
       - "https://example.com"

@@ -16,7 +16,6 @@ import lombok.RequiredArgsConstructor;
 public class RefreshTokenService {
 	private final RefreshTokenRepository refreshTokenRepository;
 
-	// refresh token validation 검증
 	@Transactional(readOnly = true)
 	public void validateRefreshToken(String email, String refreshToken) {
 		refreshTokenRepository.findByEmail(email)
