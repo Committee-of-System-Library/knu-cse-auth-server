@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
@@ -19,7 +19,10 @@
                     </div>
 
                     <form onsubmit="return false;">
-                        <p><strong>연동할 이메일:</strong> <span th:text="${email}"></span></p>
+                        <p>
+                            <strong>연동할 이메일:</strong>
+                            <span th:text="${email}"></span>
+                        </p>
 
                         <div class="formGroup">
                             <label for="studentNumber">학번</label>
@@ -44,15 +47,7 @@
     </div>
 </div>
 
-<!-- 모달 구조 -->
-<div id="myModal" class="modal">
-    <div class="modal-content">
-        <span class="close" onclick="closeModal()">&times;</span>
-        <div id="modalMessage" class="modal-header"></div>
-        <div id="modalBody"></div>
-        <div id="modalButtons" class="modal-buttons"></div>
-    </div>
-</div>
+<div th:replace="modal :: myModalFragment"></div>
 
 <script src="/js/additional-info.script.js"></script>
 </body>

@@ -22,11 +22,10 @@ body {
     height: 100vh;
 }
 
-/* 레이아웃 래퍼: 좌우 패널 배치 (데스크톱 기본) */
+/* 레이아웃 래퍼 */
 .loginWrapper {
     display: flex;
     height: 100%;
-    /* flex-direction: row;  ← 기본값이므로 명시하지 않아도 됩니다. */
 }
 
 /* 왼쪽 패널 */
@@ -34,10 +33,10 @@ body {
     flex: 1;
     background: rgba(0, 0, 0, 0.3);
     padding: 20px;
-    overflow-y: auto; /* 내용이 길어지면 스크롤 */
+    overflow-y: auto;
 }
 
-/* 오른쪽 패널: 중앙 정렬 */
+/* 오른쪽 패널 */
 .loginRightPanel {
     flex: 1;
     display: flex;
@@ -46,7 +45,7 @@ body {
     padding: 20px;
 }
 
-/* 반투명 박스: 세로 화면의 60% 높이 */
+/* 반투명 박스 */
 .loginBlurBox {
     background-color: rgba(255, 255, 255, 0.2);
     backdrop-filter: blur(10px);
@@ -170,7 +169,7 @@ body {
     color: #eee;
 }
 
-/* 로그인 버튼 스타일 개선 */
+/* 로그인 버튼 */
 .googleLoginButton {
     display: inline-flex;
     align-items: center;
@@ -191,7 +190,7 @@ body {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 }
 
-/* 반응형 처리: 오른쪽 패널이 화면 전체를 구성 */
+/* 반응형 처리 */
 @media (max-width: 768px) {
     .loginWrapper {
         flex-direction: column-reverse;

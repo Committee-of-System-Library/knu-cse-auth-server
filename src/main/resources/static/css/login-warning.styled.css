@@ -16,7 +16,7 @@ body {
     color: #fff;
 }
 
-/* 전체 컨테이너: 화면 중앙 정렬 */
+/* 전체 컨테이너 */
 .warningContainer {
     display: flex;
     justify-content: center;
