@@ -1,6 +1,8 @@
 package kr.ac.knu.cse.security.handler;
 
 import java.io.IOException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.Objects;
 
 import org.springframework.http.HttpStatus;
@@ -10,6 +12,7 @@ import org.springframework.stereotype.Component;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import kr.ac.knu.cse.auth.applicaiton.TokenRedirectProvider;
 import kr.ac.knu.cse.security.details.PrincipalDetails;
 import lombok.RequiredArgsConstructor;
@@ -38,8 +41,16 @@ public class Oauth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 
         // knu.ac.kr 이메일 도메인 체크
         if (!Objects.requireNonNull(email).endsWith("@knu.ac.kr")) {
-            log.error("허용되지 않은 이메일 도메인: {}", email);
-            response.sendError(HttpStatus.FORBIDDEN.value(), "@knu.ac.kr 계정만 사용 가능합니다.");
+            log.warn("허용되지 않은 이메일 도메인: {}", email);
+            HttpSession session = request.getSession();
+            session.setAttribute("warningMessage", "@knu.ac.kr 계정만 사용 가능합니다.");
+            String redirectUrl = (String) session.getAttribute("redirectUrl");
+            if (redirectUrl == null || redirectUrl.isBlank()) {
+                redirectUrl = "/";
+            }
+            // 경고 팝업 페이지로 리다이렉트 (redirectUrl은 쿼리 파라미터로 전달)
+            String encodedRedirect = URLEncoder.encode(redirectUrl, StandardCharsets.UTF_8);
+            response.sendRedirect("/login/warning?redirectUrl=" + encodedRedirect);
             return;
         }
 

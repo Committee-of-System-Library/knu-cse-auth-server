@@ -1,5 +1,7 @@
 package kr.ac.knu.cse.token.application;
 
+import java.util.Optional;
+
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
@@ -34,11 +36,18 @@ public class RefreshTokenService {
 	@Transactional
 	@CachePut(value = "refreshTokens", key = "#p0")
 	public void updateRefreshToken(String email, String refreshToken) {
-		RefreshToken savedRefreshToken = RefreshToken.builder()
-			.email(email)
-			.refreshToken(refreshToken)
-			.build();
-		refreshTokenRepository.save(savedRefreshToken);
+		Optional<RefreshToken> optionalRefreshToken = refreshTokenRepository.findByEmail(email);
+
+		if (optionalRefreshToken.isPresent()) {
+			RefreshToken savedRefreshToken = optionalRefreshToken.get();
+			savedRefreshToken.updateRefreshToken(refreshToken);
+		} else {
+			RefreshToken savedRefreshToken = RefreshToken.builder()
+				.email(email)
+				.refreshToken(refreshToken)
+				.build();
+			refreshTokenRepository.save(savedRefreshToken);
+		}
 	}
 
 	@Transactional

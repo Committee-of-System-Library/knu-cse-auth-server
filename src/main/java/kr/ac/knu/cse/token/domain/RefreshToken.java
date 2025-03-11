@@ -39,4 +39,8 @@ public class RefreshToken extends BaseEntity {
 		this.email = email;
 		this.refreshToken = refreshToken;
 	}
+
+	public void updateRefreshToken(String refreshToken) {
+		this.refreshToken = refreshToken;
+	}
 }

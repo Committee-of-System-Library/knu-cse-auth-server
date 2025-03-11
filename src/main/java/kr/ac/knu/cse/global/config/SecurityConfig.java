@@ -6,6 +6,7 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
@@ -60,6 +61,10 @@ public class SecurityConfig {
 				.userInfoEndpoint(userInfo -> userInfo
 					.userService(principalDetailsOauthService))
 				.successHandler(oauth2SuccessHandler)); // 인증 성공 핸들러
+
+		// X-Frame-Options 설정 (for H2 Console)
+		httpSecurity.headers(
+			headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin));
 
 		return httpSecurity.build();
 	}

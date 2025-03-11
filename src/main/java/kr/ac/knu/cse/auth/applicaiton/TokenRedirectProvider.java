@@ -17,10 +17,6 @@ public class TokenRedirectProvider {
 	private final JwtTokenService jwtTokenService;
 	private final RefreshTokenService refreshTokenService;
 
-	/**
-	 * Authentication 객체와 이메일을 기반으로 액세스/리프레시 토큰을 생성하고,
-	 * 세션에 저장된 redirectUrl (없으면 기본값 "/")에 토큰을 쿼리 파라미터로 붙인 최종 URL을 반환한다.
-	 */
 	public String generateRedirectUrl(HttpServletRequest request, Authentication authentication, String email) {
 		Token accessToken = jwtTokenService.generateToken(authentication, TokenType.ACCESS_TOKEN);
 		Token refreshToken = jwtTokenService.generateToken(authentication, TokenType.REFRESH_TOKEN);
