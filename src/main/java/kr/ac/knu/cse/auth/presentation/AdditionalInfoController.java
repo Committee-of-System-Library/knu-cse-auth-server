@@ -38,7 +38,7 @@ public class AdditionalInfoController {
 	public String showAdditionalInfoPage(HttpServletRequest request, Model model) {
 		// OAuth2 로그인 후 tempPrincipal 이 세션에 없으면 비정상 접근
 		PrincipalDetails principalDetails =
-			(PrincipalDetails) request.getSession().getAttribute("tempPrincipal");
+			(PrincipalDetails)request.getSession().getAttribute("tempPrincipal");
 
 		if (principalDetails == null) {
 			model.addAttribute("error", "비정상 접근입니다.");
@@ -79,7 +79,7 @@ public class AdditionalInfoController {
 	) {
 		// OAuth2 로그인 후 tempPrincipal 이 세션에 없으면 비정상 접근
 		PrincipalDetails principalDetails =
-			(PrincipalDetails) request.getSession().getAttribute("tempPrincipal");
+			(PrincipalDetails)request.getSession().getAttribute("tempPrincipal");
 
 		if (principalDetails == null) {
 			return ResponseEntity

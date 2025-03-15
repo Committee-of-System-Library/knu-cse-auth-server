@@ -17,13 +17,14 @@ public class JwtProperties {
 	private String authHeader;
 	private Expiration expiration = new Expiration();
 
-	@Getter @Setter
+	public Integer getExpiration(TokenType tokenType) {
+		return tokenType == TokenType.ACCESS_TOKEN ? expiration.getAccess() : expiration.getRefresh();
+	}
+
+	@Getter
+	@Setter
 	public static class Expiration {
 		private Integer access;
 		private Integer refresh;
-	}
-
-	public Integer getExpiration(TokenType tokenType) {
-		return tokenType == TokenType.ACCESS_TOKEN ? expiration.getAccess() : expiration.getRefresh();
 	}
 }

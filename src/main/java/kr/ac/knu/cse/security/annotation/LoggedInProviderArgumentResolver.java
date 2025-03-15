@@ -1,6 +1,5 @@
 package kr.ac.knu.cse.security.annotation;
 
-
 import org.springframework.core.MethodParameter;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -37,9 +36,11 @@ public class LoggedInProviderArgumentResolver implements HandlerMethodArgumentRe
 			.getContext()
 			.getAuthentication();
 
-		PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
-		if (principalDetails.provider() == null) throw new ProviderNotFoundException();
-		if (principalDetails.student() == null) throw new NotConnectedStudentException();
+		PrincipalDetails principalDetails = (PrincipalDetails)authentication.getPrincipal();
+		if (principalDetails.provider() == null)
+			throw new ProviderNotFoundException();
+		if (principalDetails.student() == null)
+			throw new NotConnectedStudentException();
 
 		return principalDetails;
 	}

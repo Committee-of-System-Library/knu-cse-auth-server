@@ -17,14 +17,14 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/dues")
 public class DuesCommandController {
 
-    private final DuesCommandService duesCommandService;
+	private final DuesCommandService duesCommandService;
 
-    @PostMapping
-    public void submitDues(@RequestParam("file") final MultipartFile file) {
-        try (final InputStream in = file.getInputStream()) {
-            duesCommandService.submitAll(in);
-        } catch (final IOException exception) {
-            throw new IllegalArgumentException("파일을 읽는 중 오류가 발생했습니다.");
-        }
-    }
+	@PostMapping
+	public void submitDues(@RequestParam("file") final MultipartFile file) {
+		try (final InputStream in = file.getInputStream()) {
+			duesCommandService.submitAll(in);
+		} catch (final IOException exception) {
+			throw new IllegalArgumentException("파일을 읽는 중 오류가 발생했습니다.");
+		}
+	}
 }

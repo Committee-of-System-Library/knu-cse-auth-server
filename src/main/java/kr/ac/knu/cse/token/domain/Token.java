@@ -8,4 +8,5 @@ public record Token(
 	@NotNull String grantType,
 	@NotNull TokenType tokenType,
 	@NotNull String value
-) {}
+) {
+}

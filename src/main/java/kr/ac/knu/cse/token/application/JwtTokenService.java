@@ -83,7 +83,6 @@ public class JwtTokenService {
 		return new Date(expirationMillis);
 	}
 
-
 	public Jws<Claims> extractClaims(String tokenValue) {
 		return Jwts.parser()
 			.verifyWith(signKey)

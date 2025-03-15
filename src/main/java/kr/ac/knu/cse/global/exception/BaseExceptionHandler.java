@@ -29,15 +29,13 @@ public abstract class BaseExceptionHandler<T extends Throwable> {
 			} else {
 				log.info("Client error: {}", exception.getMessage(), exception);
 			}
-		}
-		else if (status.is5xxServerError()) {
+		} else if (status.is5xxServerError()) {
 			if (isProdProfile) {
 				log.error("Server error: {}", exception.getMessage());
 			} else {
 				log.error("Server error: {}", exception.getMessage(), exception);
 			}
-		}
-		else {
+		} else {
 			if (isProdProfile) {
 				log.warn("Unexpected status {}: {}", status, exception.getMessage());
 			} else {

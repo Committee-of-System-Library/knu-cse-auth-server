@@ -8,6 +8,7 @@ import kr.ac.knu.cse.student.domain.Student;
 
 public interface StudentRepository extends JpaRepository<Student, Long> {
 
-    boolean existsByStudentNumber(String studentNumber);
-    Optional<Student> findByStudentNumber(String studentNumber);
+	boolean existsByStudentNumber(String studentNumber);
+
+	Optional<Student> findByStudentNumber(String studentNumber);
 }

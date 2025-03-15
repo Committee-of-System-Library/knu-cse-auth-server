@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta charset="UTF-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
     <title>추가 정보 입력</title>
-    <link rel="stylesheet" href="/css/additional-info.styled.css"/>
-    <link rel="stylesheet" href="/css/modal.styled.css"/>
+    <link href="/css/additional-info.styled.css" rel="stylesheet"/>
+    <link href="/css/modal.styled.css" rel="stylesheet"/>
 </head>
 <body>
 <div class="infoContainer">
@@ -27,19 +27,20 @@
                         <div class="formGroup">
                             <label for="studentNumber">학번</label>
                             <input
-                                    type="text"
                                     id="studentNumber"
                                     name="studentNumber"
                                     placeholder="학번을 입력하세요"
                                     required
+                                    type="text"
                             />
                         </div>
-                        <button type="button" class="submitButton" onclick="checkStudentNumber()">학번 확인</button>
+                        <button class="submitButton" onclick="checkStudentNumber()" type="button">학번 확인</button>
                     </form>
                 </div>
                 <div class="infoFooter">
                     <p class="footerText">
-                        © Kyungpook National University, Department of Computer Science &amp; Engineering Student Council. All rights reserved.
+                        © Kyungpook National University, Department of Computer Science &amp; Engineering Student
+                        Council. All rights reserved.
                     </p>
                 </div>
             </div>

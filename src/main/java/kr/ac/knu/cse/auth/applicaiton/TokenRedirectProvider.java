@@ -22,7 +22,7 @@ public class TokenRedirectProvider {
 		Token refreshToken = jwtTokenService.generateToken(authentication, TokenType.REFRESH_TOKEN);
 		refreshTokenService.updateRefreshToken(email, refreshToken.value());
 
-		String redirectUrl = (String) request.getSession().getAttribute("redirectUrl");
+		String redirectUrl = (String)request.getSession().getAttribute("redirectUrl");
 		if (redirectUrl == null || redirectUrl.isBlank()) {
 			redirectUrl = "/";
 		}

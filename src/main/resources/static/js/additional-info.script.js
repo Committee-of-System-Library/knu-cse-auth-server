@@ -10,12 +10,14 @@ function checkStudentNumber() {
     fetch(`/additional-info/check?studentNumber=${encodeURIComponent(studentNumber)}`)
         .then(response => {
             if (!response.ok) {
-                return response.json().then(err => { throw err; });
+                return response.json().then(err => {
+                    throw err;
+                });
             }
             return response.json();
         })
         .then(data => {
-            const { name, studentNumber } = data;
+            const {name, studentNumber} = data;
             showConfirmPopup(
                 `${name}님, 학번 ${studentNumber}이 맞습니까?`,
                 () => connectStudent(studentNumber)
@@ -36,7 +38,9 @@ function connectStudent(studentNumber) {
     })
         .then(response => {
             if (!response.ok) {
-                return response.json().then(err => { throw err; });
+                return response.json().then(err => {
+                    throw err;
+                });
             }
             return response.json();
         })

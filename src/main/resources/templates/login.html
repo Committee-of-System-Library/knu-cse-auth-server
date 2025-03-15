@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns="http://www.w3.org/1999/html">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta charset="UTF-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
     <title>KNU CSE 통합 로그인</title>
     <!-- 사용자 정의 CSS -->
-    <link rel="stylesheet" href="/css/login.styled.css" />
+    <link href="/css/login.styled.css" rel="stylesheet"/>
 </head>
 <body>
 <div class="loginContainer">
@@ -14,9 +14,9 @@
         <div class="loginLeftPanel">
             <div class="loginLogoHeader">
                 <img
-                        src="/images/logo.png"
                         alt="경북대학교 컴퓨터학부 로고"
                         class="logo"
+                        src="/images/logo.png"
                 />
                 <span class="logoText">경북대학교 컴퓨터학부 학생회</span>
             </div>
@@ -41,14 +41,14 @@
                     </div>
                     <div class="loginButtonContainer">
                         <a
+                                aria-label="구글 계정으로 로그인"
                                 class="googleLoginButton"
                                 href="/oauth2/authorize/google"
-                                aria-label="구글 계정으로 로그인"
                         >
                             <img
-                                    src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg"
                                     alt="Google 로고"
                                     class="googleIcon"
+                                    src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg"
                             />
                             <span>Google 계정으로 로그인</span>
                         </a>
