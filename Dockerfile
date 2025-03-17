@@ -9,14 +9,15 @@ RUN gradle dependencies --no-daemon
 
 # 소스 코드 복사 및 빌드
 COPY . .
-RUN gradle build --no-daemon
+RUN gradle build --no-daemon -x test
 
 # 2. OpenJDK 17을 이용하여 실행
+
 FROM openjdk:17-jdk AS runtime
 WORKDIR /app
 
 # 빌드된 JAR 파일 복사
-COPY --from=builder /app/build/libs/*.jar app.jar
+COPY --from=builder /app/build/libs/*.jar /app.jar
 
 # 실행
 ENTRYPOINT ["java", "-Duser.timezone=GMT+9", "-Djava.security.egd=file:/dev/./urandom", "-Dspring.profiles.active=prod", "-jar", "/app.jar"]

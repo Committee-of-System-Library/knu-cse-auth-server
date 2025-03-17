@@ -1,5 +1,5 @@
 services:
-  app:
+  knu-cse-auth-server:
     build:
       context: .
       dockerfile: Dockerfile
@@ -7,12 +7,14 @@ services:
     env_file:
       - ${ENV_FILE}
     depends_on:
-      - database
+      - cse-student-fee-database
     ports:
       - ${SPRING_PORT}:${SPRING_PORT}
     restart: always
+    networks:
+      - services
 
-  database:
+  cse-student-fee-database:
     image: mysql:8.4.4
     container_name: cse-student-fee-database
     environment:
@@ -28,4 +30,11 @@ services:
       - ${DB_PORT}:${DB_PORT}
     restart: always
     volumes:
-      - /cseWeb/cse-student-fee/cse-student-fee-database:/var/lib/mysql
+      - /0_services/cse-student-fee/cse-student-fee-database:/var/lib/mysql
+    networks:
+      - services
+
+networks:
+  services:
+    external: true
+    attachable: true

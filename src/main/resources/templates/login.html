@@ -4,7 +4,7 @@
     <meta charset="UTF-8"/>
     <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
     <title>KNU CSE 통합 로그인</title>
-    <link href="/css/login.styled.css" rel="stylesheet"/>
+    <link th:href="@{/css/login.styled.css}" rel="stylesheet"/>
 </head>
 <body>
 <div class="loginContainer">
@@ -15,7 +15,7 @@
                 <img
                         alt="경북대학교 컴퓨터학부 로고"
                         class="logo"
-                        src="/images/logo.png"
+                        th:src="@{/images/logo.png}"
                 />
                 <span class="logoText">경북대학교 컴퓨터학부 학생회</span>
             </div>
@@ -42,7 +42,7 @@
                         <a
                                 aria-label="구글 계정으로 로그인"
                                 class="googleLoginButton"
-                                href="/oauth2/authorize/google"
+                                th:href="@{/oauth2/authorize/google}"
                         >
                             <img
                                     alt="Google 로고"
@@ -66,6 +66,6 @@
         </div>
     </div>
 </div>
-<script src="/js/login.script.js"></script>
+<script th:src="@{/js/login.script.js}"></script>
 </body>
 </html>
