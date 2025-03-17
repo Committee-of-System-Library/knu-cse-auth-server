@@ -1,13 +1,16 @@
 package kr.ac.knu.cse.global.domain;
 
-import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import java.time.LocalDateTime;
+
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import java.time.LocalDateTime;
+import jakarta.persistence.Column;
+import jakarta.persistence.EntityListeners;
+import jakarta.persistence.MappedSuperclass;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
 @MappedSuperclass
@@ -15,11 +18,11 @@ import java.time.LocalDateTime;
 @EntityListeners(AuditingEntityListener.class)
 public abstract class BaseEntity {
 
-    @CreatedDate
-    @Column(columnDefinition = "TIMESTAMP")
-    protected LocalDateTime createdAt;
+	@CreatedDate
+	@Column(columnDefinition = "TIMESTAMP")
+	protected LocalDateTime createdAt;
 
-    @LastModifiedDate
-    @Column(columnDefinition = "TIMESTAMP")
-    protected LocalDateTime updatedAt;
+	@LastModifiedDate
+	@Column(columnDefinition = "TIMESTAMP")
+	protected LocalDateTime updatedAt;
 }
