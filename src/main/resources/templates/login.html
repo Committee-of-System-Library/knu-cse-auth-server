@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="UTF-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>KNU CSE 통합 로그인</title>
+    <link href="/css/login.styled.css" rel="stylesheet"/>
+</head>
+<body>
+<div class="loginContainer">
+    <div class="loginWrapper">
+        <!-- 왼쪽 패널(공지사항) -->
+        <div class="loginLeftPanel">
+            <div class="loginLogoHeader">
+                <img
+                        alt="경북대학교 컴퓨터학부 로고"
+                        class="logo"
+                        src="/images/logo.png"
+                />
+                <span class="logoText">경북대학교 컴퓨터학부 학생회</span>
+            </div>
+            <div class="loginNoticePanel">
+                <h2 class="noticeTitle">컴퓨터학부 학생회 공지사항</h2>
+                <ul class="noticeList">
+                    <li>2025 컴퓨터학부 학생회 홈페이지 개설</li>
+                    <li>SW 해커톤 개최 안내(신청 ~3/20)</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- 오른쪽 패널(로그인) -->
+        <div class="loginRightPanel">
+            <div class="loginBlurBox">
+                <div class="loginContent">
+                    <div class="loginHeader">
+                        <h1 class="loginTitle">경북대학교 컴퓨터학부<br>학생 서비스 통합 로그인</h1>
+                        <p class="loginSubtitle">
+                            경북대학교 컴퓨터학부에 오신 것을 환영합니다.
+                        </p>
+                    </div>
+                    <div class="loginButtonContainer">
+                        <a
+                                aria-label="구글 계정으로 로그인"
+                                class="googleLoginButton"
+                                href="/oauth2/authorize/google"
+                        >
+                            <img
+                                    alt="Google 로고"
+                                    class="googleIcon"
+                                    src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg"
+                            />
+                            <span>Google 계정으로 로그인</span>
+                        </a>
+                    </div>
+                </div>
+                <div class="loginFooter">
+                    <p class="loginWarningText">
+                        @knu.ac.kr 로 끝나는 구글 계정만 사용 가능합니다.
+                    </p>
+                    <p class="footerText">
+                        © Kyungpook National University, Department of Computer Science
+                        &amp; Engineering Student Council. All rights reserved.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="/js/login.script.js"></script>
+</body>
+</html>

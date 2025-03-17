@@ -1,0 +1,43 @@
+server:
+  port: 8080
+
+spring:
+  datasource:
+    driver-class-name: org.h2.Driver
+    url: jdbc:h2:mem:test;MODE=MySQL;
+    username: sa
+    password: 1234
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+
+  flyway:
+    enabled: true
+
+  jpa:
+    database-platform: org.hibernate.dialect.MySQL8Dialect
+    open-in-view: false
+    hibernate:
+      ddl-auto: none
+    properties:
+      hibernate:
+        show_sql: true
+        format_sql: true
+        highlight_sql: true
+        use_sql_comments: true
+        jdbc:
+          time_zone: Asia/Seoul
+        default_batch_fetch_size: 20
+
+logging:
+  level:
+    kr.ac.knu.cse: DEBUG
+    org:
+      springframework:
+        security: DEBUG
+        security.oauth2: TRACE
+      type:
+        descriptor:
+          sql:
+            BasicBinder: TRACE
