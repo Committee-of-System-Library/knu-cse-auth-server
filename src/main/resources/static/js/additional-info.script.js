@@ -7,7 +7,7 @@ function checkStudentNumber() {
         return;
     }
 
-    fetch(`/additional-info/check?studentNumber=${encodeURIComponent(studentNumber)}`)
+    fetch(`/auth/additional-info/check?studentNumber=${encodeURIComponent(studentNumber)}`)
         .then(response => {
             if (!response.ok) {
                 return response.json().then(err => {
@@ -32,7 +32,7 @@ function connectStudent(studentNumber) {
     const formData = new FormData();
     formData.append("studentNumber", studentNumber);
 
-    fetch("/additional-info/connect", {
+    fetch("/auth/additional-info/connect", {
         method: "POST",
         body: formData
     })

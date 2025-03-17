@@ -50,7 +50,7 @@ public class Oauth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 			}
 			// 경고 팝업 페이지로 리다이렉트 (redirectUrl은 쿼리 파라미터로 전달)
 			String encodedRedirect = URLEncoder.encode(redirectUrl, StandardCharsets.UTF_8);
-			response.sendRedirect("/login/warning?redirectUrl=" + encodedRedirect);
+			getRedirectStrategy().sendRedirect(request, response, "/login/warning?redirectUrl=" + encodedRedirect);
 			return;
 		}
 

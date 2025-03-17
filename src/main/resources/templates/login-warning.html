@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta content="width=device-width, initial-scale=1" name="viewport">
     <title>로그인 경고</title>
-    <link href="/css/login-warning.styled.css" rel="stylesheet">
+    <link th:href="@{/css/login-warning.styled.css}" rel="stylesheet">
 </head>
 <body>
 <div class="warningContainer">
@@ -17,7 +17,7 @@
 <script th:inline="javascript">
     function goBack() {
         const redirectUrl = /*[[${redirectUrl}]]*/ "/";
-        window.location.href = "/login?redirectUrl=" + encodeURIComponent(redirectUrl);
+        window.location.href = "/auth/login?redirectUrl=" + encodeURIComponent(redirectUrl);
     }
 </script>
 </body>

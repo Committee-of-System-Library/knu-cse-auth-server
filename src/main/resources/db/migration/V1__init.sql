@@ -2,7 +2,7 @@ CREATE TABLE student
 (
     student_id     bigint                                                NOT NULL AUTO_INCREMENT,
     role           enum ('ROLE_EXECUTIVE','ROLE_FINANCE','ROLE_STUDENT') NOT NULL,
-    major          enum ('PLATFORM', 'AI', 'GLOBAL')                     NOT NULL,
+    major          enum ('PLATFORM', 'AI', 'GLOBAL', 'NONE')             NOT NULL,
     name           varchar(50)                                           NOT NULL,
     student_number varchar(15)                                           NOT NULL,
     created_at     timestamp                                             NOT NULL,

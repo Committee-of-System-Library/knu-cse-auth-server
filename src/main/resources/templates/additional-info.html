@@ -4,8 +4,8 @@
     <meta charset="UTF-8"/>
     <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
     <title>추가 정보 입력</title>
-    <link href="/css/additional-info.styled.css" rel="stylesheet"/>
-    <link href="/css/modal.styled.css" rel="stylesheet"/>
+    <link th:href="@{/css/additional-info.styled.css}" rel="stylesheet"/>
+    <link th:href="@{/css/modal.styled.css}" rel="stylesheet"/>
 </head>
 <body>
 <div class="infoContainer">
@@ -50,6 +50,6 @@
 
 <div th:replace="modal :: myModalFragment"></div>
 
-<script src="/js/additional-info.script.js"></script>
+<script th:src="@{/js/additional-info.script.js}"></script>
 </body>
 </html>

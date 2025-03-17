@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta content="width=device-width, initial-scale=1" name="viewport">
     <title>오류가 발생했습니다</title>
-    <link href="/css/error.styled.css" rel="stylesheet">
+    <link th:href="@{/css/error.styled.css}" rel="stylesheet">
 </head>
 <body>
 <div class="errorContainer">
@@ -14,7 +14,7 @@
             요청하신 페이지를 찾을 수 없거나 오류가 발생했습니다.<br>
             잠시 후 다시 시도해 주시거나, 고객센터로 문의해 주세요.
         </p>
-        <a class="homeButton" href="/error">홈으로 이동</a>
+        <a class="homeButton" th:href="@{/error}">홈으로 이동</a>
     </div>
 </div>
 </body>
