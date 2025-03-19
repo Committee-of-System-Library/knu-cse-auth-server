@@ -2,6 +2,7 @@ package kr.ac.knu.cse.auth.presentation;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -21,6 +22,7 @@ import lombok.extern.slf4j.Slf4j;
 public class AuthorizationController {
 
 	@GetMapping("/token-info")
+	@PreAuthorize("isAuthenticated()")
 	public ResponseEntity<ApiSuccessResult<TokenInfoDto>> tokenInfo(
 		@LoggedInProvider PrincipalDetails principalDetails
 	) {
