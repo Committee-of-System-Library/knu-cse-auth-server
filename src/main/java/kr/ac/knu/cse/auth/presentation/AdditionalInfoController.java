@@ -1,5 +1,6 @@
 package kr.ac.knu.cse.auth.presentation;
 
+import java.io.IOException;
 import java.util.Map;
 import java.util.Objects;
 
@@ -15,12 +16,16 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import jakarta.servlet.http.HttpServletRequest;
-import kr.ac.knu.cse.auth.applicaiton.TokenRedirectProvider;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
+import kr.ac.knu.cse.auth.exception.InvalidRedirectUrlException;
+import kr.ac.knu.cse.auth.exception.SessionExpiredException;
 import kr.ac.knu.cse.provider.application.ProviderService;
 import kr.ac.knu.cse.security.details.PrincipalDetails;
 import kr.ac.knu.cse.student.application.StudentService;
 import kr.ac.knu.cse.student.domain.Student;
 import kr.ac.knu.cse.student.exception.StudentNotFoundException;
+import kr.ac.knu.cse.token.presentation.TokenProvisioner;
 import lombok.RequiredArgsConstructor;
 
 @Controller
@@ -29,30 +34,21 @@ public class AdditionalInfoController {
 
 	private final StudentService studentService;
 	private final ProviderService providerService;
-	private final TokenRedirectProvider tokenRedirectProvider;
+	private final TokenProvisioner tokenProvisioner;
 
-	/**
-	 * 추가 정보 입력 페이지 진입
-	 */
 	@GetMapping("/additional-info")
 	public String showAdditionalInfoPage(HttpServletRequest request, Model model) {
-		// OAuth2 로그인 후 tempPrincipal 이 세션에 없으면 비정상 접근
 		PrincipalDetails principalDetails =
 			(PrincipalDetails)request.getSession().getAttribute("tempPrincipal");
 
 		if (principalDetails == null) {
-			model.addAttribute("error", "비정상 접근입니다.");
-			return "error";
+			throw new SessionExpiredException();
 		}
 
-		// 템플릿에 표시할 이메일(선택사항)
 		model.addAttribute("email", Objects.requireNonNull(principalDetails.getName()));
 		return "additional-info";
 	}
 
-	/**
-	 * AJAX: 학번 유효성 체크
-	 */
 	@ResponseBody
 	@GetMapping("/additional-info/check")
 	public ResponseEntity<?> checkStudentNumber(@RequestParam("studentNumber") String studentNumber) {
@@ -68,40 +64,40 @@ public class AdditionalInfoController {
 		}
 	}
 
-	/**
-	 * AJAX: Student – Provider 연결 최종 확정
-	 */
 	@ResponseBody
 	@PostMapping("/additional-info/connect")
 	public ResponseEntity<?> connectStudent(
 		HttpServletRequest request,
+		HttpServletResponse response,
 		@RequestParam("studentNumber") String studentNumber
-	) {
-		// OAuth2 로그인 후 tempPrincipal 이 세션에 없으면 비정상 접근
-		PrincipalDetails principalDetails =
-			(PrincipalDetails)request.getSession().getAttribute("tempPrincipal");
+	) throws IOException {
+		HttpSession session = request.getSession();
+		PrincipalDetails principalDetails = (PrincipalDetails)session.getAttribute("tempPrincipal");
 
 		if (principalDetails == null) {
-			return ResponseEntity
-				.status(HttpStatus.BAD_REQUEST)
-				.body(Map.of("message", "세션이 만료되었습니다. 다시 로그인 해주세요."));
+			throw new SessionExpiredException();
 		}
 
-		// 한 번 사용 후 세션에서 제거 -> 중복 연결 방지
-		request.getSession().removeAttribute("tempPrincipal");
+		String redirectUrl = (String)session.getAttribute("redirectUrl");
+		if (redirectUrl == null || redirectUrl.isBlank()) {
+			throw new InvalidRedirectUrlException();
+		}
 
+		session.removeAttribute("tempPrincipal");
+		session.removeAttribute("redirectUrl");
+
+		// 프로바이더 - 학생 연결
 		String email = principalDetails.getName();
 		Student student = studentService.getStudentByStudentNumber(studentNumber);
 		providerService.connectStudent(email, student);
 
-		// Security Authentication 객체 구성해서 토큰 발행
+		// 새 인증 토큰 발급
 		Authentication authentication = new UsernamePasswordAuthenticationToken(
 			principalDetails, null, principalDetails.getAuthorities()
 		);
-		String targetUrl = tokenRedirectProvider.generateRedirectUrl(request, authentication, email);
+		tokenProvisioner.tokenIssue(authentication, response);
 
-		return ResponseEntity.ok().body(
-			Map.of("message", "연결 완료", "redirectUrl", targetUrl)
-		);
+		// 정상 연결 후 프론트에서 redirect
+		return ResponseEntity.ok(Map.of("redirectUrl", redirectUrl));
 	}
 }

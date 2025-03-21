@@ -81,4 +81,11 @@ public class Dues extends BaseEntity {
 		this.remainingSemesters = remainingSemesters;
 		this.submittedAt = submittedAt;
 	}
+
+	public void updateDuesInfo(String depositorName, int amount, int remainingSemesters) {
+		this.depositorName = depositorName;
+		this.amount = amount;
+		this.remainingSemesters = remainingSemesters;
+	}
+
 }

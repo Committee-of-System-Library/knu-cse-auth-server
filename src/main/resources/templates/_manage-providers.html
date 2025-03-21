@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+
+<body>
+    <div class="sectionBlock" id="providerSection" style="display:none;" th:fragment="providerSection">
+        <div class="sectionHeader">
+            <h3>Provider 목록</h3>
+            <div class="sectionActions">
+                <button class="addButton" onclick="openProviderModal()">+ Provider 추가</button>
+                <button class="deleteButtonGlobal" onclick="deleteSelectedProviders()">선택 삭제</button>
+            </div>
+        </div>
+        <div class="table-responsive">
+            <table class="tableStyled" id="providerTable">
+                <thead>
+                    <tr>
+                        <th class="col-checkbox">
+                            <input onclick="toggleAllCheckboxes('providerTable', this)" type="checkbox">
+                        </th>
+                        <th class="col-id">ID</th>
+                        <th class="col-email">Email</th>
+                        <th class="col-provider-name">ProviderName</th>
+                        <th class="col-provider-key">ProviderKey</th>
+                        <th class="col-student-id">연결된 Student ID</th>
+                        <th class="col-edit">수정</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:attr="data-provider-id=${pv.id}" th:each="pv : ${providers}">
+                        <td class="col-checkbox">
+                            <input type="checkbox">
+                        </td>
+                        <td class="col-id" th:text="${pv.id}"></td>
+                        <td class="col-email" contenteditable="true" data-field="email" th:text="${pv.email}"></td>
+                        <td class="col-provider-name" contenteditable="true" data-field="providerName"
+                            th:text="${pv.providerName}"></td>
+                        <td class="col-provider-key" contenteditable="true" data-field="providerKey"
+                            th:text="${pv.providerKey}"></td>
+                        <td class="col-student-id" contenteditable="true" data-field="studentId"
+                            th:text="${pv.student != null ? pv.student.id : ''}"></td>
+                        <td class="col-edit">
+                            <button class="editButton" onclick="updateProvider(this)">수정</button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+
+</html>

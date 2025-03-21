@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+
+<body>
+    <div th:fragment="modalsFragment">
+
+        <!-- 학생 추가 모달 -->
+        <div class="modal" id="studentModal">
+            <div class="modal-content">
+                <span class="close" onclick="closeModal('studentModal')">&times;</span>
+                <div class="modal-header">학생 추가</div>
+                <div id="studentModalBody">
+                    <div class="formGroup">
+                        <label for="newStudentNumber">학번</label>
+                        <input id="newStudentNumber" placeholder="ex) 202300001" type="text">
+                    </div>
+                    <div class="formGroup">
+                        <label for="newStudentName">이름</label>
+                        <input id="newStudentName" placeholder="이름" type="text">
+                    </div>
+                    <div class="formGroup">
+                        <label for="newStudentMajor">전공</label>
+                        <select id="newStudentMajor">
+                            <option value="PLATFORM">PLATFORM</option>
+                            <option value="AI">AI</option>
+                            <option value="GLOBAL">GLOBAL</option>
+                            <option value="NONE">NONE</option>
+                        </select>
+                    </div>
+                    <div class="formGroup">
+                        <label for="newStudentRole">권한</label>
+                        <select id="newStudentRole">
+                            <option value="ROLE_STUDENT">ROLE_STUDENT</option>
+                            <option value="ROLE_EXECUTIVE">ROLE_EXECUTIVE</option>
+                            <option value="ROLE_FINANCE">ROLE_FINANCE</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-buttons">
+                    <button onclick="createStudent()">추가</button>
+                    <button onclick="closeModal('studentModal')">취소</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 회비 납부 추가 모달 -->
+        <div class="modal" id="duesModal">
+            <div class="modal-content">
+                <span class="close" onclick="closeModal('duesModal')">&times;</span>
+                <div class="modal-header">회비 납부 추가</div>
+                <div id="duesModalBody">
+                    <div class="formGroup">
+                        <label for="duesStudentId">연결할 학생 (studentId)</label>
+                        <input id="duesStudentId" placeholder="예) 10" type="text">
+                    </div>
+                    <div class="formGroup">
+                        <label for="depositorName">입금자명</label>
+                        <input id="depositorName" placeholder="입금자명" type="text">
+                    </div>
+                    <div class="formGroup">
+                        <label for="amount">학기 당 금액</label>
+                        <input id="amount" placeholder="22000" type="number">
+                    </div>
+                    <div class="formGroup">
+                        <label for="remainingSemesters">남은 학기 수</label>
+                        <input id="remainingSemesters" placeholder="ex) 6" type="number">
+                    </div>
+                    <div class="formGroup">
+                        <label for="submittedAt">제출 일시</label>
+                        <input id="submittedAt" type="datetime-local">
+                    </div>
+                </div>
+                <div class="modal-buttons">
+                    <button onclick="createDues()">추가</button>
+                    <button onclick="closeModal('duesModal')">취소</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Provider 추가 모달 -->
+        <div class="modal" id="providerModal">
+            <div class="modal-content">
+                <span class="close" onclick="closeModal('providerModal')">&times;</span>
+                <div class="modal-header">Provider 추가</div>
+                <div id="providerModalBody">
+                    <div class="formGroup">
+                        <label for="newProviderEmail">Email</label>
+                        <input id="newProviderEmail" placeholder="ex) example@knu.ac.kr" type="text">
+                    </div>
+                    <div class="formGroup">
+                        <label for="newProviderName">Provider Name</label>
+                        <input id="newProviderName" placeholder="google / etc" type="text">
+                    </div>
+                    <div class="formGroup">
+                        <label for="newProviderKey">Provider Key</label>
+                        <input id="newProviderKey" placeholder="OAuth Provider의 유저ID" type="text">
+                    </div>
+                    <div class="formGroup">
+                        <label for="newProviderStudentId">연결할 Student ID</label>
+                        <input id="newProviderStudentId" placeholder="없으면 비워둘 수 있음" type="text">
+                    </div>
+                </div>
+                <div class="modal-buttons">
+                    <button onclick="createProvider()">추가</button>
+                    <button onclick="closeModal('providerModal')">취소</button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</body>
+
+</html>

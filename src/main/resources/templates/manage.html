@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>관리자 페이지</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
+    <link rel="stylesheet" th:href="@{/css/manage.styled.css}" />
+    <link rel="stylesheet" th:href="@{/css/modal.styled.css}" />
+</head>
+
+<body>
+
+    <div class="manageBackground"></div>
+    <div class="manageWrapper">
+        <aside class="manageSidebar">
+            <h1 class="sidebarTitle">관리 메뉴</h1>
+            <ul class="menuList">
+                <li class="menuItem active" id="menuStudent" onclick="showSection('studentSection', this)">Students
+                </li>
+                <li class="menuItem" id="menuDues" onclick="showSection('duesSection', this)">Dues
+                </li>
+                <li class="menuItem" id="menuProvider" onclick="showSection('providerSection', this)">Providers
+                </li>
+            </ul>
+        </aside>
+
+        <div class="manageContent">
+            <h2 class="manageTitle">관리자 페이지</h2>
+            <p class="manageSubtitle">재정부 및 일부 관리자만 접근할 수 있습니다.</p>
+
+            <div th:replace="_manage-students :: studentSection"></div>
+            <div th:replace="_manage-dues :: duesSection"></div>
+            <div th:replace="_manage-providers :: providerSection"></div>
+        </div>
+    </div>
+
+    <div th:replace="_manage-modals :: modalsFragment"></div>
+
+    <script th:src="@{/js/manage.script.js}"></script>
+</body>
+
+</html>

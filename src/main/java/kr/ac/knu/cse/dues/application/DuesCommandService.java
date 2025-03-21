@@ -17,18 +17,18 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class DuesCommandService {
 
-    private final CsvDuesReader duesReader;
-    private final DuesRepository duesRepository;
+	private final CsvDuesReader duesReader;
+	private final DuesRepository duesRepository;
 
-    @Transactional
-    public void submitAll(final InputStream in) {
-        final List<Dues> dues = duesReader.read(in);
-        duesRepository.saveAll(dues);
-    }
+	@Transactional
+	public void submitAll(final InputStream in) {
+		final List<Dues> dues = duesReader.read(in);
+		duesRepository.saveAll(dues);
+	}
 
-    @Transactional(readOnly = true)
-    public Dues getMyDues(Student student) {
-        return duesRepository.findByStudent(student)
-            .orElseThrow(DuesNotFoundException::new);
-    }
+	@Transactional(readOnly = true)
+	public Dues getMyDues(Student student) {
+		return duesRepository.findByStudent(student)
+			.orElseThrow(DuesNotFoundException::new);
+	}
 }
