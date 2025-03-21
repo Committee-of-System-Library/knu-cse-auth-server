@@ -18,8 +18,6 @@ import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import kr.ac.knu.cse.token.application.JwtTokenService;
-import kr.ac.knu.cse.token.exception.TokenExpiredException;
-import kr.ac.knu.cse.token.exception.TokenInvalidException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -28,6 +26,18 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public class AuthorizationFilter extends GenericFilterBean {
 
+	private static final String[] EXCLUDE_URL_PREFIXES = {
+		"/css",
+		"/js",
+		"/images",
+		"/h2-console",
+		"/error",
+		"/favicon.ico",
+		"/login",
+		"/oauth2/login",
+		"/oauth2/authorize",
+		"/additional-info"
+	};
 	private final JwtTokenService jwtTokenService;
 
 	@Override
@@ -37,12 +47,22 @@ public class AuthorizationFilter extends GenericFilterBean {
 		HttpServletRequest servletRequest = (HttpServletRequest)request;
 		HttpServletResponse servletResponse = (HttpServletResponse)response;
 
-		if ("OPTIONS".equals(servletRequest.getMethod())) {
+		String method = servletRequest.getMethod();
+		if ("OPTIONS".equalsIgnoreCase(method)) {
 			chain.doFilter(request, response);
 			return;
 		}
 
-		String tokenValue = jwtTokenService.resolveToken(servletRequest);
+		String contextPath = servletRequest.getContextPath();
+		String path = servletRequest.getRequestURI().substring(contextPath.length());
+		for (String prefix : EXCLUDE_URL_PREFIXES) {
+			if (path.startsWith(prefix)) {
+				chain.doFilter(request, response);
+				return;
+			}
+		}
+
+		String tokenValue = jwtTokenService.resolveToken(servletRequest, "access_token");
 		if (tokenValue == null) {
 			chain.doFilter(request, response);
 			return;
@@ -51,21 +71,20 @@ public class AuthorizationFilter extends GenericFilterBean {
 		try {
 			Jws<Claims> parsedToken = jwtTokenService.extractClaims(tokenValue);
 			String email = jwtTokenService.extractEmail(parsedToken);
-
 			Authentication authentication = jwtTokenService.getAuthentication(email);
 			SecurityContextHolder.getContext().setAuthentication(authentication);
 		} catch (ExpiredJwtException e) {
-			log.error("[AuthorizationFilter] 토큰 만료", e);
+			log.error("[AuthorizationFilter] 토큰 만료: {}", e.getMessage());
 			servletResponse.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Token expired");
-			throw new TokenExpiredException();
+			return;
 		} catch (JwtException e) {
-			log.error("[AuthorizationFilter] 토큰 파싱 오류", e);
+			log.error("[AuthorizationFilter] 토큰 파싱 오류: {}", e.getMessage());
 			servletResponse.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Invalid token");
-			throw new TokenInvalidException();
+			return;
 		} catch (Exception e) {
-			log.error("[AuthorizationFilter] 토큰 검사 중 예외 발생", e);
+			log.error("[AuthorizationFilter] 토큰 검사 중 예외 발생: {}", e.getMessage());
 			servletResponse.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Token error");
-			throw new TokenInvalidException();
+			return;
 		}
 
 		chain.doFilter(request, response);

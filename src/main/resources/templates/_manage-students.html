@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+
+<body>
+    <div class="sectionBlock" id="studentSection" th:fragment="studentSection">
+        <div class="sectionHeader">
+            <h3>학생 목록</h3>
+            <div class="sectionActions">
+                <button class="addButton" onclick="openStudentModal()">+ 학생 추가</button>
+                <button class="deleteButtonGlobal" onclick="deleteSelectedStudents()">선택 삭제</button>
+            </div>
+        </div>
+        <div class="table-responsive">
+            <table class="tableStyled" id="studentTable">
+                <thead>
+                    <tr>
+                        <th class="col-checkbox">
+                            <label>
+                                <input onclick="toggleAllCheckboxes('studentTable', this)" type="checkbox">
+                            </label>
+                        </th>
+                        <th class="col-id">ID</th>
+                        <th class="col-student-number">학번</th>
+                        <th class="col-name">이름</th>
+                        <th class="col-major">전공</th>
+                        <th class="col-role">권한</th>
+                        <th class="col-payment">납부여부</th>
+                        <th class="col-edit">수정</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:attr="data-student-id=${student.id}" th:each="student : ${students}">
+                        <td class="col-checkbox">
+                            <label>
+                                <input type="checkbox">
+                            </label>
+                        </td>
+                        <td class="col-id" th:text="${student.id}"></td>
+                        <td class="col-student-number" contenteditable="true" data-field="studentNumber"
+                            th:text="${student.studentNumber}"></td>
+                        <td class="col-name" contenteditable="true" data-field="name" th:text="${student.name}"></td>
+                        <td class="col-major">
+                            <label>
+                                <select class="styled-dropdown" data-field="major">
+                                    <option th:each="m : ${T(kr.ac.knu.cse.student.domain.Major).values()}"
+                                        th:selected="${m == student.major}" th:text="${m}" th:value="${m}"></option>
+                                </select>
+                            </label>
+                        </td>
+                        <td class="col-role">
+                            <label>
+                                <select class="styled-dropdown" data-field="role">
+                                    <option th:each="r : ${T(kr.ac.knu.cse.student.domain.Role).values()}"
+                                        th:selected="${r == student.role}" th:text="${r}" th:value="${r}"></option>
+                                </select>
+                            </label>
+                        </td>
+                        <td class="col-payment">
+                            <span th:text="${dueStudentIds.contains(student.id) ? 'O' : 'X'}"></span>
+                        </td>
+                        <td class="col-edit">
+                            <button class="editButton" onclick="updateStudent(this)">수정</button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+
+</html>

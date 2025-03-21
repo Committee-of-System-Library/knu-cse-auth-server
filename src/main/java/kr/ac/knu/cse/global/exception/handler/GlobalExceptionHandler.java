@@ -1,20 +1,27 @@
 package kr.ac.knu.cse.global.exception.handler;
 
-import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.servlet.ModelAndView;
 
-import kr.ac.knu.cse.global.api.ApiErrorResult;
+import jakarta.servlet.http.HttpServletRequest;
 import kr.ac.knu.cse.global.exception.BaseExceptionHandler;
 import kr.ac.knu.cse.global.exception.support.GlobalException;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-@RestControllerAdvice
+@ControllerAdvice
 public class GlobalExceptionHandler extends BaseExceptionHandler<GlobalException> {
 
 	@ExceptionHandler(GlobalException.class)
-	public ResponseEntity<ApiErrorResult> handleCustomException(GlobalException exception) {
-		return handleException(exception, exception.getHttpStatus(), exception.getErrorMsg());
+	public Object handleCustomException(GlobalException exception, HttpServletRequest request) {
+		String accept = request.getHeader("Accept");
+		if (accept != null && accept.contains("application/json")) {
+			return handleException(exception, exception.getHttpStatus(), exception.getErrorMsg());
+		} else {
+			ModelAndView mav = new ModelAndView("error");
+			mav.addObject("errorMsg", exception.getErrorMsg());
+			return mav;
+		}
 	}
 }
