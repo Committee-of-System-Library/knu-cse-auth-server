@@ -2,6 +2,8 @@ package kr.ac.knu.cse.global.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.access.hierarchicalroles.RoleHierarchy;
+import org.springframework.security.access.hierarchicalroles.RoleHierarchyImpl;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -29,6 +31,17 @@ public class SecurityConfig {
 	private final AuthorizationFilter authorizationFilter;
 	private final RestAuthenticationEntryPoint restAuthenticationEntryPoint;
 	private final RestAccessDeniedHandler restAccessDeniedHandler;
+
+	@Bean
+	public RoleHierarchy roleHierarchy() {
+		return RoleHierarchyImpl.fromHierarchy(
+			"""
+				ROLE_ADMIN > ROLE_EXECUTIVE\s
+				ROLE_ADMIN > ROLE_FINANCE\s
+				ROLE_EXECUTIVE > ROLE_STUDENT\s
+				ROLE_FINANCE > ROLE_STUDENT"""
+		);
+	}
 
 	@Bean
 	public SecurityFilterChain securityFilterChain(
