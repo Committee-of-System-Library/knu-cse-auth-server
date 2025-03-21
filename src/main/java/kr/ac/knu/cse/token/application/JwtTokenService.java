@@ -15,6 +15,7 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
 import jakarta.annotation.PostConstruct;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import kr.ac.knu.cse.global.properties.JwtProperties;
 import kr.ac.knu.cse.provider.domain.Provider;
@@ -94,13 +95,15 @@ public class JwtTokenService {
 		return claimsJws.getPayload().get("email", String.class);
 	}
 
-	public String resolveToken(HttpServletRequest request) {
-		String bearerToken = request.getHeader(jwtProperties.getAuthHeader());
-
-		if (bearerToken != null && bearerToken.startsWith(jwtProperties.getBearerType())) {
-			return bearerToken.replaceAll(jwtProperties.getBearerType(), "").trim();
+	public String resolveToken(HttpServletRequest request, String cookieName) {
+		Cookie[] cookies = request.getCookies();
+		if (cookies != null) {
+			for (Cookie cookie : cookies) {
+				if (cookie.getName().equals(cookieName)) {
+					return cookie.getValue();
+				}
+			}
 		}
-
 		return null;
 	}
 

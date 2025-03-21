@@ -72,4 +72,14 @@ public class Provider extends BaseEntity {
 	public void connectStudent(Student student) {
 		this.student = student;
 	}
+
+	public void updateProviderInfo(String email, String providerName, String providerKey) {
+		this.email = email;
+		this.providerName = providerName;
+		this.providerKey = providerKey;
+	}
+
+	public void disconnectStudent() {
+		this.student = null;
+	}
 }

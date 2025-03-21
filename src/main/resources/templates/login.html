@@ -1,22 +1,20 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns="http://www.w3.org/1999/html">
+
 <head>
     <meta charset="UTF-8"/>
     <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
     <title>KNU CSE 통합 로그인</title>
     <link th:href="@{/css/login.styled.css}" rel="stylesheet"/>
 </head>
+
 <body>
 <div class="loginContainer">
     <div class="loginWrapper">
         <!-- 왼쪽 패널(공지사항) -->
         <div class="loginLeftPanel">
             <div class="loginLogoHeader">
-                <img
-                        alt="경북대학교 컴퓨터학부 로고"
-                        class="logo"
-                        th:src="@{/images/logo.png}"
-                />
+                <img alt="경북대학교 컴퓨터학부 로고" class="logo" th:src="@{/images/logo.png}"/>
                 <span class="logoText">경북대학교 컴퓨터학부 학생회</span>
             </div>
             <div class="loginNoticePanel">
@@ -39,18 +37,15 @@
                         </p>
                     </div>
                     <div class="loginButtonContainer">
-                        <a
-                                aria-label="구글 계정으로 로그인"
-                                class="googleLoginButton"
-                                th:href="@{/oauth2/authorize/google}"
-                        >
-                            <img
-                                    alt="Google 로고"
-                                    class="googleIcon"
-                                    src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg"
-                            />
-                            <span>Google 계정으로 로그인</span>
-                        </a>
+                        <form method="get" style="display:inline;" th:action="@{/oauth2/login/google}">
+                            <input name="redirectUrl" th:value="${param.redirectUrl != null ? param.redirectUrl : 'https://example.com'}"
+                                   type="hidden"/>
+                            <button class="googleLoginButton" type="submit">
+                                <img alt="Google 로고" class="googleIcon"
+                                     src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg"/>
+                                <span>Google 계정으로 로그인</span>
+                            </button>
+                        </form>
                     </div>
                 </div>
                 <div class="loginFooter">
@@ -68,4 +63,5 @@
 </div>
 <script th:src="@{/js/login.script.js}"></script>
 </body>
+
 </html>

@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import jakarta.validation.Valid;
@@ -21,11 +22,12 @@ import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("/manage/students")
 @PreAuthorize("hasRole('FINANCE')")
 public class StudentManageController {
 	private final StudentManageService studentManageService;
 
-	@PostMapping("/students")
+	@PostMapping
 	public ResponseEntity<ApiSuccessResult<?>> createStudent(
 		@Valid @RequestBody PostCreateStudentReq requestBody
 	) {
@@ -34,7 +36,7 @@ public class StudentManageController {
 			.body(ApiResponse.success(HttpStatus.CREATED, "Student created with ID: " + id));
 	}
 
-	@PatchMapping("/students/{id}")
+	@PatchMapping("/{id}")
 	public ResponseEntity<ApiSuccessResult<?>> updateStudent(
 		@PathVariable Long id,
 		@Valid @RequestBody PatchUpdateStudentReq requestBody
@@ -44,7 +46,7 @@ public class StudentManageController {
 			.body(ApiResponse.success(HttpStatus.OK, "Student updated"));
 	}
 
-	@DeleteMapping("/students/{id}")
+	@DeleteMapping("/{id}")
 	public ResponseEntity<ApiSuccessResult<?>> deleteStudent(@PathVariable Long id) {
 		studentManageService.deleteStudent(id);
 		return ResponseEntity.status(HttpStatus.OK)

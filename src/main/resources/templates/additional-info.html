@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
+
 <head>
     <meta charset="UTF-8"/>
     <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
@@ -7,6 +8,7 @@
     <link th:href="@{/css/additional-info.styled.css}" rel="stylesheet"/>
     <link th:href="@{/css/modal.styled.css}" rel="stylesheet"/>
 </head>
+
 <body>
 <div class="infoContainer">
     <div class="infoWrapper">
@@ -26,13 +28,8 @@
 
                         <div class="formGroup">
                             <label for="studentNumber">학번</label>
-                            <input
-                                    id="studentNumber"
-                                    name="studentNumber"
-                                    placeholder="학번을 입력하세요"
-                                    required
-                                    type="text"
-                            />
+                            <input id="studentNumber" name="studentNumber" placeholder="학번을 입력하세요" required
+                                   type="text"/>
                         </div>
                         <button class="submitButton" onclick="checkStudentNumber()" type="button">학번 확인</button>
                     </form>
@@ -52,4 +49,5 @@
 
 <script th:src="@{/js/additional-info.script.js}"></script>
 </body>
+
 </html>

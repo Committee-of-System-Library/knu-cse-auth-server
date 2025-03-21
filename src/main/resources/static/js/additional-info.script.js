@@ -1,5 +1,5 @@
 function checkStudentNumber() {
-    const studentNumberInput = document.getElementById('studentNumber');
+    const studentNumberInput = document.getElementById("studentNumber");
     const studentNumber = studentNumberInput.value.trim();
 
     if (!studentNumber) {
@@ -7,23 +7,26 @@ function checkStudentNumber() {
         return;
     }
 
-    fetch(`/auth/additional-info/check?studentNumber=${encodeURIComponent(studentNumber)}`)
-        .then(response => {
+    fetch(
+        `/auth/additional-info/check?studentNumber=${encodeURIComponent(
+            studentNumber
+        )}`
+    )
+        .then((response) => {
             if (!response.ok) {
-                return response.json().then(err => {
+                return response.json().then((err) => {
                     throw err;
                 });
             }
             return response.json();
         })
-        .then(data => {
+        .then((data) => {
             const {name, studentNumber} = data;
-            showConfirmPopup(
-                `${name}님, 학번 ${studentNumber}이 맞습니까?`,
-                () => connectStudent(studentNumber)
+            showConfirmPopup(`${name}님, 학번 ${studentNumber}이 맞습니까?`, () =>
+                connectStudent(studentNumber)
             );
         })
-        .catch(err => {
+        .catch((err) => {
             showPopup(err.message || "학번 확인 중 오류가 발생했습니다.");
         });
 }
@@ -34,27 +37,17 @@ function connectStudent(studentNumber) {
 
     fetch("/auth/additional-info/connect", {
         method: "POST",
-        body: formData
+        body: formData,
     })
-        .then(response => {
-            if (!response.ok) {
-                return response.json().then(err => {
-                    throw err;
-                });
-            }
-            return response.json();
+        .then((res) => {
+            if (!res.ok) throw new Error("연결 오류");
+            return res.json();
         })
-        .then(data => {
-            // data = { message, redirectUrl }
-            if (data.redirectUrl) {
-                window.location.href = data.redirectUrl;
-            } else {
-                // redirectUrl 없으면 메시지 모달로 표시
-                showPopup(data.message || "연결 성공 (리다이렉트 URL 없음)");
-            }
+        .then((data) => {
+            window.location.href = data.redirectUrl;
         })
-        .catch(err => {
-            showPopup(err.message || "연결 중 오류가 발생했습니다.");
+        .catch((err) => {
+            console.error(err);
         });
 }
 

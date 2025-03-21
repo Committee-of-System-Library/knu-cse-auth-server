@@ -22,7 +22,7 @@ import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/dues/manage")
+@RequestMapping("/manage/dues")
 @PreAuthorize("hasRole('FINANCE')")
 public class DuesManageController {
 

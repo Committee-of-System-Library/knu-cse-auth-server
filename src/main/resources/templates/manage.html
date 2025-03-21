@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
+
 <head>
     <meta charset="UTF-8"/>
     <title>관리자 페이지</title>
@@ -7,226 +8,37 @@
 
     <link th:href="@{/css/manage.styled.css}" rel="stylesheet"/>
     <link th:href="@{/css/modal.styled.css}" rel="stylesheet"/>
-
 </head>
+
 <body>
-<div class="manageContainer">
+
+<div class="manageBackground"></div>
     <div class="manageWrapper">
+        <aside class="manageSidebar">
+            <h1 class="sidebarTitle">관리 메뉴</h1>
+            <ul class="menuList">
+                <li class="menuItem active" id="menuStudent" onclick="showSection('studentSection', this)">Students
+                </li>
+                <li class="menuItem" id="menuDues" onclick="showSection('duesSection', this)">Dues
+                </li>
+                <li class="menuItem" id="menuProvider" onclick="showSection('providerSection', this)">Providers
+                </li>
+            </ul>
+        </aside>
 
-        <h1 class="manageTitle">관리자 페이지</h1>
-        <p class="manageSubtitle">ROLE_FINANCE 사용자만 접근 가능합니다.</p>
+        <div class="manageContent">
+            <h2 class="manageTitle">관리자 페이지</h2>
+            <p class="manageSubtitle">재정부 및 일부 관리자만 접근할 수 있습니다.</p>
 
-        <div class="manageBlurBox">
-            <!-- 학생 목록 섹션 -->
-            <section class="sectionBlock">
-                <h2>학생 목록</h2>
-                <button class="addButton" onclick="openStudentModal()">+ 학생 추가</button>
-                <table class="tableStyled" id="studentTable">
-                    <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>학번</th>
-                        <th>이름</th>
-                        <th>전공</th>
-                        <th>권한</th>
-                        <th>듀스(회비) 여부</th>
-                        <th>수정</th>
-                        <th>삭제</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr th:each="student : ${students}"
-                        data-student-id="${student.id}"
-                        data-has-dues="${#lists.contains(duesList.?[student.id == student.id].student.id, student.id)}">
-
-                        <!-- ID -->
-                        <td th:text="${student.id}"></td>
-
-                        <!-- 학번 (editable) -->
-                        <td contenteditable="true" data-field="studentNumber"
-                            th:text="${student.studentNumber}">학번</td>
-
-                        <!-- 이름 (editable) -->
-                        <td contenteditable="true" data-field="name"
-                            th:text="${student.name}">이름</td>
-
-                        <!-- 전공 (enum) -->
-                        <td>
-                            <select data-field="major">
-                                <option th:each="m : ${T(kr.ac.knu.cse.student.domain.Major).values()}"
-                                        th:value="${m}"
-                                        th:selected="${m == student.major}"
-                                        th:text="${m}">
-                                </option>
-                            </select>
-                        </td>
-
-                        <!-- 권한 (enum) -->
-                        <td>
-                            <select data-field="role">
-                                <option th:each="r : ${T(kr.ac.knu.cse.student.domain.Role).values()}"
-                                        th:value="${r}"
-                                        th:selected="${r == student.role}"
-                                        th:text="${r}">
-                                </option>
-                            </select>
-                        </td>
-
-                        <!-- 듀스(회비) 존재 여부 표시 -->
-                        <td>
-                            <span th:text="${#lists.contains(duesList.?[student.id == student.id].student.id, student.id) ? 'O' : 'X'}"></span>
-                        </td>
-
-                        <!-- 수정 버튼 -->
-                        <td>
-                            <button class="editButton" onclick="updateStudent(this)">수정</button>
-                        </td>
-                        <!-- 삭제 버튼 -->
-                        <td>
-                            <button class="deleteButton" onclick="deleteStudent(this)">삭제</button>
-                        </td>
-                    </tr>
-                    </tbody>
-                </table>
-            </section>
-
-            <!-- 회비 납부 목록(dues) 섹션 -->
-            <section class="sectionBlock">
-                <h2>회비 납부 목록</h2>
-                <button class="addButton" onclick="openDuesModal()">+ 회비 납부 추가</button>
-                <table class="tableStyled" id="duesTable">
-                    <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>이름(학생)</th>
-                        <th>학번</th>
-                        <th>입금자명</th>
-                        <th>학기 당 금액</th>
-                        <th>남은 학기</th>
-                        <th>제출일시</th>
-                        <th>수정</th>
-                        <th>삭제</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr th:each="dues : ${duesList}" data-dues-id="${dues.id}">
-                        <td th:text="${dues.id}"></td>
-                        <td th:text="${dues.student.name}"></td>
-                        <td th:text="${dues.student.studentNumber}"></td>
-
-                        <!-- 입금자명 (editable) -->
-                        <td contenteditable="true" data-field="depositorName"
-                            th:text="${dues.depositorName}">입금자명</td>
-
-                        <!-- 학기 당 금액 (editable) -->
-                        <td contenteditable="true" data-field="amount"
-                            th:text="${dues.amount}">금액</td>
-
-                        <!-- 남은 학기 (editable) -->
-                        <td contenteditable="true" data-field="remainingSemesters"
-                            th:text="${dues.remainingSemesters}">남은 학기</td>
-
-                        <!-- 제출일시 (readonly) -->
-                        <td th:text="${#temporals.format(dues.submittedAt, 'yyyy-MM-dd HH:mm')}"></td>
-
-                        <!-- 수정 / 삭제 -->
-                        <td>
-                            <button class="editButton" onclick="updateDues(this)">수정</button>
-                        </td>
-                        <td>
-                            <button class="deleteButton" onclick="deleteDues(this)">삭제</button>
-                        </td>
-                    </tr>
-                    </tbody>
-                </table>
-            </section>
+            <div th:replace="_manage-students :: studentSection"></div>
+            <div th:replace="_manage-dues :: duesSection"></div>
+            <div th:replace="_manage-providers :: providerSection"></div>
         </div>
     </div>
-</div>
 
-<!-- 학생 추가 모달 -->
-<div th:fragment="studentModalFragment" class="modal" id="studentModal">
-    <div class="modal-content">
-        <span class="close" onclick="closeModal('studentModal')">&times;</span>
-        <div class="modal-header">
-            학생 추가
-        </div>
-        <div id="studentModalBody">
-            <div class="formGroup">
-                <label for="newStudentNumber">학번</label>
-                <input type="text" id="newStudentNumber" placeholder="ex) 202300001">
-            </div>
-            <div class="formGroup">
-                <label for="newStudentName">이름</label>
-                <input type="text" id="newStudentName" placeholder="이름">
-            </div>
-            <div class="formGroup">
-                <label for="newStudentMajor">전공</label>
-                <select id="newStudentMajor">
-                    <option value="PLATFORM">PLATFORM</option>
-                    <option value="AI">AI</option>
-                    <option value="GLOBAL">GLOBAL</option>
-                    <option value="NONE">NONE</option>
-                </select>
-            </div>
-            <div class="formGroup">
-                <label for="newStudentRole">권한</label>
-                <select id="newStudentRole">
-                    <option value="ROLE_STUDENT">ROLE_STUDENT</option>
-                    <option value="ROLE_EXECUTIVE">ROLE_EXECUTIVE</option>
-                    <option value="ROLE_FINANCE">ROLE_FINANCE</option>
-                </select>
-            </div>
-        </div>
-        <div class="modal-buttons">
-            <button onclick="createStudent()">추가</button>
-            <button onclick="closeModal('studentModal')">취소</button>
-        </div>
-    </div>
-</div>
+<div th:replace="_manage-modals :: modalsFragment"></div>
 
-<!-- 회비 납부 추가 모달 -->
-<div th:fragment="duesModalFragment" class="modal" id="duesModal">
-    <div class="modal-content">
-        <span class="close" onclick="closeModal('duesModal')">&times;</span>
-        <div class="modal-header">
-            회비 납부 추가
-        </div>
-        <div id="duesModalBody">
-            <div class="formGroup">
-                <label for="duesStudentId">연결할 학생 (studentId)</label>
-                <input type="text" id="duesStudentId" placeholder="예) 10">
-            </div>
-            <div class="formGroup">
-                <label for="depositorName">입금자명</label>
-                <input type="text" id="depositorName" placeholder="입금자명">
-            </div>
-            <div class="formGroup">
-                <label for="amount">학기 당 금액</label>
-                <input type="number" id="amount" placeholder="22000">
-            </div>
-            <div class="formGroup">
-                <label for="remainingSemesters">남은 학기 수</label>
-                <input type="number" id="remainingSemesters" placeholder="ex) 6">
-            </div>
-        </div>
-        <div class="modal-buttons">
-            <button onclick="createDues()">추가</button>
-            <button onclick="closeModal('duesModal')">취소</button>
-        </div>
-    </div>
-</div>
-
-
-<!-- 관리자 페이지용 JS -->
 <script th:src="@{/js/manage.script.js}"></script>
-
-<!-- 공용 모달 close 함수 (기존 modal.styled.css / modal.html 참고) -->
-<script>
-    function closeModal(modalId) {
-        document.getElementById(modalId).style.display = "none";
-    }
-</script>
-
 </body>
+
 </html>
