@@ -8,4 +8,5 @@ public record UpdateStudentDto(
 	String name,
 	Major major,
 	Role role
-) {}
+) {
+}

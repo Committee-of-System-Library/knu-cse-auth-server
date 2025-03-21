@@ -20,4 +20,5 @@ public record PatchUpdateStudentReq(
 
 	@NotNull(message = "Role is required")
 	Role role
-) {}
+) {
+}

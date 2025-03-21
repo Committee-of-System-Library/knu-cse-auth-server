@@ -8,4 +8,5 @@ public record CreateDuesDto(
 	Integer amount,
 	Integer remainingSemesters,
 	LocalDateTime submittedAt
-) {}
+) {
+}

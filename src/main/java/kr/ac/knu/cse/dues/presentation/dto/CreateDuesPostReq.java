@@ -24,4 +24,5 @@ public record CreateDuesPostReq(
 
 	@NotNull(message = "Submitted date/time is required")
 	LocalDateTime submittedAt
-) {}
+) {
+}

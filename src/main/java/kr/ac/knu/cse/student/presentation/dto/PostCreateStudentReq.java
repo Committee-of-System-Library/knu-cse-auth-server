@@ -20,4 +20,5 @@ public record PostCreateStudentReq(
 
 	@NotNull(message = "Role is required")
 	Role role
-) {}
+) {
+}

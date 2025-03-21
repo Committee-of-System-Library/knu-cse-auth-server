@@ -2,17 +2,17 @@
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 
 <head>
-    <meta charset="UTF-8"/>
+    <meta charset="UTF-8" />
     <title>관리자 페이지</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
 
-    <link th:href="@{/css/manage.styled.css}" rel="stylesheet"/>
-    <link th:href="@{/css/modal.styled.css}" rel="stylesheet"/>
+    <link rel="stylesheet" th:href="@{/css/manage.styled.css}" />
+    <link rel="stylesheet" th:href="@{/css/modal.styled.css}" />
 </head>
 
 <body>
 
-<div class="manageBackground"></div>
+    <div class="manageBackground"></div>
     <div class="manageWrapper">
         <aside class="manageSidebar">
             <h1 class="sidebarTitle">관리 메뉴</h1>
@@ -36,9 +36,9 @@
         </div>
     </div>
 
-<div th:replace="_manage-modals :: modalsFragment"></div>
+    <div th:replace="_manage-modals :: modalsFragment"></div>
 
-<script th:src="@{/js/manage.script.js}"></script>
+    <script th:src="@{/js/manage.script.js}"></script>
 </body>
 
 </html>

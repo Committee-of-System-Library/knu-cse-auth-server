@@ -27,7 +27,6 @@ public class ProviderManageService {
 			.providerKey(req.providerKey())
 			.build();
 
-		// studentId가 넘어온 경우 연결
 		if (req.studentId() != null) {
 			Student student = studentRepository.findById(req.studentId())
 				.orElseThrow(() -> new RuntimeException("STUDENT_NOT_FOUND"));
@@ -42,8 +41,6 @@ public class ProviderManageService {
 		Provider provider = providerRepository.findById(providerId)
 			.orElseThrow(ProviderNotFoundException::new);
 
-		// provider 엔티티에 email, providerName, providerKey 변경 로직을 추가하거나
-		// setter 없이 새로 만드는 경우라면 간단한 메서드를 만들어서 업데이트
 		provider.updateProviderInfo(
 			req.email(),
 			req.providerName(),
@@ -55,7 +52,6 @@ public class ProviderManageService {
 				.orElseThrow(() -> new RuntimeException("STUDENT_NOT_FOUND"));
 			provider.connectStudent(student);
 		} else {
-			// student 연결 해제도 가능하다면
 			provider.disconnectStudent();
 		}
 	}

@@ -26,8 +26,6 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public class AuthorizationFilter extends GenericFilterBean {
 
-	private final JwtTokenService jwtTokenService;
-
 	private static final String[] EXCLUDE_URL_PREFIXES = {
 		"/css",
 		"/js",
@@ -40,6 +38,7 @@ public class AuthorizationFilter extends GenericFilterBean {
 		"/oauth2/authorize",
 		"/additional-info"
 	};
+	private final JwtTokenService jwtTokenService;
 
 	@Override
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)

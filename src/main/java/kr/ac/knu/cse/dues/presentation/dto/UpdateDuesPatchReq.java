@@ -16,4 +16,5 @@ public record UpdateDuesPatchReq(
 	@NotNull(message = "Remaining semesters is required")
 	@PositiveOrZero(message = "Remaining semesters must be zero or positive")
 	Integer remainingSemesters
-) {}
+) {
+}

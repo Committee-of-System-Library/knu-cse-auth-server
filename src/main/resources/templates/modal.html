@@ -2,22 +2,22 @@
 <html lang="ko">
 
 <head>
-    <meta charset="UTF-8"/>
+    <meta charset="UTF-8" />
     <title>공용 모달</title>
-    <link th:href="@{/css/modal.styled.css}" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/modal.styled.css}">
 </head>
 
 <body>
-<div th:fragment="myModalFragment">
-    <div class="modal" id="myModal">
-        <div class="modal-content">
-            <span class="close" onclick="closeModal()">&times;</span>
-            <div class="modal-header" id="modalMessage"></div>
-            <div id="modalBody"></div>
-            <div class="modal-buttons" id="modalButtons"></div>
+    <div th:fragment="myModalFragment">
+        <div class="modal" id="myModal">
+            <div class="modal-content">
+                <span class="close" onclick="closeModal()">&times;</span>
+                <div class="modal-header" id="modalMessage"></div>
+                <div id="modalBody"></div>
+                <div class="modal-buttons" id="modalButtons"></div>
+            </div>
         </div>
     </div>
-</div>
 </body>
 
 </html>

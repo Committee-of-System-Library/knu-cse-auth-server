@@ -198,7 +198,9 @@ body {
   -webkit-appearance: none;
   -moz-appearance: none;
   /* 배경 화살표의 위치를 드랍다운 크기에 맞게 계산 */
-  background: rgba(255, 255, 255, 0.2) url('data:image/svg+xml;utf8,<svg fill="black" height="16" viewBox="0 0 24 24" width="16" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/></svg>') no-repeat calc(100% - 1rem) center;
+  background: rgba(255, 255, 255, 0.2)
+    url('data:image/svg+xml;utf8,<svg fill="black" height="16" viewBox="0 0 24 24" width="16" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/></svg>')
+    no-repeat calc(100% - 1rem) center;
   background-size: 1rem;
 }
 
@@ -214,74 +216,91 @@ body {
 }
 
 /* ===== 학생 테이블 ===== */
-.tableStyled th.col-checkbox, .tableStyled td.col-checkbox {
+.tableStyled th.col-checkbox,
+.tableStyled td.col-checkbox {
   width: 40px;
 }
 
-.tableStyled th.col-id, .tableStyled td.col-id {
+.tableStyled th.col-id,
+.tableStyled td.col-id {
   width: 50px;
 }
 
-.tableStyled th.col-student-number, .tableStyled td.col-student-number {
+.tableStyled th.col-student-number,
+.tableStyled td.col-student-number {
   width: 100px;
 }
 
-.tableStyled th.col-name, .tableStyled td.col-name {
+.tableStyled th.col-name,
+.tableStyled td.col-name {
   width: 150px;
 }
 
-.tableStyled th.col-major, .tableStyled td.col-major {
+.tableStyled th.col-major,
+.tableStyled td.col-major {
   width: 180px; /* 전공 */
 }
 
-.tableStyled th.col-role, .tableStyled td.col-role {
+.tableStyled th.col-role,
+.tableStyled td.col-role {
   width: 180px; /* 권한 */
 }
 
-.tableStyled th.col-payment, .tableStyled td.col-payment {
+.tableStyled th.col-payment,
+.tableStyled td.col-payment {
   width: 60px;
 }
 
-.tableStyled th.col-edit, .tableStyled td.col-edit {
+.tableStyled th.col-edit,
+.tableStyled td.col-edit {
   width: 80px;
 }
 
 /* ===== 회비(Dues) 테이블 ===== */
-.tableStyled th.col-depositor, .tableStyled td.col-depositor {
+.tableStyled th.col-depositor,
+.tableStyled td.col-depositor {
   width: 120px; /* 입금자명 */
 }
 
-.tableStyled th.col-amount, .tableStyled td.col-amount {
+.tableStyled th.col-amount,
+.tableStyled td.col-amount {
   width: 100px; /* 학기 당 금액 */
 }
 
-.tableStyled th.col-semester, .tableStyled td.col-semester {
+.tableStyled th.col-semester,
+.tableStyled td.col-semester {
   width: 100px; /* 남은 학기 */
 }
 
-.tableStyled th.col-date, .tableStyled td.col-date {
+.tableStyled th.col-date,
+.tableStyled td.col-date {
   width: 140px; /* 제출일시 */
 }
 
 /* 학생 정보는 재사용: 이름, 학번 등 */
-.tableStyled th.col-student-name, .tableStyled td.col-student-name {
+.tableStyled th.col-student-name,
+.tableStyled td.col-student-name {
   width: 150px;
 }
 
 /* ===== Provider 테이블 ===== */
-.tableStyled th.col-email, .tableStyled td.col-email {
+.tableStyled th.col-email,
+.tableStyled td.col-email {
   width: 180px; /* Email */
 }
 
-.tableStyled th.col-provider-name, .tableStyled td.col-provider-name {
+.tableStyled th.col-provider-name,
+.tableStyled td.col-provider-name {
   width: 150px; /* Provider Name */
 }
 
-.tableStyled th.col-provider-key, .tableStyled td.col-provider-key {
+.tableStyled th.col-provider-key,
+.tableStyled td.col-provider-key {
   width: 150px; /* Provider Key */
 }
 
-.tableStyled th.col-student-id, .tableStyled td.col-student-id {
+.tableStyled th.col-student-id,
+.tableStyled td.col-student-id {
   width: 100px; /* 연결된 Student ID */
 }
 
@@ -340,7 +359,8 @@ body {
     overflow-x: auto;
   }
 
-  .tableStyled th, .tableStyled td {
+  .tableStyled th,
+  .tableStyled td {
     width: auto !important;
   }
 }

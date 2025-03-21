@@ -2,53 +2,53 @@
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 
 <body>
-<div class="sectionBlock" id="duesSection" style="display:none;" th:fragment="duesSection">
-    <div class="sectionHeader">
-        <h3>회비 납부 목록</h3>
-        <div class="sectionActions">
-            <button class="addButton" onclick="openDuesModal()">+ 회비 납부 추가</button>
-            <button class="deleteButtonGlobal" onclick="deleteSelectedDues()">선택 삭제</button>
+    <div class="sectionBlock" id="duesSection" style="display:none;" th:fragment="duesSection">
+        <div class="sectionHeader">
+            <h3>회비 납부 목록</h3>
+            <div class="sectionActions">
+                <button class="addButton" onclick="openDuesModal()">+ 회비 납부 추가</button>
+                <button class="deleteButtonGlobal" onclick="deleteSelectedDues()">선택 삭제</button>
+            </div>
+        </div>
+        <div class="table-responsive">
+            <table class="tableStyled" id="duesTable">
+                <thead>
+                    <tr>
+                        <th class="col-checkbox">
+                            <input onclick="toggleAllCheckboxes('duesTable', this)" type="checkbox">
+                        </th>
+                        <th class="col-id">ID</th>
+                        <th class="col-student-name">이름(학생)</th>
+                        <th class="col-student-number">학번</th>
+                        <th class="col-depositor">입금자명</th>
+                        <th class="col-amount">학기 당 금액</th>
+                        <th class="col-semester">남은 학기</th>
+                        <th class="col-date">제출일시</th>
+                        <th class="col-edit">수정</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:attr="data-dues-id=${dues.id}" th:each="dues : ${duesList}">
+                        <td class="col-checkbox">
+                            <input type="checkbox">
+                        </td>
+                        <td class="col-id" th:text="${dues.id}"></td>
+                        <td class="col-student-name" th:text="${dues.student.name}"></td>
+                        <td class="col-student-number" th:text="${dues.student.studentNumber}"></td>
+                        <td class="col-depositor" contenteditable="true" data-field="depositorName"
+                            th:text="${dues.depositorName}"></td>
+                        <td class="col-amount" contenteditable="true" data-field="amount" th:text="${dues.amount}"></td>
+                        <td class="col-semester" contenteditable="true" data-field="remainingSemesters"
+                            th:text="${dues.remainingSemesters}"></td>
+                        <td class="col-date" th:text="${#temporals.format(dues.submittedAt, 'yyyy-MM-dd HH:mm')}"></td>
+                        <td class="col-edit">
+                            <button class="editButton" onclick="updateDues(this)">수정</button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
     </div>
-    <div class="table-responsive">
-        <table class="tableStyled" id="duesTable">
-            <thead>
-            <tr>
-                <th class="col-checkbox">
-                    <input onclick="toggleAllCheckboxes('duesTable', this)" type="checkbox">
-                </th>
-                <th class="col-id">ID</th>
-                <th class="col-student-name">이름(학생)</th>
-                <th class="col-student-number">학번</th>
-                <th class="col-depositor">입금자명</th>
-                <th class="col-amount">학기 당 금액</th>
-                <th class="col-semester">남은 학기</th>
-                <th class="col-date">제출일시</th>
-                <th class="col-edit">수정</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr th:attr="data-dues-id=${dues.id}" th:each="dues : ${duesList}">
-                <td class="col-checkbox">
-                    <input type="checkbox">
-                </td>
-                <td class="col-id" th:text="${dues.id}"></td>
-                <td class="col-student-name" th:text="${dues.student.name}"></td>
-                <td class="col-student-number" th:text="${dues.student.studentNumber}"></td>
-                <td class="col-depositor" contenteditable="true" data-field="depositorName"
-                    th:text="${dues.depositorName}"></td>
-                <td class="col-amount" contenteditable="true" data-field="amount" th:text="${dues.amount}"></td>
-                <td class="col-semester" contenteditable="true" data-field="remainingSemesters"
-                    th:text="${dues.remainingSemesters}"></td>
-                <td class="col-date" th:text="${#temporals.format(dues.submittedAt, 'yyyy-MM-dd HH:mm')}"></td>
-                <td class="col-edit">
-                    <button class="editButton" onclick="updateDues(this)">수정</button>
-                </td>
-            </tr>
-            </tbody>
-        </table>
-    </div>
-</div>
 </body>
 
 </html>

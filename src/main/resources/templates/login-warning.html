@@ -5,23 +5,23 @@
     <meta charset="UTF-8">
     <meta content="width=device-width, initial-scale=1" name="viewport">
     <title>로그인 경고</title>
-    <link th:href="@{/css/login-warning.styled.css}" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/login-warning.styled.css}">
 </head>
 
 <body>
-<div class="warningContainer">
-    <div class="warningBlurBox">
-        <h2 class="warningTitle">경고</h2>
-        <p class="warningMessage">@knu.ac.kr 계정만 사용 가능합니다.</p>
-        <button class="warningButton" onclick="goBack()">돌아가기</button>
+    <div class="warningContainer">
+        <div class="warningBlurBox">
+            <h2 class="warningTitle">경고</h2>
+            <p class="warningMessage">@knu.ac.kr 계정만 사용 가능합니다.</p>
+            <button class="warningButton" onclick="goBack()">돌아가기</button>
+        </div>
     </div>
-</div>
-<script th:inline="javascript">
-    function goBack() {
-        const redirectUrl = /*[[${redirectUrl}]]*/ "/";
-        window.location.href = "/auth/login?redirectUrl=" + encodeURIComponent(redirectUrl);
-    }
-</script>
+    <script th:inline="javascript">
+        function goBack() {
+            const redirectUrl = /*[[${redirectUrl}]]*/ "/";
+            window.location.href = "/auth/login?redirectUrl=" + encodeURIComponent(redirectUrl);
+        }
+    </script>
 </body>
 
 </html>
