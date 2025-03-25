@@ -326,6 +326,45 @@ body {
   color: #000;
 }
 
+/* 페이지 디자인 */
+.pageButton {
+  border: 1px solid #ccc;
+  background: #fefefe;
+  padding: 6px 10px;
+  margin: 0 2px;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.pageButton.active {
+  background: #4285f4;
+  color: #fff;
+  font-weight: bold;
+}
+
+.pageButton:hover {
+  background: #ddd;
+}
+
+.paginationContainer {
+  margin-top: 1rem;
+  text-align: center;
+}
+
+/* 정렬 버튼 */
+.sortBtn {
+  padding: 2px 4px;
+  font-size: 0.75rem;
+  cursor: pointer;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background: #eee;
+}
+
+.sortBtn:hover {
+  background: #ccc;
+}
+
 /* 반응형 */
 @media (max-width: 768px) {
   .manageWrapper {

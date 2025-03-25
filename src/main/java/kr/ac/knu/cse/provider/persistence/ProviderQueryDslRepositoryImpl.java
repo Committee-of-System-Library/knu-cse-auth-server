@@ -1,0 +1,77 @@
+package kr.ac.knu.cse.provider.persistence;
+
+import static com.querydsl.core.types.Order.*;
+import static kr.ac.knu.cse.provider.domain.QProvider.*;
+
+import java.util.List;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Repository;
+
+import com.querydsl.core.Tuple;
+import com.querydsl.core.types.Order;
+import com.querydsl.core.types.OrderSpecifier;
+import com.querydsl.core.types.dsl.ComparableExpressionBase;
+
+import kr.ac.knu.cse.global.support.QueryDslSupport;
+import kr.ac.knu.cse.provider.presentation.dto.ProviderResponse;
+import kr.ac.knu.cse.provider.presentation.dto.ProviderSearchFilter;
+import lombok.RequiredArgsConstructor;
+
+@Repository
+@RequiredArgsConstructor
+public class ProviderQueryDslRepositoryImpl extends QueryDslSupport implements ProviderQueryDslRepository {
+
+	private List<Tuple> fetchContent(ProviderSearchFilter filter, Pageable pageable) {
+		Order order = filter.getDirection().equalsIgnoreCase("desc") ? DESC : ASC;
+		ComparableExpressionBase<?> sortPath = getSortPath(filter.getSortBy());
+
+		return queryFactory
+			.select(
+				provider.id,
+				provider.email,
+				provider.providerName,
+				provider.providerKey,
+				provider.student.id
+			)
+			.from(provider)
+			.orderBy(new OrderSpecifier<>(order, sortPath))
+			.offset(pageable.getOffset())
+			.limit(pageable.getPageSize())
+			.fetch();
+	}
+
+	private ComparableExpressionBase<?> getSortPath(String sortBy) {
+		return switch (sortBy) {
+			case "id" -> provider.id;
+			case "email" -> provider.email;
+			case "providerName" -> provider.providerName;
+			case "providerKey" -> provider.providerKey;
+			default -> provider.email;
+		};
+	}
+
+	@Override
+	public Page<ProviderResponse> findProviders(ProviderSearchFilter filter, Pageable pageable) {
+		List<Tuple> tuples = fetchContent(filter, pageable);
+
+		List<ProviderResponse> content = tuples.stream()
+			.map(tuple -> new ProviderResponse(
+				tuple.get(provider.id),
+				tuple.get(provider.email),
+				tuple.get(provider.providerName),
+				tuple.get(provider.providerKey),
+				tuple.get(provider.student.id)
+			))
+			.toList();
+
+		return paginate(
+			pageable,
+			content,
+			countQuery -> countQuery
+				.select(provider.count())
+				.from(provider)
+		);
+	}
+}
