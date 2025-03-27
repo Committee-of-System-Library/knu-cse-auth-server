@@ -12,17 +12,13 @@
 
 <body>
 
-    <div class="manageBackground"></div>
     <div class="manageWrapper">
         <aside class="manageSidebar">
             <h1 class="sidebarTitle">관리 메뉴</h1>
             <ul class="menuList">
-                <li class="menuItem active" id="menuStudent" onclick="showSection('studentSection', this)">Students
-                </li>
-                <li class="menuItem" id="menuDues" onclick="showSection('duesSection', this)">Dues
-                </li>
-                <li class="menuItem" id="menuProvider" onclick="showSection('providerSection', this)">Providers
-                </li>
+                <li class="menuItem active" id="menuStudent" onclick="showSection('studentSection', this)">Students</li>
+                <li class="menuItem" id="menuDues" onclick="showSection('duesSection', this)">Dues</li>
+                <li class="menuItem" id="menuProvider" onclick="showSection('providerSection', this)">Providers</li>
             </ul>
         </aside>
 
@@ -30,14 +26,17 @@
             <h2 class="manageTitle">관리자 페이지</h2>
             <p class="manageSubtitle">재정부 및 일부 관리자만 접근할 수 있습니다.</p>
 
+            <!-- 아래 세 영역을 각각 Thymeleaf fragment로 분리한 것을 include -->
             <div th:replace="_manage-students :: studentSection"></div>
             <div th:replace="_manage-dues :: duesSection"></div>
             <div th:replace="_manage-providers :: providerSection"></div>
         </div>
     </div>
 
+    <!-- 모달들 -->
     <div th:replace="_manage-modals :: modalsFragment"></div>
 
+    <!-- 메인 스크립트 -->
     <script th:src="@{/js/manage.script.js}"></script>
 </body>
 

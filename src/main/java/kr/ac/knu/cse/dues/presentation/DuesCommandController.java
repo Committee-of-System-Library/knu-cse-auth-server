@@ -38,7 +38,7 @@ public class DuesCommandController {
 		}
 	}
 
-	@GetMapping
+	@GetMapping("/me")
 	@PreAuthorize("isAuthenticated()")
 	public ResponseEntity<ApiSuccessResult<DuesReadDto>> getMyDues(
 		@LoggedInProvider PrincipalDetails principalDetails

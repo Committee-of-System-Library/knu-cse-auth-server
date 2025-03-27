@@ -10,6 +10,7 @@
                 <button class="deleteButtonGlobal" onclick="deleteSelectedProviders()">선택 삭제</button>
             </div>
         </div>
+
         <div class="table-responsive">
             <table class="tableStyled" id="providerTable">
                 <thead>
@@ -17,34 +18,34 @@
                         <th class="col-checkbox">
                             <input onclick="toggleAllCheckboxes('providerTable', this)" type="checkbox">
                         </th>
-                        <th class="col-id">ID</th>
-                        <th class="col-email">Email</th>
-                        <th class="col-provider-name">ProviderName</th>
-                        <th class="col-provider-key">ProviderKey</th>
-                        <th class="col-student-id">연결된 Student ID</th>
+                        <th class="col-id">
+                            ID
+                            <button class="sortBtn" onclick="sortProvider('id')">↕</button>
+                        </th>
+                        <th class="col-email">
+                            Email
+                            <button class="sortBtn" onclick="sortProvider('email')">↕</button>
+                        </th>
+                        <th class="col-provider-name">
+                            ProviderName
+                            <button class="sortBtn" onclick="sortProvider('providerName')">↕</button>
+                        </th>
+                        <th class="col-provider-key">
+                            ProviderKey
+                            <button class="sortBtn" onclick="sortProvider('providerKey')">↕</button>
+                        </th>
+                        <th class="col-student-id">
+                            연결된 Student ID
+                            <button class="sortBtn" onclick="sortProvider('studentId')">↕</button>
+                        </th>
                         <th class="col-edit">수정</th>
                     </tr>
                 </thead>
-                <tbody>
-                    <tr th:attr="data-provider-id=${pv.id}" th:each="pv : ${providers}">
-                        <td class="col-checkbox">
-                            <input type="checkbox">
-                        </td>
-                        <td class="col-id" th:text="${pv.id}"></td>
-                        <td class="col-email" contenteditable="true" data-field="email" th:text="${pv.email}"></td>
-                        <td class="col-provider-name" contenteditable="true" data-field="providerName"
-                            th:text="${pv.providerName}"></td>
-                        <td class="col-provider-key" contenteditable="true" data-field="providerKey"
-                            th:text="${pv.providerKey}"></td>
-                        <td class="col-student-id" contenteditable="true" data-field="studentId"
-                            th:text="${pv.student != null ? pv.student.id : ''}"></td>
-                        <td class="col-edit">
-                            <button class="editButton" onclick="updateProvider(this)">수정</button>
-                        </td>
-                    </tr>
-                </tbody>
+                <tbody></tbody>
             </table>
         </div>
+
+        <div class="paginationContainer" id="providerPagination"></div>
     </div>
 </body>
 
