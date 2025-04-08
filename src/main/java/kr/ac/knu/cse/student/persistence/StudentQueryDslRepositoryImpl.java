@@ -9,6 +9,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
+import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.Tuple;
 import com.querydsl.core.types.Order;
 import com.querydsl.core.types.OrderSpecifier;
@@ -27,19 +28,43 @@ public class StudentQueryDslRepositoryImpl extends QueryDslSupport implements St
 		Order order = filter.getDirection().equalsIgnoreCase("desc") ? DESC : ASC;
 		ComparableExpressionBase<?> sortPath = getSortPath(filter.getSortBy());
 
+		BooleanBuilder whereBuilder = new BooleanBuilder();
+		if (filter.getSearchColumn() != null && !filter.getSearchColumn().isBlank() &&
+			filter.getSearchKeyword() != null && !filter.getSearchKeyword().isBlank()) {
+			String keyword = filter.getSearchKeyword();
+
+			switch (filter.getSearchColumn()) {
+				case "studentNumber":
+					whereBuilder.and(student.studentNumber.containsIgnoreCase(keyword));
+					break;
+				case "name":
+					whereBuilder.and(student.name.containsIgnoreCase(keyword));
+					break;
+				case "major":
+					whereBuilder.and(student.major.stringValue().containsIgnoreCase(keyword));
+					break;
+				case "role":
+					whereBuilder.and(student.role.stringValue().containsIgnoreCase(keyword));
+					break;
+				default:
+					break;
+			}
+		}
+
 		return queryFactory.select(
 				student.id,
-                student.studentNumber,
-                student.name,
-                student.major,
-                student.role
-        )
-        .from(student)
+				student.studentNumber,
+				student.name,
+				student.major,
+				student.role
+			)
+			.from(student)
+			.where(whereBuilder)
 			.orderBy(new OrderSpecifier<>(order, sortPath))
-        .offset(pageable.getOffset())
-        .limit(pageable.getPageSize())
-        .fetch();
-    }
+			.offset(pageable.getOffset())
+			.limit(pageable.getPageSize())
+			.fetch();
+	}
 
 	private ComparableExpressionBase<?> getSortPath(String sortBy) {
 		return switch (sortBy) {
@@ -53,20 +78,51 @@ public class StudentQueryDslRepositoryImpl extends QueryDslSupport implements St
 	}
 
 	@Override
-    public Page<StudentResponse> findStudents(StudentSearchFilter filter, Pageable pageable) {
-        return paginate(
-                pageable,
-			fetchContent(filter, pageable).stream()
-                        .map(tuple -> StudentResponse.of(
-							tuple.get(student.id),
-                                tuple.get(student.studentNumber),
-                                tuple.get(student.name),
-                                tuple.get(student.major),
-                                tuple.get(student.role)
-                        )).toList()
-                ,
-                countQuery -> countQuery.select(student.count()).from(student)
-        );
-    }
+	public Page<StudentResponse> findStudents(StudentSearchFilter filter, Pageable pageable) {
+		List<Tuple> tuples = fetchContent(filter, pageable);
 
+		List<StudentResponse> content = tuples.stream()
+			.map(tuple -> StudentResponse.of(
+				tuple.get(student.id),
+				tuple.get(student.studentNumber),
+				tuple.get(student.name),
+				tuple.get(student.major),
+				tuple.get(student.role)
+			))
+			.toList();
+
+		return paginate(
+			pageable,
+			content,
+			countQuery -> {
+				BooleanBuilder whereBuilder = new BooleanBuilder();
+				if (filter.getSearchColumn() != null && !filter.getSearchColumn().isBlank() &&
+					filter.getSearchKeyword() != null && !filter.getSearchKeyword().isBlank()) {
+					String keyword = filter.getSearchKeyword();
+
+					switch (filter.getSearchColumn()) {
+						case "studentNumber":
+							whereBuilder.and(student.studentNumber.containsIgnoreCase(keyword));
+							break;
+						case "name":
+							whereBuilder.and(student.name.containsIgnoreCase(keyword));
+							break;
+						case "major":
+							whereBuilder.and(student.major.stringValue().containsIgnoreCase(keyword));
+							break;
+						case "role":
+							whereBuilder.and(student.role.stringValue().containsIgnoreCase(keyword));
+							break;
+						default:
+							break;
+					}
+				}
+
+				return countQuery
+					.select(student.count())
+					.from(student)
+					.where(whereBuilder);
+			}
+		);
+	}
 }

@@ -10,6 +10,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
+import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.Tuple;
 import com.querydsl.core.types.Order;
 import com.querydsl.core.types.OrderSpecifier;
@@ -28,6 +29,25 @@ public class DuesQueryDslRepositoryImpl extends QueryDslSupport implements DuesQ
 		Order order = filter.getDirection().equalsIgnoreCase("desc") ? DESC : ASC;
 		ComparableExpressionBase<?> sortPath = getSortPath(filter.getSortBy());
 
+		BooleanBuilder whereBuilder = new BooleanBuilder();
+		if (filter.getSearchColumn() != null && !filter.getSearchColumn().isBlank() &&
+			filter.getSearchKeyword() != null && !filter.getSearchKeyword().isBlank()) {
+			String keyword = filter.getSearchKeyword();
+			switch (filter.getSearchColumn()) {
+				case "studentNumber":
+					whereBuilder.and(student.studentNumber.containsIgnoreCase(keyword));
+					break;
+				case "name":
+					whereBuilder.and(student.name.containsIgnoreCase(keyword));
+					break;
+				case "depositorName":
+					whereBuilder.and(dues.depositorName.containsIgnoreCase(keyword));
+					break;
+				default:
+					break;
+			}
+		}
+
 		return queryFactory
 			.select(
 				dues.id,
@@ -40,6 +60,7 @@ public class DuesQueryDslRepositoryImpl extends QueryDslSupport implements DuesQ
 			)
 			.from(dues)
 			.join(dues.student, student)
+			.where(whereBuilder)
 			.orderBy(new OrderSpecifier<>(order, sortPath))
 			.offset(pageable.getOffset())
 			.limit(pageable.getPageSize())
@@ -78,9 +99,32 @@ public class DuesQueryDslRepositoryImpl extends QueryDslSupport implements DuesQ
 		return paginate(
 			pageable,
 			content,
-			countQuery -> countQuery
-				.select(dues.count())
-				.from(dues)
+			countQuery -> {
+				BooleanBuilder whereBuilder = new BooleanBuilder();
+				if (filter.getSearchColumn() != null && !filter.getSearchColumn().isBlank() &&
+					filter.getSearchKeyword() != null && !filter.getSearchKeyword().isBlank()) {
+					String keyword = filter.getSearchKeyword();
+					switch (filter.getSearchColumn()) {
+						case "studentNumber":
+							whereBuilder.and(student.studentNumber.containsIgnoreCase(keyword));
+							break;
+						case "name":
+							whereBuilder.and(student.name.containsIgnoreCase(keyword));
+							break;
+						case "depositorName":
+							whereBuilder.and(dues.depositorName.containsIgnoreCase(keyword));
+							break;
+						default:
+							break;
+					}
+				}
+
+				return countQuery
+					.select(dues.count())
+					.from(dues)
+					.join(dues.student, student)
+					.where(whereBuilder);
+			}
 		);
 	}
 }

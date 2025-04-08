@@ -8,4 +8,7 @@ import lombok.Setter;
 public class QrAuthLogSearchFilter {
 	private String sortBy = "scanDate";
 	private String direction = "desc";
+
+	private String searchColumn;
+	private String searchKeyword;
 }

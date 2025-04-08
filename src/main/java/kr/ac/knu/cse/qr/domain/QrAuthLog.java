@@ -1,7 +1,14 @@
 package kr.ac.knu.cse.qr.domain;
 
 import java.time.LocalDate;
-import jakarta.persistence.*;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
 import kr.ac.knu.cse.global.domain.BaseEntity;
 import lombok.AccessLevel;
 import lombok.Builder;

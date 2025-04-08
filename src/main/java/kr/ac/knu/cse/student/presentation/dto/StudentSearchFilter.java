@@ -8,4 +8,7 @@ import lombok.Setter;
 public class StudentSearchFilter {
 	private String sortBy = "studentNumber";
 	private String direction = "asc";
+
+	private String searchColumn;
+	private String searchKeyword;
 }

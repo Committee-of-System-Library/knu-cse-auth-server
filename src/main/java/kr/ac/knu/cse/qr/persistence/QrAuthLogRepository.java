@@ -1,10 +1,11 @@
 package kr.ac.knu.cse.qr.persistence;
 
-import kr.ac.knu.cse.qr.domain.QrAuthLog;
+import java.time.LocalDate;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import java.time.LocalDate;
+import kr.ac.knu.cse.qr.domain.QrAuthLog;
 
 @Repository
 public interface QrAuthLogRepository extends JpaRepository<QrAuthLog, Long> {

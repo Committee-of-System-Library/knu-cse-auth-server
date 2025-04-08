@@ -9,7 +9,6 @@ import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import kr.ac.knu.cse.global.api.ApiErrorResult;
@@ -42,7 +41,6 @@ public class RestAuthenticationEntryPoint implements AuthenticationEntryPoint {
 			String encodedUrl = java.net.URLEncoder.encode(fullURL, java.nio.charset.StandardCharsets.UTF_8);
 			String redirectPath = "/auth/login?redirectUrl=" + encodedUrl;
 
-			log.info("HTML 요청이므로 302 Redirect로 로그인 페이지로 안내: {}", redirectPath);
 			response.sendRedirect(redirectPath);
 
 		} else {
