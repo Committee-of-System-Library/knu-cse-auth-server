@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+
+<body>
+    <div class="sectionBlock" id="qrAuthSection" style="display:none;" th:fragment="qrAuthSection">
+        <div class="sectionHeader">
+            <h3>QR-Auth 로그</h3>
+            <div class="sectionActions">
+                <button class="deleteButtonGlobal" onclick="deleteSelectedQrAuthLogs()">선택 삭제</button>
+                <button class="addButton" onclick="window.location.href='/auth/qr-auth'">
+                    실시간 스캔 화면
+                </button>
+            </div>
+        </div>
+
+        <div class="table-responsive">
+            <table class="tableStyled" id="qrAuthLogTable">
+                <thead>
+                    <tr>
+                        <th class="col-checkbox">
+                            <input type="checkbox" onclick="toggleAllCheckboxes('qrAuthLogTable', this)">
+                        </th>
+                        <th>ID
+                            <button class="sortBtn" onclick="sortQrAuthLog('qrAuthLogId')">↕</button>
+                        </th>
+                        <th>scanDate
+                            <button class="sortBtn" onclick="sortQrAuthLog('scanDate')">↕</button>
+                        </th>
+                        <th>studentNumber
+                            <button class="sortBtn" onclick="sortQrAuthLog('studentNumber')">↕</button>
+                        </th>
+                        <th>studentName
+                            <button class="sortBtn" onclick="sortQrAuthLog('studentName')">↕</button>
+                        </th>
+                        <th>duesPaid
+                            <button class="sortBtn" onclick="sortQrAuthLog('duesPaid')">↕</button>
+                        </th>
+                        <th>scannedBy
+                            <button class="sortBtn" onclick="sortQrAuthLog('scannedBy')">↕</button>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+        <div class="paginationContainer" id="qrAuthLogPagination"></div>
+    </div>
+</body>
+
+</html>

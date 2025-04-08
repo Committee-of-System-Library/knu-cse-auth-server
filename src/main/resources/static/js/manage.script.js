@@ -1,65 +1,58 @@
+// context path
 const contextPath = "/auth";
 
-// =========================
-// 글로벌 상태 (학생)
-let studentPage = 0;
-let studentSize = 10;
-let studentSortBy = "studentNumber";
-let studentSortDirection = "asc";
-let studentTotalPages = 0;
-
-// =========================
-// 글로벌 상태 (dues)
-let duesPage = 0;
-let duesSize = 10;
-let duesSortBy = "duesId";
-let duesSortDirection = "asc";
-let duesTotalPages = 0;
-
-// =========================
-// 글로벌 상태 (provider)
-let providerPage = 0;
-let providerSize = 10;
-let providerSortBy = "email";
-let providerSortDirection = "asc";
-let providerTotalPages = 0;
+// Global States
+let studentPage = 0,
+  studentSize = 10,
+  studentSortBy = "studentNumber",
+  studentSortDirection = "asc",
+  studentTotalPages = 0;
+let duesPage = 0,
+  duesSize = 10,
+  duesSortBy = "duesId",
+  duesSortDirection = "asc",
+  duesTotalPages = 0;
+let providerPage = 0,
+  providerSize = 10,
+  providerSortBy = "email",
+  providerSortDirection = "asc",
+  providerTotalPages = 0;
+let qrAuthLogPage = 0,
+  qrAuthLogSize = 10,
+  qrAuthLogSortBy = "scanDate",
+  qrAuthLogSortDirection = "desc",
+  qrAuthLogTotalPages = 0;
 
 document.addEventListener("DOMContentLoaded", () => {
-  // 페이지 로드 시 학생 목록 먼저 로딩
   loadStudentPage();
 });
 
-//////////////////////////////////////////////////////////
-// 탭(섹션) 전환
-//////////////////////////////////////////////////////////
 function showSection(sectionId, menuItem) {
-  // 모든 섹션 숨김
-  document.getElementById("studentSection").style.display = "none";
-  document.getElementById("duesSection").style.display = "none";
-  document.getElementById("providerSection").style.display = "none";
-
-  // 사이드바 active 효과 제거
+  ["studentSection", "duesSection", "providerSection", "qrAuthSection"].forEach(
+    (id) => {
+      document.getElementById(id).style.display = "none";
+    }
+  );
   document
     .querySelectorAll(".menuItem")
     .forEach((item) => item.classList.remove("active"));
-
-  // 해당 섹션 보이기 + active 설정
   document.getElementById(sectionId).style.display = "block";
   menuItem.classList.add("active");
 
-  // 섹션별로 로딩 로직
-  if (sectionId === "studentSection") {
-    loadStudentPage();
-  } else if (sectionId === "duesSection") {
-    loadDuesPage();
-  } else if (sectionId === "providerSection") {
-    loadProviderPage();
-  }
+  if (sectionId === "studentSection") loadStudentPage();
+  else if (sectionId === "duesSection") loadDuesPage();
+  else if (sectionId === "providerSection") loadProviderPage();
+  else if (sectionId === "qrAuthSection") loadQrAuthLogPage();
 }
 
-//////////////////////////////////////////////////////////
-// 1) Student 목록 + 정렬 + 페이지네이션
-//////////////////////////////////////////////////////////
+function toggleAllCheckboxes(tableId, masterCheckbox) {
+  const checkboxes = document.querySelectorAll(
+    `#${tableId} tbody input[type='checkbox']`
+  );
+  checkboxes.forEach((chk) => (chk.checked = masterCheckbox.checked));
+}
+
+// -------------------- Student --------------------
 async function loadStudentPage() {
   try {
     const url = new URL(
@@ -102,34 +95,26 @@ function renderStudentTable(students) {
       <td contenteditable="true" data-field="name">${item.name}</td>
       <td>
         <select class="styled-dropdown" data-field="major">
-          <option value="PLATFORM" ${
-            item.major === "PLATFORM" ? "selected" : ""
-          }>PLATFORM</option>
-          <option value="AI" ${
-            item.major === "AI" ? "selected" : ""
-          }>AI</option>
-          <option value="GLOBAL" ${
-            item.major === "GLOBAL" ? "selected" : ""
-          }>GLOBAL</option>
-          <option value="NONE" ${
-            item.major === "NONE" ? "selected" : ""
-          }>NONE</option>
+          ${["PLATFORM", "AI", "GLOBAL", "NONE"]
+            .map(
+              (m) =>
+                `<option value="${m}" ${
+                  item.major === m ? "selected" : ""
+                }>${m}</option>`
+            )
+            .join("")}
         </select>
       </td>
       <td>
         <select class="styled-dropdown" data-field="role">
-          <option value="ROLE_STUDENT" ${
-            item.role === "ROLE_STUDENT" ? "selected" : ""
-          }>ROLE_STUDENT</option>
-          <option value="ROLE_EXECUTIVE" ${
-            item.role === "ROLE_EXECUTIVE" ? "selected" : ""
-          }>ROLE_EXECUTIVE</option>
-          <option value="ROLE_FINANCE" ${
-            item.role === "ROLE_FINANCE" ? "selected" : ""
-          }>ROLE_FINANCE</option>
-          <option value="ROLE_ADMIN" ${
-            item.role === "ROLE_ADMIN" ? "selected" : ""
-          }>ROLE_ADMIN</option>
+          ${["ROLE_STUDENT", "ROLE_EXECUTIVE", "ROLE_FINANCE", "ROLE_ADMIN"]
+            .map(
+              (r) =>
+                `<option value="${r}" ${
+                  item.role === r ? "selected" : ""
+                }>${r}</option>`
+            )
+            .join("")}
         </select>
       </td>
       <td>X</td>
@@ -140,57 +125,21 @@ function renderStudentTable(students) {
 }
 
 function renderStudentPagination() {
-  const container = document.getElementById("studentPagination");
-  container.innerHTML = "";
-
-  const total = studentTotalPages;
-  const current = studentPage;
-
-  // 이전 버튼
-  if (current > 0) {
-    const prevBtn = document.createElement("button");
-    prevBtn.textContent = "<";
-    prevBtn.classList.add("pageButton");
-    prevBtn.onclick = () => {
-      studentPage = current - 1;
+  renderPagination(
+    "studentPagination",
+    studentPage,
+    studentTotalPages,
+    (page) => {
+      studentPage = page;
       loadStudentPage();
-    };
-    container.appendChild(prevBtn);
-  }
-
-  // 5개 단위 표시
-  const start = Math.floor(current / 5) * 5;
-  for (let i = start; i < start + 5 && i < total; i++) {
-    const pageBtn = document.createElement("button");
-    pageBtn.textContent = i + 1;
-    pageBtn.classList.add("pageButton");
-    if (i === current) {
-      pageBtn.classList.add("active");
     }
-    pageBtn.onclick = () => {
-      studentPage = i;
-      loadStudentPage();
-    };
-    container.appendChild(pageBtn);
-  }
-
-  // 다음 버튼
-  if (start + 5 < total) {
-    const nextBtn = document.createElement("button");
-    nextBtn.textContent = ">";
-    nextBtn.classList.add("pageButton");
-    nextBtn.onclick = () => {
-      studentPage = start + 5;
-      loadStudentPage();
-    };
-    container.appendChild(nextBtn);
-  }
+  );
 }
 
 function sortStudent(field) {
-  if (studentSortBy === field) {
+  if (studentSortBy === field)
     studentSortDirection = studentSortDirection === "asc" ? "desc" : "asc";
-  } else {
+  else {
     studentSortBy = field;
     studentSortDirection = "asc";
   }
@@ -198,9 +147,7 @@ function sortStudent(field) {
   loadStudentPage();
 }
 
-//////////////////////////////////////////////////////////
-// 2) Dues 목록
-//////////////////////////////////////////////////////////
+// -------------------- Dues --------------------
 async function loadDuesPage() {
   try {
     const url = new URL(`${contextPath}/manage/dues`, window.location.origin);
@@ -212,7 +159,7 @@ async function loadDuesPage() {
     const res = await fetch(url);
     if (!res.ok) throw new Error("회비 목록 조회 실패");
     const data = await res.json();
-    const pageData = data.data; // Page<DuesListResponse>
+    const pageData = data.data;
 
     renderDuesTable(pageData.content);
     duesTotalPages = pageData.totalPages;
@@ -250,54 +197,16 @@ function renderDuesTable(duesArr) {
 }
 
 function renderDuesPagination() {
-  const container = document.getElementById("duesPagination");
-  container.innerHTML = "";
-
-  const total = duesTotalPages;
-  const current = duesPage;
-
-  if (current > 0) {
-    const prevBtn = document.createElement("button");
-    prevBtn.textContent = "<";
-    prevBtn.classList.add("pageButton");
-    prevBtn.onclick = () => {
-      duesPage = current - 1;
-      loadDuesPage();
-    };
-    container.appendChild(prevBtn);
-  }
-
-  const start = Math.floor(current / 5) * 5;
-  for (let i = start; i < start + 5 && i < total; i++) {
-    const pageBtn = document.createElement("button");
-    pageBtn.textContent = i + 1;
-    pageBtn.classList.add("pageButton");
-    if (i === current) {
-      pageBtn.classList.add("active");
-    }
-    pageBtn.onclick = () => {
-      duesPage = i;
-      loadDuesPage();
-    };
-    container.appendChild(pageBtn);
-  }
-
-  if (start + 5 < total) {
-    const nextBtn = document.createElement("button");
-    nextBtn.textContent = ">";
-    nextBtn.classList.add("pageButton");
-    nextBtn.onclick = () => {
-      duesPage = start + 5;
-      loadDuesPage();
-    };
-    container.appendChild(nextBtn);
-  }
+  renderPagination("duesPagination", duesPage, duesTotalPages, (page) => {
+    duesPage = page;
+    loadDuesPage();
+  });
 }
 
 function sortDues(field) {
-  if (duesSortBy === field) {
+  if (duesSortBy === field)
     duesSortDirection = duesSortDirection === "asc" ? "desc" : "asc";
-  } else {
+  else {
     duesSortBy = field;
     duesSortDirection = "asc";
   }
@@ -305,12 +214,9 @@ function sortDues(field) {
   loadDuesPage();
 }
 
-//////////////////////////////////////////////////////////
-// 3) Provider 목록
-//////////////////////////////////////////////////////////
+// -------------------- Provider --------------------
 async function loadProviderPage() {
   try {
-    // GET /providers?sortBy=...&direction=...&page=...
     const url = new URL(
       `${contextPath}/manage/providers`,
       window.location.origin
@@ -323,7 +229,7 @@ async function loadProviderPage() {
     const res = await fetch(url);
     if (!res.ok) throw new Error("Provider 목록 조회 실패");
     const data = await res.json();
-    const pageData = data.data; // Page<ProviderResponse>
+    const pageData = data.data;
 
     renderProviderTable(pageData.content);
     providerTotalPages = pageData.totalPages;
@@ -361,418 +267,124 @@ function renderProviderTable(arr) {
 }
 
 function renderProviderPagination() {
-  const container = document.getElementById("providerPagination");
-  container.innerHTML = "";
-
-  const total = providerTotalPages;
-  const current = providerPage;
-
-  if (current > 0) {
-    const prevBtn = document.createElement("button");
-    prevBtn.textContent = "<";
-    prevBtn.classList.add("pageButton");
-    prevBtn.onclick = () => {
-      providerPage = current - 1;
+  renderPagination(
+    "providerPagination",
+    providerPage,
+    providerTotalPages,
+    (page) => {
+      providerPage = page;
       loadProviderPage();
-    };
-    container.appendChild(prevBtn);
-  }
-
-  const start = Math.floor(current / 5) * 5;
-  for (let i = start; i < start + 5 && i < total; i++) {
-    const pageBtn = document.createElement("button");
-    pageBtn.textContent = i + 1;
-    pageBtn.classList.add("pageButton");
-    if (i === current) {
-      pageBtn.classList.add("active");
     }
-    pageBtn.onclick = () => {
-      providerPage = i;
-      loadProviderPage();
-    };
-    container.appendChild(pageBtn);
-  }
-
-  if (start + 5 < total) {
-    const nextBtn = document.createElement("button");
-    nextBtn.textContent = ">";
-    nextBtn.classList.add("pageButton");
-    nextBtn.onclick = () => {
-      providerPage = start + 5;
-      loadProviderPage();
-    };
-    container.appendChild(nextBtn);
-  }
+  );
 }
 
 function sortProvider(field) {
-  if (providerSortBy === field) {
+  if (providerSortBy === field)
     providerSortDirection = providerSortDirection === "asc" ? "desc" : "asc";
-  } else {
+  else {
     providerSortBy = field;
     providerSortDirection = "asc";
   }
   providerPage = 0;
-  loadProviderPage().then((r) => console.log(r));
+  loadProviderPage();
 }
 
-//////////////////////////////////////////////////////////
-// 공통 함수
-//////////////////////////////////////////////////////////
-function closeModal(modalId) {
-  document.getElementById(modalId).style.display = "none";
+// -------------------- QR Auth Log --------------------
+async function loadQrAuthLogPage() {
+  try {
+    const url = new URL(
+      `${contextPath}/manage/qr-auth`,
+      window.location.origin
+    );
+    url.searchParams.set("sortBy", qrAuthLogSortBy);
+    url.searchParams.set("direction", qrAuthLogSortDirection);
+    url.searchParams.set("page", qrAuthLogPage);
+    url.searchParams.set("size", qrAuthLogSize);
+
+    const res = await fetch(url);
+    if (!res.ok) throw new Error("QR-Auth 로그 조회 실패");
+    const data = await res.json();
+    const pageData = data.data;
+
+    renderQrAuthLogTable(pageData.content);
+    qrAuthLogTotalPages = pageData.totalPages;
+    renderQrAuthLogPagination();
+  } catch (err) {
+    console.error(err);
+    alert("QR-Auth 로그 로딩 오류");
+  }
 }
 
-function toggleAllCheckboxes(tableId, masterCheckbox) {
-  const table = document.getElementById(tableId);
-  const checkboxes = table.querySelectorAll('tbody input[type="checkbox"]');
-  checkboxes.forEach((chk) => {
-    chk.checked = masterCheckbox.checked;
+function renderQrAuthLogTable(logs) {
+  const tbody = document.querySelector("#qrAuthLogTable tbody");
+  tbody.innerHTML = "";
+
+  logs.forEach((item) => {
+    const tr = document.createElement("tr");
+    tr.setAttribute("data-qr-auth-log-id", item.qrAuthLogId);
+    tr.innerHTML = `
+      <td><input type="checkbox"></td>
+      <td>${item.qrAuthLogId}</td>
+      <td>${item.scanDate}</td>
+      <td>${item.studentNumber}</td>
+      <td>${item.studentName}</td>
+      <td>${item.duesPaid ? "true" : "false"}</td>
+      <td>${item.scannedBy}</td>
+    `;
+    tbody.appendChild(tr);
   });
 }
 
-//////////////////////////////////////////////////////////
-// 아래는 CREATE/UPDATE/DELETE 로직 (기존과 동일)
-//////////////////////////////////////////////////////////
-
-// ========== Student ==========
-function openStudentModal() {
-  document.getElementById("newStudentNumber").value = "";
-  document.getElementById("newStudentName").value = "";
-  document.getElementById("newStudentMajor").value = "PLATFORM";
-  document.getElementById("newStudentRole").value = "ROLE_STUDENT";
-
-  document.getElementById("studentModal").style.display = "block";
-}
-
-async function createStudent() {
-  const studentNumber = document
-    .getElementById("newStudentNumber")
-    .value.trim();
-  const name = document.getElementById("newStudentName").value.trim();
-  const major = document.getElementById("newStudentMajor").value;
-  const role = document.getElementById("newStudentRole").value;
-
-  if (!studentNumber || !name) {
-    alert("학번, 이름을 모두 입력해주세요.");
-    return;
-  }
-
-  try {
-    const response = await fetch(`${contextPath}/manage/students`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ studentNumber, name, major, role }),
-    });
-    if (!response.ok) {
-      const errorData = await response.json();
-      alert(`[학생 추가 실패]\n${errorData.msg || "에러"}`);
-      return;
+function renderQrAuthLogPagination() {
+  renderPagination(
+    "qrAuthLogPagination",
+    qrAuthLogPage,
+    qrAuthLogTotalPages,
+    (page) => {
+      qrAuthLogPage = page;
+      loadQrAuthLogPage();
     }
-    alert("학생이 추가되었습니다.");
-    closeModal("studentModal");
-    loadStudentPage();
-  } catch (e) {
-    console.error(e);
-    alert("추가 도중 오류가 발생했습니다.");
-  }
-}
-
-async function updateStudent(button) {
-  const row = button.closest("tr");
-  const studentId = row.getAttribute("data-student-id"); // 실제 ID 필요
-
-  const studentNumber = row
-    .querySelector("[data-field='studentNumber']")
-    .innerText.trim();
-  const name = row.querySelector("[data-field='name']").innerText.trim();
-  const major = row.querySelector("[data-field='major']").value;
-  const role = row.querySelector("[data-field='role']").value;
-
-  try {
-    const response = await fetch(
-      `${contextPath}/manage/students/${studentId}`,
-      {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ studentNumber, name, major, role }),
-      }
-    );
-    if (!response.ok) {
-      const errorData = await response.json();
-      alert(`[학생 수정 실패]\n${errorData.msg || "에러"}`);
-      return;
-    }
-    alert("학생 정보가 수정되었습니다.");
-  } catch (e) {
-    console.error(e);
-    alert("수정 도중 오류가 발생했습니다.");
-  }
-}
-
-async function deleteSelectedStudents() {
-  const checkboxes = document.querySelectorAll(
-    "#studentTable tbody input[type='checkbox']:checked"
   );
-  if (checkboxes.length === 0) {
-    alert("선택된 항목이 없습니다.");
-    return;
-  }
-  if (!confirm("정말 삭제하시겠습니까?")) return;
-
-  for (const chk of checkboxes) {
-    const row = chk.closest("tr");
-    const studentId = row.getAttribute("data-student-id");
-    try {
-      const res = await fetch(`${contextPath}/manage/students/${studentId}`, {
-        method: "DELETE",
-      });
-      if (!res.ok) {
-        const errorData = await res.json();
-        alert(`[학생 삭제 실패]\n${errorData.msg || "에러"}`);
-      } else {
-        row.remove();
-      }
-    } catch (e) {
-      console.error(e);
-      alert("삭제 도중 오류가 발생했습니다.");
-    }
-  }
-  alert("선택된 학생이 삭제되었습니다.");
 }
 
-// ========== Dues ==========
-function openDuesModal() {
-  document.getElementById("duesStudentId").value = "";
-  document.getElementById("depositorName").value = "";
-  document.getElementById("amount").value = "";
-  document.getElementById("remainingSemesters").value = "";
-  document.getElementById("submittedAt").value = "";
-
-  document.getElementById("duesModal").style.display = "block";
+function sortQrAuthLog(field) {
+  if (qrAuthLogSortBy === field)
+    qrAuthLogSortDirection = qrAuthLogSortDirection === "asc" ? "desc" : "asc";
+  else {
+    qrAuthLogSortBy = field;
+    qrAuthLogSortDirection = "asc";
+  }
+  qrAuthLogPage = 0;
+  loadQrAuthLogPage();
 }
 
-async function createDues() {
-  const studentId = document.getElementById("duesStudentId").value.trim();
-  const depositorName = document.getElementById("depositorName").value.trim();
-  const amount = Number(document.getElementById("amount").value.trim());
-  const remainingSemesters = Number(
-    document.getElementById("remainingSemesters").value.trim()
-  );
-  const submittedAt = document.getElementById("submittedAt").value;
+function renderPagination(containerId, currentPage, totalPages, onClickPage) {
+  const container = document.getElementById(containerId);
+  container.innerHTML = "";
+  const start = Math.floor(currentPage / 5) * 5;
 
-  if (
-    !studentId ||
-    !depositorName ||
-    !amount ||
-    !remainingSemesters ||
-    !submittedAt
-  ) {
-    alert("필수 정보를 모두 입력해주세요.");
-    return;
+  if (currentPage > 0) {
+    const prevBtn = document.createElement("button");
+    prevBtn.textContent = "<";
+    prevBtn.classList.add("pageButton");
+    prevBtn.onclick = () => onClickPage(currentPage - 1);
+    container.appendChild(prevBtn);
   }
 
-  try {
-    const response = await fetch(`${contextPath}/manage/dues`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        studentId: Number(studentId),
-        depositorName,
-        amount,
-        remainingSemesters,
-        submittedAt,
-      }),
-    });
-    if (!response.ok) {
-      const errorData = await response.json();
-      alert(`[회비 납부 추가 실패]\n${errorData.msg || "에러"}`);
-      return;
-    }
-    alert("회비 납부 정보가 추가되었습니다.");
-    closeModal("duesModal");
-    loadDuesPage();
-  } catch (e) {
-    console.error(e);
-    alert("추가 도중 오류가 발생했습니다.");
-  }
-}
-
-async function updateDues(button) {
-  const row = button.closest("tr");
-  const duesId = row.getAttribute("data-dues-id");
-  const depositorName = row
-    .querySelector("[data-field='depositorName']")
-    .innerText.trim();
-  const amount = row.querySelector("[data-field='amount']").innerText.trim();
-  const remainingSemesters = row
-    .querySelector("[data-field='remainingSemesters']")
-    .innerText.trim();
-
-  try {
-    const response = await fetch(`${contextPath}/manage/dues/${duesId}`, {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        depositorName,
-        amount: Number(amount),
-        remainingSemesters: Number(remainingSemesters),
-      }),
-    });
-    if (!response.ok) {
-      const errorData = await response.json();
-      alert(`[회비 납부 내역 수정 실패]\n${errorData.msg || "에러"}`);
-      return;
-    }
-    alert("회비 납부 정보가 수정되었습니다.");
-  } catch (e) {
-    console.error(e);
-    alert("수정 도중 오류가 발생했습니다.");
-  }
-}
-
-async function deleteSelectedDues() {
-  const checkboxes = document.querySelectorAll(
-    "#duesTable tbody input[type='checkbox']:checked"
-  );
-  if (checkboxes.length === 0) {
-    alert("선택된 항목이 없습니다.");
-    return;
-  }
-  if (!confirm("정말 삭제하시겠습니까?")) return;
-
-  for (const chk of checkboxes) {
-    const row = chk.closest("tr");
-    const duesId = row.getAttribute("data-dues-id");
-    try {
-      const res = await fetch(`${contextPath}/manage/dues/${duesId}`, {
-        method: "DELETE",
-      });
-      if (!res.ok) {
-        const errorData = await res.json();
-        alert(`[회비 납부 내역 삭제 실패]\n${errorData.msg || "에러"}`);
-      } else {
-        row.remove();
-      }
-    } catch (e) {
-      console.error(e);
-      alert("삭제 도중 오류가 발생했습니다.");
-    }
-  }
-  alert("선택된 회비 납부 내역이 삭제되었습니다.");
-}
-
-// ========== Provider ==========
-function openProviderModal() {
-  document.getElementById("newProviderEmail").value = "";
-  document.getElementById("newProviderName").value = "";
-  document.getElementById("newProviderKey").value = "";
-  document.getElementById("newProviderStudentId").value = "";
-
-  document.getElementById("providerModal").style.display = "block";
-}
-
-async function createProvider() {
-  const email = document.getElementById("newProviderEmail").value.trim();
-  const providerName = document.getElementById("newProviderName").value.trim();
-  const providerKey = document.getElementById("newProviderKey").value.trim();
-  const studentId = document
-    .getElementById("newProviderStudentId")
-    .value.trim();
-
-  if (!email || !providerName || !providerKey) {
-    alert("필수 정보(Email, Provider Name, Provider Key)를 입력해주세요.");
-    return;
+  for (let i = start; i < start + 5 && i < totalPages; i++) {
+    const pageBtn = document.createElement("button");
+    pageBtn.textContent = i + 1;
+    pageBtn.classList.add("pageButton");
+    if (i === currentPage) pageBtn.classList.add("active");
+    pageBtn.onclick = () => onClickPage(i);
+    container.appendChild(pageBtn);
   }
 
-  try {
-    const response = await fetch(`${contextPath}/manage/providers`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        email,
-        providerName,
-        providerKey,
-        studentId: studentId ? Number(studentId) : null,
-      }),
-    });
-    if (!response.ok) {
-      const errorData = await response.json();
-      alert(`[Provider 추가 실패]\n${errorData.msg || "에러"}`);
-      return;
-    }
-    alert("Provider가 추가되었습니다.");
-    closeModal("providerModal");
-    loadProviderPage();
-  } catch (e) {
-    console.error(e);
-    alert("추가 도중 오류가 발생했습니다.");
+  if (start + 5 < totalPages) {
+    const nextBtn = document.createElement("button");
+    nextBtn.textContent = ">";
+    nextBtn.classList.add("pageButton");
+    nextBtn.onclick = () => onClickPage(start + 5);
+    container.appendChild(nextBtn);
   }
-}
-
-async function updateProvider(button) {
-  const row = button.closest("tr");
-  const providerId = row.getAttribute("data-provider-id");
-  const email = row.querySelector("[data-field='email']").innerText.trim();
-  const providerName = row
-    .querySelector("[data-field='providerName']")
-    .innerText.trim();
-  const providerKey = row
-    .querySelector("[data-field='providerKey']")
-    .innerText.trim();
-  const studentIdStr = row
-    .querySelector("[data-field='studentId']")
-    .innerText.trim();
-  const studentId = studentIdStr ? Number(studentIdStr) : null;
-
-  try {
-    const response = await fetch(
-      `${contextPath}/manage/providers/${providerId}`,
-      {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, providerName, providerKey, studentId }),
-      }
-    );
-    if (!response.ok) {
-      const errorData = await response.json();
-      alert(`[Provider 수정 실패]\n${errorData.msg || "에러"}`);
-      return;
-    }
-    alert("Provider 정보가 수정되었습니다.");
-  } catch (e) {
-    console.error(e);
-    alert("수정 도중 오류가 발생했습니다.");
-  }
-}
-
-async function deleteSelectedProviders() {
-  const checkboxes = document.querySelectorAll(
-    "#providerTable tbody input[type='checkbox']:checked"
-  );
-  if (checkboxes.length === 0) {
-    alert("선택된 항목이 없습니다.");
-    return;
-  }
-  if (!confirm("정말 삭제하시겠습니까?")) return;
-
-  for (const chk of checkboxes) {
-    const row = chk.closest("tr");
-    const providerId = row.getAttribute("data-provider-id");
-    try {
-      const res = await fetch(`${contextPath}/manage/providers/${providerId}`, {
-        method: "DELETE",
-      });
-      if (!res.ok) {
-        const errorData = await res.json();
-        alert(`[Provider 삭제 실패]\n${errorData.msg || "에러"}`);
-      } else {
-        row.remove();
-      }
-    } catch (e) {
-      console.error(e);
-      alert("삭제 도중 오류가 발생했습니다.");
-    }
-  }
-  alert("선택된 Provider가 삭제되었습니다.");
 }
