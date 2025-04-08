@@ -11,6 +11,19 @@
             </div>
         </div>
 
+        <div class="qrOptionRow" style="margin-bottom: 1rem;">
+            <label for="duesSearchColumn">검색 컬럼:</label>
+            <select id="duesSearchColumn" class="styled-dropdown" style="width: 150px;">
+                <option value="">전체</option>
+                <option value="studentNumber">학번</option>
+                <option value="name">이름</option>
+                <option value="depositorName">입금자명</option>
+            </select>
+            <label for="duesSearchKeyword">키워드:</label>
+            <input type="text" id="duesSearchKeyword" placeholder="검색어 입력">
+            <button class="addButton" style="padding: 0.4rem 0.8rem;" onclick="searchDues()">검색</button>
+        </div>
+
         <div class="table-responsive">
             <table class="tableStyled" id="duesTable">
                 <thead>

@@ -11,6 +11,20 @@
             </div>
         </div>
 
+        <div class="qrOptionRow" style="margin-bottom: 1rem;">
+            <label for="studentSearchColumn">검색 컬럼:</label>
+            <select id="studentSearchColumn" class="styled-dropdown" style="width: 150px;">
+                <option value="">전체</option>
+                <option value="studentNumber">학번</option>
+                <option value="name">이름</option>
+                <option value="major">전공</option>
+                <option value="role">권한</option>
+            </select>
+            <label for="studentSearchKeyword">키워드:</label>
+            <input type="text" id="studentSearchKeyword" placeholder="검색어 입력">
+            <button class="addButton" style="padding: 0.4rem 0.8rem;" onclick="searchStudent()">검색</button>
+        </div>
+
         <div class="table-responsive">
             <table class="tableStyled" id="studentTable">
                 <thead>
@@ -42,12 +56,10 @@
                         <th class="col-edit">수정</th>
                     </tr>
                 </thead>
-                <!-- tbody는 JS에서 동적으로 생성/삽입 -->
                 <tbody></tbody>
             </table>
         </div>
 
-        <!-- 페이지네이션을 표시할 영역 -->
         <div class="paginationContainer" id="studentPagination"></div>
     </div>
 </body>

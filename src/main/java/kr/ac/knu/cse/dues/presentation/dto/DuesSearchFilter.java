@@ -8,4 +8,7 @@ import lombok.Setter;
 public class DuesSearchFilter {
 	private String sortBy = "duesId";
 	private String direction = "asc";
+
+	private String searchColumn;
+	private String searchKeyword;
 }

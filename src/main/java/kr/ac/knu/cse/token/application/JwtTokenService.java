@@ -114,7 +114,7 @@ public class JwtTokenService {
 			.provider(provider)
 			.student(provider.getStudent())
 			.build();
-
+		log.info("[JwtTokenService] email : {}", email);
 		return new UsernamePasswordAuthenticationToken(principalDetails, "", principalDetails.getAuthorities());
 	}
 }

@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+
+<body>
+    <div class="sectionBlock" id="qrAuthSection" style="display:none;" th:fragment="qrAuthSection">
+        <div class="sectionHeader">
+            <h3>QR-Auth 로그</h3>
+            <div class="sectionActions">
+                <button class="deleteButtonGlobal" onclick="deleteSelectedQrAuthLogs()">선택 삭제</button>
+                <button class="addButton" onclick="window.location.href='/auth/qr-auth'">
+                    실시간 스캔 화면
+                </button>
+            </div>
+        </div>
+
+        <div class="qrOptionRow" style="margin-bottom: 1rem;">
+            <label for="qrAuthSearchColumn">검색 컬럼:</label>
+            <select id="qrAuthSearchColumn" class="styled-dropdown" style="width: 150px;">
+                <option value="">전체</option>
+                <option value="studentNumber">학번</option>
+                <option value="studentName">이름</option>
+                <option value="scannedBy">스캔한 계정</option>
+            </select>
+            <label for="qrAuthSearchKeyword">키워드:</label>
+            <input type="text" id="qrAuthSearchKeyword" placeholder="검색어 입력">
+            <button class="addButton" style="padding: 0.4rem 0.8rem;" onclick="searchQrAuthLog()">검색</button>
+        </div>
+
+        <div class="table-responsive">
+            <table class="tableStyled" id="qrAuthLogTable">
+                <thead>
+                    <tr>
+                        <th class="col-checkbox">
+                            <input type="checkbox" onclick="toggleAllCheckboxes('qrAuthLogTable', this)">
+                        </th>
+                        <th>ID
+                            <button class="sortBtn" onclick="sortQrAuthLog('qrAuthLogId')">↕</button>
+                        </th>
+                        <th>scanDate
+                            <button class="sortBtn" onclick="sortQrAuthLog('scanDate')">↕</button>
+                        </th>
+                        <th>studentNumber
+                            <button class="sortBtn" onclick="sortQrAuthLog('studentNumber')">↕</button>
+                        </th>
+                        <th>studentName
+                            <button class="sortBtn" onclick="sortQrAuthLog('studentName')">↕</button>
+                        </th>
+                        <th>duesPaid
+                            <button class="sortBtn" onclick="sortQrAuthLog('duesPaid')">↕</button>
+                        </th>
+                        <th>scannedBy
+                            <button class="sortBtn" onclick="sortQrAuthLog('scannedBy')">↕</button>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+        <div class="paginationContainer" id="qrAuthLogPagination"></div>
+    </div>
+</body>
+
+</html>

@@ -8,4 +8,7 @@ import lombok.Setter;
 public class ProviderSearchFilter {
 	private String sortBy = "email";
 	private String direction = "asc";
+
+	private String searchColumn;
+	private String searchKeyword;
 }

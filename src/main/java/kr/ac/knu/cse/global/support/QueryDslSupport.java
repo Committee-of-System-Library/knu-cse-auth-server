@@ -1,5 +1,22 @@
 package kr.ac.knu.cse.global.support;
 
+import static com.querydsl.core.types.Order.*;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Function;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.SliceImpl;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.support.PageableExecutionUtils;
+import org.springframework.stereotype.Repository;
+import org.springframework.util.Assert;
+
 import com.querydsl.core.types.Order;
 import com.querydsl.jpa.JPQLTemplates;
 import com.querydsl.jpa.impl.JPAQuery;
@@ -7,18 +24,6 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 
 import jakarta.annotation.PostConstruct;
 import jakarta.persistence.EntityManager;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.*;
-import org.springframework.data.support.PageableExecutionUtils;
-import org.springframework.stereotype.Repository;
-import org.springframework.util.Assert;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.function.Function;
-
-import static com.querydsl.core.types.Order.ASC;
-import static com.querydsl.core.types.Order.DESC;
 
 /**
  * QueryDsl 5.x 버전에 맞춘 QueryDsl 지원 라이브러리

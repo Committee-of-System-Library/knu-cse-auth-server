@@ -8,21 +8,24 @@ public record StudentResponse(
     String studentNumber,
     String name,
     String major,
-    String role
+    String role,
+    boolean hasDues
 ) {
     public static StudentResponse of(
-        final Long studentId,
-        final String studentNumber,
-        final String name,
-        final Major major,
-        final Role role
+        Long studentId,
+        String studentNumber,
+        String name,
+        Major major,
+        Role role,
+        boolean hasDues
     ) {
         return new StudentResponse(
             studentId,
-                studentNumber,
-                name,
-                major.name(),
-                role.name()
+            studentNumber,
+            name,
+            major.name(),
+            role.name(),
+            hasDues
         );
     }
 }
