@@ -1,6 +1,7 @@
 package kr.ac.knu.cse.global.exception.security;
 
 import java.io.IOException;
+import java.net.URLEncoder;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.AuthenticationException;
@@ -38,7 +39,7 @@ public class RestAuthenticationEntryPoint implements AuthenticationEntryPoint {
 		if (isHtmlRequest) {
 			String fullURL = request.getRequestURL().toString();
 
-			String encodedUrl = java.net.URLEncoder.encode(fullURL, java.nio.charset.StandardCharsets.UTF_8);
+			String encodedUrl = URLEncoder.encode(fullURL, java.nio.charset.StandardCharsets.UTF_8);
 			String redirectPath = "/auth/login?redirectUrl=" + encodedUrl;
 
 			response.sendRedirect(redirectPath);

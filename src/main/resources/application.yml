@@ -31,3 +31,5 @@ app:
     allowed-redirects:
       - "https://dev.knucse.site/auth/manage"
       - "http://localhost:8080/auth/manage"
+      - "https://dev.knucse.site/auth/qr-auth"
+      - "http://localhost:8080/auth/manage"
