@@ -2,64 +2,64 @@
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 
 <body>
-<div class="sectionBlock" id="providerSection" style="display:none;" th:fragment="providerSection">
-    <div class="sectionHeader">
-        <h3>Provider 목록</h3>
-        <div class="sectionActions">
-            <button class="addButton" onclick="openProviderModal()">+ Provider 추가</button>
-            <button class="deleteButtonGlobal" onclick="deleteSelectedProviders()">선택 삭제</button>
+    <div class="sectionBlock" id="providerSection" style="display:none;" th:fragment="providerSection">
+        <div class="sectionHeader">
+            <h3>Provider 목록</h3>
+            <div class="sectionActions">
+                <button class="addButton" onclick="openProviderModal()">+ Provider 추가</button>
+                <button class="deleteButtonGlobal" onclick="deleteSelectedProviders()">선택 삭제</button>
+            </div>
         </div>
-    </div>
 
-    <div class="qrOptionRow" style="margin-bottom: 1rem;">
-        <label for="providerSearchColumn">검색 컬럼:</label>
-        <select id="providerSearchColumn" class="styled-dropdown" style="width: 150px;">
-            <option value="">전체</option>
-            <option value="email">이메일</option>
-            <option value="providerName">Provider Name</option>
-            <option value="providerKey">Provider Key</option>
-        </select>
-        <label for="providerSearchKeyword">키워드:</label>
-        <input type="text" id="providerSearchKeyword" placeholder="검색어 입력">
-        <button class="addButton" style="padding: 0.4rem 0.8rem;" onclick="searchProvider()">검색</button>
-    </div>
+        <div class="qrOptionRow" style="margin-bottom: 1rem;">
+            <label for="providerSearchColumn">검색 컬럼:</label>
+            <select id="providerSearchColumn" class="styled-dropdown" style="width: 150px;">
+                <option value="">전체</option>
+                <option value="email">이메일</option>
+                <option value="providerName">Provider Name</option>
+                <option value="providerKey">Provider Key</option>
+            </select>
+            <label for="providerSearchKeyword">키워드:</label>
+            <input type="text" id="providerSearchKeyword" placeholder="검색어 입력">
+            <button class="addButton" style="padding: 0.4rem 0.8rem;" onclick="searchProvider()">검색</button>
+        </div>
 
-    <div class="table-responsive">
-        <table class="tableStyled" id="providerTable">
-            <thead>
-            <tr>
-                <th class="col-checkbox">
-                    <input onclick="toggleAllCheckboxes('providerTable', this)" type="checkbox">
-                </th>
-                <th class="col-id">
-                    ID
-                    <button class="sortBtn" onclick="sortProvider('id')">↕</button>
-                </th>
-                <th class="col-email">
-                    Email
-                    <button class="sortBtn" onclick="sortProvider('email')">↕</button>
-                </th>
-                <th class="col-provider-name">
-                    ProviderName
-                    <button class="sortBtn" onclick="sortProvider('providerName')">↕</button>
-                </th>
-                <th class="col-provider-key">
-                    ProviderKey
-                    <button class="sortBtn" onclick="sortProvider('providerKey')">↕</button>
-                </th>
-                <th class="col-student-id">
-                    연결된 Student ID
-                    <button class="sortBtn" onclick="sortProvider('studentId')">↕</button>
-                </th>
-                <th class="col-edit">수정</th>
-            </tr>
-            </thead>
-            <tbody></tbody>
-        </table>
-    </div>
+        <div class="table-responsive">
+            <table class="tableStyled" id="providerTable">
+                <thead>
+                    <tr>
+                        <th class="col-checkbox">
+                            <input onclick="toggleAllCheckboxes('providerTable', this)" type="checkbox">
+                        </th>
+                        <th class="col-id">
+                            ID
+                            <button class="sortBtn" onclick="sortProvider('id')">↕</button>
+                        </th>
+                        <th class="col-email">
+                            Email
+                            <button class="sortBtn" onclick="sortProvider('email')">↕</button>
+                        </th>
+                        <th class="col-provider-name">
+                            ProviderName
+                            <button class="sortBtn" onclick="sortProvider('providerName')">↕</button>
+                        </th>
+                        <th class="col-provider-key">
+                            ProviderKey
+                            <button class="sortBtn" onclick="sortProvider('providerKey')">↕</button>
+                        </th>
+                        <th class="col-student-id">
+                            연결된 Student ID
+                            <button class="sortBtn" onclick="sortProvider('studentId')">↕</button>
+                        </th>
+                        <th class="col-edit">수정</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
 
-    <div class="paginationContainer" id="providerPagination"></div>
-</div>
+        <div class="paginationContainer" id="providerPagination"></div>
+    </div>
 </body>
 
 </html>
