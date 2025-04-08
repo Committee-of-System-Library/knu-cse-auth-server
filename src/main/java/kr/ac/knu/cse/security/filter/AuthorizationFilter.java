@@ -75,16 +75,13 @@ public class AuthorizationFilter extends GenericFilterBean {
 			SecurityContextHolder.getContext().setAuthentication(authentication);
 		} catch (ExpiredJwtException e) {
 			log.error("[AuthorizationFilter] 토큰 만료: {}", e.getMessage());
-			servletResponse.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Token expired");
-			return;
+			SecurityContextHolder.clearContext();
 		} catch (JwtException e) {
 			log.error("[AuthorizationFilter] 토큰 파싱 오류: {}", e.getMessage());
-			servletResponse.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Invalid token");
-			return;
+			SecurityContextHolder.clearContext();
 		} catch (Exception e) {
 			log.error("[AuthorizationFilter] 토큰 검사 중 예외 발생: {}", e.getMessage());
-			servletResponse.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Token error");
-			return;
+			SecurityContextHolder.clearContext();
 		}
 
 		chain.doFilter(request, response);

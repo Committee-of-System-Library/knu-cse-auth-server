@@ -11,6 +11,19 @@
             </div>
         </div>
 
+        <div class="qrOptionRow" style="margin-bottom: 1rem;">
+            <label for="providerSearchColumn">검색 컬럼:</label>
+            <select id="providerSearchColumn" class="styled-dropdown" style="width: 150px;">
+                <option value="">전체</option>
+                <option value="email">이메일</option>
+                <option value="providerName">Provider Name</option>
+                <option value="providerKey">Provider Key</option>
+            </select>
+            <label for="providerSearchKeyword">키워드:</label>
+            <input type="text" id="providerSearchKeyword" placeholder="검색어 입력">
+            <button class="addButton" style="padding: 0.4rem 0.8rem;" onclick="searchProvider()">검색</button>
+        </div>
+
         <div class="table-responsive">
             <table class="tableStyled" id="providerTable">
                 <thead>
