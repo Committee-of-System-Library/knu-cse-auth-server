@@ -1,24 +1,23 @@
 package kr.ac.knu.cse.provider.persistence;
 
-import static com.querydsl.core.types.Order.*;
-import static kr.ac.knu.cse.provider.domain.QProvider.*;
-
-import java.util.List;
-
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Repository;
-
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.Tuple;
 import com.querydsl.core.types.Order;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.ComparableExpressionBase;
-
 import kr.ac.knu.cse.global.support.QueryDslSupport;
 import kr.ac.knu.cse.provider.presentation.dto.ProviderResponse;
 import kr.ac.knu.cse.provider.presentation.dto.ProviderSearchFilter;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Repository;
+
+import java.util.List;
+
+import static com.querydsl.core.types.Order.ASC;
+import static com.querydsl.core.types.Order.DESC;
+import static kr.ac.knu.cse.provider.domain.QProvider.provider;
 
 @Repository
 @RequiredArgsConstructor

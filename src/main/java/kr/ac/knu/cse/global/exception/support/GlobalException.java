@@ -1,8 +1,7 @@
 package kr.ac.knu.cse.global.exception.support;
 
-import org.springframework.http.HttpStatus;
-
 import lombok.Getter;
+import org.springframework.http.HttpStatus;
 
 @Getter
 public class GlobalException extends RuntimeException {

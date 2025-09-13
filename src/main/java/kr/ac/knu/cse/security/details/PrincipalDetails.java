@@ -1,17 +1,16 @@
 package kr.ac.knu.cse.security.details;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-
+import kr.ac.knu.cse.provider.domain.Provider;
+import kr.ac.knu.cse.student.domain.Student;
+import lombok.Builder;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 
-import kr.ac.knu.cse.provider.domain.Provider;
-import kr.ac.knu.cse.student.domain.Student;
-import lombok.Builder;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
 
 @Builder
 public record PrincipalDetails(

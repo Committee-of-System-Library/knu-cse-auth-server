@@ -1,12 +1,14 @@
 package kr.ac.knu.cse.token.domain;
 
-import jakarta.validation.constraints.NotNull;
-import lombok.Builder;
+import lombok.Getter;
 
-@Builder
-public record Token(
-	@NotNull String grantType,
-	@NotNull TokenType tokenType,
-	@NotNull String value
-) {
+@Getter
+public class Token {
+	private final String type;
+	private final String value;
+	
+	public Token(String type, String value) {
+		this.type = type;
+		this.value = value;
+	}
 }

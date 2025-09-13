@@ -1,6 +1,5 @@
 server:
-  servlet:
-    context-path: /auth
+  port: 40001
 
 spring:
   profiles:
@@ -23,13 +22,14 @@ app:
     secret: ${JWT_SECRET}
     bearer-type: ${JWT_BEARER_TYPE}
     auth-header: ${JWT_AUTH_HEADER}
-    expiration:
-      access: ${JWT_ACCESS_TOKEN_EXPIRE_TIME}
-      refresh: ${JWT_REFRESH_TOKEN_EXPIRE_TIME}
+    expiration: ${JWT_ACCESS_TOKEN_EXPIRE_TIME}
+
+  frontend: # Frontend URL Configuration
+    base-url: ${FRONTEND_BASE_URL}
 
   access-control: # Login redirect allowed domains
     allowed-redirects:
-      - "http://dev.knucse.site/auth/manage"
-      - "http://localhost:8080/auth/manage"
-      - "http://dev.knucse.site/auth/qr-auth"
-      - "http://localhost:8080/auth/manage"
+      - "http://lcoalhost:5173/admin"
+      - "https://chcse.knu.ac.kr/auth"
+      - "http://localhost:5173"
+      - "http://localhost:3000"

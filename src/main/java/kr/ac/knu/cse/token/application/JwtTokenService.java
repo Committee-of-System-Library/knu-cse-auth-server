@@ -1,31 +1,28 @@
 package kr.ac.knu.cse.token.application;
 
-import java.nio.charset.StandardCharsets;
-import java.util.Date;
-import java.util.Map;
-
-import javax.crypto.SecretKey;
-import javax.crypto.spec.SecretKeySpec;
-
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.stereotype.Service;
-
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
 import jakarta.annotation.PostConstruct;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import kr.ac.knu.cse.global.properties.JwtProperties;
 import kr.ac.knu.cse.provider.domain.Provider;
-import kr.ac.knu.cse.provider.excpetion.ProviderNotFoundException;
+import kr.ac.knu.cse.provider.exception.ProviderNotFoundException;
 import kr.ac.knu.cse.provider.persistence.ProviderRepository;
 import kr.ac.knu.cse.security.details.PrincipalDetails;
 import kr.ac.knu.cse.token.domain.Token;
-import kr.ac.knu.cse.token.domain.TokenType;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.stereotype.Service;
+
+import javax.crypto.SecretKey;
+import javax.crypto.spec.SecretKeySpec;
+import java.nio.charset.StandardCharsets;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 @Service
 @Slf4j
@@ -43,40 +40,43 @@ public class JwtTokenService {
 		);
 	}
 
-	public Token generateToken(Authentication authentication, TokenType type) {
-		if (type == TokenType.ACCESS_TOKEN) {
-			return doGenerateToken(authentication, TokenType.ACCESS_TOKEN);
-		} else if (type == TokenType.REFRESH_TOKEN) {
-			return doGenerateToken(authentication, TokenType.REFRESH_TOKEN);
-		}
-
-		throw new IllegalArgumentException("Unsupported token type: " + type);
+	public Token generateToken(Authentication authentication) {
+		return doGenerateToken(authentication);
 	}
 
-	private Token doGenerateToken(Authentication jwtAuthentication, TokenType type) {
+	private Token doGenerateToken(Authentication jwtAuthentication) {
 		String token = Jwts.builder()
-			.header().add(buildHeader(type)).and()
+			.header().add(buildHeader()).and()
 			.claims(buildPayload(jwtAuthentication))
-			.expiration(buildExpiration(jwtProperties.getExpiration(type)))
+			.expiration(buildExpiration(jwtProperties.getExpiration()))
 			.signWith(signKey)
 			.compact();
 
-		return new Token(jwtProperties.getBearerType(), type, token);
+		return new Token(jwtProperties.getBearerType(), token);
 	}
 
-	private Map<String, Object> buildHeader(TokenType type) {
+	private Map<String, Object> buildHeader() {
 		return Map.of(
 			"typ", "JWT",
-			"cat", type.name(),
 			"alg", "HS256",
 			"regDate", System.currentTimeMillis()
 		);
 	}
 
 	private Map<String, Object> buildPayload(Authentication authentication) {
-		return Map.of(
-			"email", authentication.getName()
-		);
+		PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
+
+		Map<String, Object> payload = new HashMap<>();
+		payload.put("email", authentication.getName());
+		payload.put("role", principalDetails.student() != null ?
+			principalDetails.student().getRole().name() : "GUEST");
+
+		// studentId는 null일 수 있으므로 조건부로 추가
+		if (principalDetails.student() != null) {
+			payload.put("studentId", principalDetails.student().getStudentNumber());
+		}
+		
+		return payload;
 	}
 
 	private Date buildExpiration(Integer expirationSeconds) {
@@ -94,17 +94,22 @@ public class JwtTokenService {
 	public String extractEmail(Jws<Claims> claimsJws) {
 		return claimsJws.getPayload().get("email", String.class);
 	}
+	
+	public String extractRole(Jws<Claims> claimsJws) {
+		return claimsJws.getPayload().get("role", String.class);
+	}
+	
+	public String extractStudentId(Jws<Claims> claimsJws) {
+		return claimsJws.getPayload().get("studentId", String.class);
+	}
 
-	public String resolveToken(HttpServletRequest request, String cookieName) {
-		Cookie[] cookies = request.getCookies();
-		if (cookies != null) {
-			for (Cookie cookie : cookies) {
-				if (cookie.getName().equals(cookieName)) {
-					return cookie.getValue();
-				}
-			}
-		}
-		return null;
+	public String resolveToken(HttpServletRequest request) {
+        String bearerToken = request.getHeader("Authorization");
+        if (bearerToken != null && bearerToken.startsWith("Bearer ")) {
+            return bearerToken.substring(7);
+        }
+        return null;
+
 	}
 
 	public Authentication getAuthentication(String email) {
@@ -113,6 +118,7 @@ public class JwtTokenService {
 		PrincipalDetails principalDetails = PrincipalDetails.builder()
 			.provider(provider)
 			.student(provider.getStudent())
+			.attributes(null)
 			.build();
 		log.info("[JwtTokenService] email : {}", email);
 		return new UsernamePasswordAuthenticationToken(principalDetails, "", principalDetails.getAuthorities());

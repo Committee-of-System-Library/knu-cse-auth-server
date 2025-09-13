@@ -26,6 +26,10 @@ spring:
         default_batch_fetch_size: 20
         dialect: org.hibernate.dialect.MySQLDialect
 
+app:
+  frontend:
+    base-url: https://chcse.knu.ac.kr/auth
+
 logging:
   level:
     kr.ac.knu.cse: DEBUG

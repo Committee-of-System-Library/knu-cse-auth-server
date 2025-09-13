@@ -1,8 +1,5 @@
 package kr.ac.knu.cse.global.config;
 
-import java.util.Arrays;
-import java.util.List;
-
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -10,25 +7,52 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
+import java.util.Arrays;
+import java.util.List;
+
 @Configuration
 public class CorsConfig {
 
 	@Bean
-	CorsConfigurationSource corsConfigurationSource() {
+	public CorsConfigurationSource corsConfigurationSource() {
 		CorsConfiguration configuration = new CorsConfiguration();
-		configuration.setAllowedOrigins(Arrays.asList(
-			"https://dev.knucse.site",
-			"http://localhost:5173"
+		
+		// 허용할 Origin 설정
+		configuration.setAllowedOriginPatterns(Arrays.asList(
+			"http://localhost:5173",
+			"https://chcse.knu.ac.kr"
 		));
+		
+		// 허용할 HTTP 메서드
 		configuration.setAllowedMethods(Arrays.asList(
 			HttpMethod.GET.name(),
 			HttpMethod.POST.name(),
 			HttpMethod.PATCH.name(),
 			HttpMethod.PUT.name(),
-			HttpMethod.DELETE.name()
+			HttpMethod.DELETE.name(),
+			HttpMethod.OPTIONS.name()
 		));
+		
+		// 허용할 헤더 (보안상 구체적으로 명시)
+		configuration.setAllowedHeaders(Arrays.asList(
+			"Authorization",
+			"Content-Type",
+			"X-Requested-With",
+			"Accept",
+			"Origin",
+			"Cache-Control"
+		));
+
+		// Exposed 헤더 설정
+		configuration.setExposedHeaders(List.of(
+                "Authorization"
+        ));
+		
+		// 자격 증명 허용 (쿠키 등)
 		configuration.setAllowCredentials(true);
-		configuration.setAllowedHeaders(List.of("*"));
+		
+		// preflight 요청 캐시 시간 (초)
+		configuration.setMaxAge(3600L);
 
 		UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
 		source.registerCorsConfiguration("/**", configuration);

@@ -20,4 +20,4 @@ WORKDIR /app
 COPY --from=builder /app/build/libs/*.jar /app.jar
 
 # 실행
-ENTRYPOINT ["java", "-Duser.timezone=GMT+9", "-Djava.security.egd=file:/dev/./urandom", "-Dspring.profiles.active=prod", "-jar", "/app.jar"]
+ENTRYPOINT ["java", "-Duser.timezone=GMT+9", "-Djava.security.egd=file:/dev/./urandom", "-Dspring.profiles.active=prod-profile", "-jar", "/app.jar"]

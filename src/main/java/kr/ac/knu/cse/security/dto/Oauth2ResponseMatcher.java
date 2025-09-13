@@ -1,9 +1,8 @@
 package kr.ac.knu.cse.security.dto;
 
+import kr.ac.knu.cse.security.dto.google.GoogleResponseDto;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Component;
-
-import kr.ac.knu.cse.security.dto.google.GoogleResponseDto;
 
 @Component
 public class Oauth2ResponseMatcher {

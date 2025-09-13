@@ -1,9 +1,8 @@
 package kr.ac.knu.cse.global.exception.support.business;
 
-import org.springframework.http.HttpStatus;
-
 import kr.ac.knu.cse.global.exception.support.GlobalException;
 import lombok.Getter;
+import org.springframework.http.HttpStatus;
 
 @Getter
 public abstract class ApplicationLogicException extends GlobalException {

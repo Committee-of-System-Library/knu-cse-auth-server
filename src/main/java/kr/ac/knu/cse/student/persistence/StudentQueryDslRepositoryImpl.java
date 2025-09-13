@@ -1,15 +1,5 @@
 package kr.ac.knu.cse.student.persistence;
 
-import static com.querydsl.core.types.Order.*;
-import static kr.ac.knu.cse.dues.domain.QDues.*;
-import static kr.ac.knu.cse.student.domain.QStudent.*;
-
-import java.util.List;
-
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Repository;
-
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.Tuple;
 import com.querydsl.core.types.Expression;
@@ -18,13 +8,22 @@ import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.ComparableExpressionBase;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQuery;
-
 import kr.ac.knu.cse.global.support.QueryDslSupport;
 import kr.ac.knu.cse.student.domain.Major;
 import kr.ac.knu.cse.student.domain.Role;
 import kr.ac.knu.cse.student.presentation.dto.StudentResponse;
 import kr.ac.knu.cse.student.presentation.dto.StudentSearchFilter;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Repository;
+
+import java.util.List;
+
+import static com.querydsl.core.types.Order.ASC;
+import static com.querydsl.core.types.Order.DESC;
+import static kr.ac.knu.cse.dues.domain.QDues.dues;
+import static kr.ac.knu.cse.student.domain.QStudent.student;
 
 @Repository
 @RequiredArgsConstructor

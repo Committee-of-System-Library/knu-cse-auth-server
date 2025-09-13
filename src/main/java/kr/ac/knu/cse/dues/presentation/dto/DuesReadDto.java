@@ -1,10 +1,10 @@
 package kr.ac.knu.cse.dues.presentation.dto;
 
-import java.time.LocalDateTime;
-
 import kr.ac.knu.cse.dues.domain.Dues;
 import kr.ac.knu.cse.student.domain.Student;
 import lombok.Builder;
+
+import java.time.LocalDateTime;
 
 @Builder
 public record DuesReadDto(
