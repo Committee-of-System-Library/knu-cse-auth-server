@@ -70,9 +70,14 @@ Temporary Items
 *.icloud
 
 
-.env.*
 .env
+.env.*
 
 test.sh
 output.txt
 
+/data/h2db.*
+CLAUDE.md
+GEMINI.md
+.claude
+dummy-data.sql

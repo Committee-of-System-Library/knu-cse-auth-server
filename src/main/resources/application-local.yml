@@ -1,20 +1,25 @@
 server:
-  port: ${SPRING_PORT}
+  port: 40001
 
 spring:
   datasource:
-    url: jdbc:mysql://${DB_HOST}:${DB_PORT}/${DB_DATABASE}
-    username: ${DB_USERNAME}
-    password: ${DB_PASSWORD}
+    driver-class-name: org.h2.Driver
+    url: jdbc:h2:file:./data/h2db;MODE=MySQL;
+    username: sa
+    password: 1234
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
 
   flyway:
     enabled: true
-    baseline-on-migrate: true
 
   jpa:
+    database-platform: org.hibernate.dialect.MySQL8Dialect
     open-in-view: false
     hibernate:
-      ddl-auto: validate
+      ddl-auto: none
     properties:
       hibernate:
         show_sql: true
@@ -24,7 +29,6 @@ spring:
         jdbc:
           time_zone: Asia/Seoul
         default_batch_fetch_size: 20
-        dialect: org.hibernate.dialect.MySQLDialect
 
 logging:
   level:
@@ -32,6 +36,7 @@ logging:
     org:
       springframework:
         security: DEBUG
+        security.oauth2: TRACE
       type:
         descriptor:
           sql:

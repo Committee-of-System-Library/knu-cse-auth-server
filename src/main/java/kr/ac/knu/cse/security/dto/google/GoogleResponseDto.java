@@ -1,9 +1,9 @@
 package kr.ac.knu.cse.security.dto.google;
 
-import java.util.Map;
-
 import kr.ac.knu.cse.provider.domain.Provider;
 import kr.ac.knu.cse.security.dto.Oauth2ResponseDto;
+
+import java.util.Map;
 
 public class GoogleResponseDto implements Oauth2ResponseDto {
 

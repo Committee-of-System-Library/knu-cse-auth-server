@@ -1,9 +1,8 @@
 package kr.ac.knu.cse.global.api;
 
-import org.springframework.http.HttpStatus;
-
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+import org.springframework.http.HttpStatus;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public final class ApiResponse {

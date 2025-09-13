@@ -1,16 +1,18 @@
 package kr.ac.knu.cse.dues.application;
 
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import kr.ac.knu.cse.dues.application.dto.CreateDuesDto;
 import kr.ac.knu.cse.dues.application.dto.UpdateDuesDto;
 import kr.ac.knu.cse.dues.domain.Dues;
 import kr.ac.knu.cse.dues.exception.DuesNotFoundException;
 import kr.ac.knu.cse.dues.persistence.DuesRepository;
 import kr.ac.knu.cse.student.domain.Student;
+import kr.ac.knu.cse.student.exception.StudentNotFoundException;
 import kr.ac.knu.cse.student.persistence.StudentRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -22,7 +24,7 @@ public class DuesManageService {
 	@Transactional
 	public Long createDues(CreateDuesDto dto) {
 		Student student = studentRepository.findById(dto.studentId())
-			.orElseThrow(() -> new RuntimeException("STUDENT_NOT_FOUND"));
+			.orElseThrow(StudentNotFoundException::new);
 		Dues dues = Dues.builder()
 			.student(student)
 			.depositorName(dto.depositorName())
@@ -48,5 +50,10 @@ public class DuesManageService {
 			throw new DuesNotFoundException();
 		}
 		duesRepository.deleteById(id);
+	}
+
+	@Transactional
+	public void deleteDues(List<Long> ids) {
+		duesRepository.deleteAllById(ids);
 	}
 }

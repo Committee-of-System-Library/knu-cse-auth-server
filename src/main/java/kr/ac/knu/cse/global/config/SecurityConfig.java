@@ -1,5 +1,9 @@
 package kr.ac.knu.cse.global.config;
 
+import kr.ac.knu.cse.security.details.PrincipalDetailsOauthService;
+import kr.ac.knu.cse.security.filter.AuthorizationFilter;
+import kr.ac.knu.cse.security.handler.Oauth2SuccessHandler;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.access.hierarchicalroles.RoleHierarchy;
@@ -13,13 +17,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
-
-import kr.ac.knu.cse.global.exception.security.RestAccessDeniedHandler;
-import kr.ac.knu.cse.global.exception.security.RestAuthenticationEntryPoint;
-import kr.ac.knu.cse.security.details.PrincipalDetailsOauthService;
-import kr.ac.knu.cse.security.filter.AuthorizationFilter;
-import kr.ac.knu.cse.security.handler.Oauth2SuccessHandler;
-import lombok.RequiredArgsConstructor;
+import org.springframework.web.cors.CorsConfigurationSource;
 
 @Configuration
 @EnableWebSecurity
@@ -29,8 +27,7 @@ public class SecurityConfig {
 	private final PrincipalDetailsOauthService principalDetailsOauthService;
 	private final Oauth2SuccessHandler oauth2SuccessHandler;
 	private final AuthorizationFilter authorizationFilter;
-	private final RestAuthenticationEntryPoint restAuthenticationEntryPoint;
-	private final RestAccessDeniedHandler restAccessDeniedHandler;
+	private final CorsConfigurationSource corsConfigurationSource;
 
 	@Bean
 	public RoleHierarchy roleHierarchy() {
@@ -48,22 +45,22 @@ public class SecurityConfig {
 		HttpSecurity httpSecurity
 	) throws Exception {
 		httpSecurity
-			.cors(AbstractHttpConfigurer::disable)
+			.cors(cors -> cors.configurationSource(corsConfigurationSource))
 			.csrf(AbstractHttpConfigurer::disable)
 			.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 			.formLogin(AbstractHttpConfigurer::disable);
 
 		httpSecurity
-			.exceptionHandling(exception -> exception
-				.authenticationEntryPoint(restAuthenticationEntryPoint)
-				.accessDeniedHandler(restAccessDeniedHandler));
-
-		httpSecurity
 			.authorizeHttpRequests(request -> request
-				.requestMatchers(new AntPathRequestMatcher("/**")).permitAll()
+				.requestMatchers(
+					new AntPathRequestMatcher("/oauth2/**"),
+					new AntPathRequestMatcher("/additional-info/**"),
+					new AntPathRequestMatcher("/token"),
+					new AntPathRequestMatcher("/login"),
+					new AntPathRequestMatcher("/h2-console/**")
+				).permitAll()
 				.anyRequest().authenticated())
-			.addFilterBefore(authorizationFilter, UsernamePasswordAuthenticationFilter.class)
-			.httpBasic(AbstractHttpConfigurer::disable);
+			.addFilterBefore(authorizationFilter, UsernamePasswordAuthenticationFilter.class);
 
 		httpSecurity
 			.oauth2Login(oauth2 -> oauth2

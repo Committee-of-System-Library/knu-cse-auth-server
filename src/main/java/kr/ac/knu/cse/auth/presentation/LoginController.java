@@ -1,39 +1,57 @@
 package kr.ac.knu.cse.auth.presentation;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
+import kr.ac.knu.cse.global.properties.AppProperties;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import jakarta.servlet.http.HttpSession;
-import kr.ac.knu.cse.auth.exception.InvalidRedirectUrlException;
-import kr.ac.knu.cse.global.properties.AppProperties;
-import lombok.RequiredArgsConstructor;
+import java.io.IOException;
 
+@Slf4j
 @Controller
 @RequiredArgsConstructor
 public class LoginController {
+
 	private final AppProperties appProperties;
 
 	@GetMapping("/login")
-	public String showLoginPage(HttpSession session) {
-		session.removeAttribute("redirectUrl");
-		return "login";
+	public void login(
+		@RequestParam("redirectUrl") String redirectUrl,
+		HttpServletRequest request,
+		HttpServletResponse response
+	) throws IOException {
+		log.info("로그인 요청 - Redirect URL: {}", redirectUrl);
+
+		// redirect_url 유효성 검증
+		if (!isAllowedRedirectUrl(redirectUrl)) {
+			log.warn("허용되지 않은 Redirect URL: {}", redirectUrl);
+			response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid redirect URL");
+			return;
+		}
+
+		// 세션에 redirect URL 저장
+		HttpSession session = request.getSession();
+		session.setAttribute("redirectUrl", redirectUrl);
+		log.debug("세션에 Redirect URL 저장: {}", redirectUrl);
+
+		// Spring Security의 OAuth2 인증 시작 URL로 리다이렉트
+		String oauth2AuthUrl = "/oauth2/authorize/google";
+		log.info("Spring Security OAuth2 인증 URL로 리다이렉트: {}", oauth2AuthUrl);
+		response.sendRedirect(oauth2AuthUrl);
 	}
 
-	@GetMapping("/oauth2/login/google")
-	public String googleLogin(
-		@RequestParam(required = false) String redirectUrl,
-		HttpSession session
-	) {
+	private boolean isAllowedRedirectUrl(String redirectUrl) {
 		if (redirectUrl == null || redirectUrl.isBlank()) {
-			redirectUrl = "https://example.com";
+			return false;
 		}
 
-		if (!appProperties.getAllowedRedirects().contains(redirectUrl)) {
-			throw new InvalidRedirectUrlException();
-		}
-
-		session.setAttribute("redirectUrl", redirectUrl);
-		return "redirect:/oauth2/authorize/google";
+		return appProperties.getAllowedRedirects()
+			.stream()
+			.anyMatch(redirectUrl::startsWith);
 	}
 }

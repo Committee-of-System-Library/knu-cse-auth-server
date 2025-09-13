@@ -1,16 +1,15 @@
 package kr.ac.knu.cse.qr.application;
 
-import java.time.LocalDate;
-import java.util.List;
-
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import kr.ac.knu.cse.qr.application.dto.QrAuthLogDto;
 import kr.ac.knu.cse.qr.domain.QrAuthLog;
 import kr.ac.knu.cse.qr.persistence.QrAuthLogRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDate;
+import java.util.List;
 
 @Slf4j
 @Service

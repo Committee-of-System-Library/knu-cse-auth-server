@@ -1,10 +1,9 @@
 package kr.ac.knu.cse.student.persistence;
 
-import java.util.Optional;
-
+import kr.ac.knu.cse.student.domain.Student;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import kr.ac.knu.cse.student.domain.Student;
+import java.util.Optional;
 
 public interface StudentRepository extends JpaRepository<Student, Long>, StudentQueryDslRepository {
 

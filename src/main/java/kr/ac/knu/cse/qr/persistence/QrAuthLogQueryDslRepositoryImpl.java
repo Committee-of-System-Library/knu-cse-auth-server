@@ -1,23 +1,22 @@
 package kr.ac.knu.cse.qr.persistence;
 
-import static com.querydsl.core.types.Order.*;
-import static kr.ac.knu.cse.qr.domain.QQrAuthLog.*;
-
-import java.util.List;
-
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Repository;
-
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.Tuple;
 import com.querydsl.core.types.Order;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.ComparableExpressionBase;
-
 import kr.ac.knu.cse.global.support.QueryDslSupport;
 import kr.ac.knu.cse.qr.presentation.dto.QrAuthLogResponse;
 import kr.ac.knu.cse.qr.presentation.dto.QrAuthLogSearchFilter;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Repository;
+
+import java.util.List;
+
+import static com.querydsl.core.types.Order.ASC;
+import static com.querydsl.core.types.Order.DESC;
+import static kr.ac.knu.cse.qr.domain.QQrAuthLog.qrAuthLog;
 
 @Repository
 public class QrAuthLogQueryDslRepositoryImpl extends QueryDslSupport implements QrAuthLogQueryDslRepository {
