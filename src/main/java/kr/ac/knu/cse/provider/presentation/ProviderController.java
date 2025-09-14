@@ -10,6 +10,7 @@ import kr.ac.knu.cse.provider.presentation.dto.PostCreateProviderReq;
 import kr.ac.knu.cse.provider.presentation.dto.ProviderResponse;
 import kr.ac.knu.cse.provider.presentation.dto.ProviderSearchFilter;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -32,6 +33,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping("/providers")
 @PreAuthorize("hasRole('FINANCE')")
+@Slf4j
 public class ProviderController {
 
     private final ProviderRepository providerRepository;
@@ -42,7 +44,9 @@ public class ProviderController {
             @ModelAttribute final ProviderSearchFilter filter,
             final Pageable pageable
     ) {
+        log.info("Provider 목록 조회 요청 - 필터: {}, 페이지: {}", filter, pageable);
         Page<ProviderResponse> page = providerRepository.findProviders(filter, pageable);
+        log.info("Provider 목록 조회 완료 - 총 {}개", page.getTotalElements());
         return ResponseEntity.status(HttpStatus.OK)
                 .body(ApiResponse.success(HttpStatus.OK, page));
     }
@@ -51,7 +55,9 @@ public class ProviderController {
     public ResponseEntity<ApiSuccessResult<?>> createProvider(
             @Valid @RequestBody PostCreateProviderReq req
     ) {
+        log.info("Provider 생성 요청 - {}", req);
         Long id = providerService.createProvider(req);
+        log.info("Provider 생성 완료 - ID: {}", id);
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(ApiResponse.success(HttpStatus.CREATED, "Provider created with ID: " + id));
     }
@@ -61,7 +67,9 @@ public class ProviderController {
             @PathVariable Long id,
             @Valid @RequestBody PatchUpdateProviderReq req
     ) {
+        log.info("Provider 수정 요청 - ID: {}, {}", id, req);
         providerService.updateProvider(id, req);
+        log.info("Provider 수정 완료 - ID: {}", id);
         return ResponseEntity.ok(ApiResponse.success(HttpStatus.OK, "Provider updated"));
     }
 
@@ -69,7 +77,9 @@ public class ProviderController {
     public ResponseEntity<ApiSuccessResult<?>> deleteProviders(
             @RequestParam("ids") List<Long> ids
     ) {
+        log.info("Provider 삭제 요청 - ID 목록: {}", ids);
         providerService.deleteProviders(ids);
+        log.info("Provider 삭제 완료");
         return ResponseEntity.ok(ApiResponse.success(HttpStatus.OK, "Provider deleted."));
     }
 }
