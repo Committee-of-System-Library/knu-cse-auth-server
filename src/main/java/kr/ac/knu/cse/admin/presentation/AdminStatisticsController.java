@@ -24,6 +24,6 @@ public class AdminStatisticsController {
     public ResponseEntity<ApiSuccessResult<AdminStatisticsResponse>> getStatistics() {
         AdminStatisticsResponse statistics = adminStatisticsService.getStatistics();
         return ResponseEntity.status(HttpStatus.OK)
-            .body(ApiResponse.success(HttpStatus.OK, statistics));
+                .body(ApiResponse.success(HttpStatus.OK, statistics));
     }
 }

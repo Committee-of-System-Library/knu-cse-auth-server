@@ -1,13 +1,13 @@
 package kr.ac.knu.cse.client.presentation;
 
 import jakarta.validation.Valid;
-import kr.ac.knu.cse.global.api.ApiResponse;
-import kr.ac.knu.cse.global.api.ApiSuccessResult;
 import kr.ac.knu.cse.client.application.AuthClientService;
 import kr.ac.knu.cse.client.presentation.dto.AuthClientDetailResponse;
 import kr.ac.knu.cse.client.presentation.dto.AuthClientResponse;
 import kr.ac.knu.cse.client.presentation.dto.CreateClientRequest;
 import kr.ac.knu.cse.client.presentation.dto.UpdateClientRequest;
+import kr.ac.knu.cse.global.api.ApiResponse;
+import kr.ac.knu.cse.global.api.ApiSuccessResult;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -31,114 +31,114 @@ import java.util.List;
 @PreAuthorize("hasRole('ADMIN')")
 public class AuthClientManagementController {
 
-	private final AuthClientService authClientService;
+    private final AuthClientService authClientService;
 
-	@PostMapping
-	public ResponseEntity<ApiSuccessResult<Long>> createService(
-		@Valid @RequestBody CreateClientRequest request
-	) {
-		log.info("클라이언트 생성 요청 - ServiceName: {}", request.getClientName());
+    @PostMapping
+    public ResponseEntity<ApiSuccessResult<Long>> createService(
+            @Valid @RequestBody CreateClientRequest request
+    ) {
+        log.info("클라이언트 생성 요청 - ServiceName: {}", request.getClientName());
 
-		Long clientId = authClientService.createAuthClient(request);
+        Long clientId = authClientService.createAuthClient(request);
 
-		return ResponseEntity
-			.status(HttpStatus.CREATED)
-			.body(ApiResponse.success(HttpStatus.CREATED, clientId));
-	}
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(ApiResponse.success(HttpStatus.CREATED, clientId));
+    }
 
-	@GetMapping
-	public ResponseEntity<ApiSuccessResult<List<AuthClientResponse>>> getAllServices() {
-		List<AuthClientResponse> services = authClientService.getAllAuthClients();
+    @GetMapping
+    public ResponseEntity<ApiSuccessResult<List<AuthClientResponse>>> getAllServices() {
+        List<AuthClientResponse> services = authClientService.getAllAuthClients();
 
-		return ResponseEntity
-			.status(HttpStatus.OK)
-			.body(ApiResponse.success(HttpStatus.OK, services));
-	}
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(ApiResponse.success(HttpStatus.OK, services));
+    }
 
-	@GetMapping("/active")
-	public ResponseEntity<ApiSuccessResult<List<AuthClientResponse>>> getActiveServices() {
-		List<AuthClientResponse> activeServices = authClientService.getActiveAuthClients();
+    @GetMapping("/active")
+    public ResponseEntity<ApiSuccessResult<List<AuthClientResponse>>> getActiveServices() {
+        List<AuthClientResponse> activeServices = authClientService.getActiveAuthClients();
 
-		return ResponseEntity
-			.status(HttpStatus.OK)
-			.body(ApiResponse.success(HttpStatus.OK, activeServices));
-	}
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(ApiResponse.success(HttpStatus.OK, activeServices));
+    }
 
-	@GetMapping("/{clientId}")
-	public ResponseEntity<ApiSuccessResult<AuthClientDetailResponse>> getServiceDetail(
-		@PathVariable Long clientId
-	) {
+    @GetMapping("/{clientId}")
+    public ResponseEntity<ApiSuccessResult<AuthClientDetailResponse>> getServiceDetail(
+            @PathVariable Long clientId
+    ) {
         AuthClientDetailResponse serviceDetail = authClientService.getAuthClientDetail(clientId);
 
-		return ResponseEntity
-			.status(HttpStatus.OK)
-			.body(ApiResponse.success(HttpStatus.OK, serviceDetail));
-	}
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(ApiResponse.success(HttpStatus.OK, serviceDetail));
+    }
 
-	@PutMapping("/{clientId}")
-	public ResponseEntity<ApiSuccessResult<Void>> updateService(
-		@PathVariable Long clientId,
-		@Valid @RequestBody UpdateClientRequest request
-	) {
-		log.info("클라이언트 정보 수정 요청 - ClientId: {}, ServiceName: {}",
-			clientId, request.getClientName());
+    @PutMapping("/{clientId}")
+    public ResponseEntity<ApiSuccessResult<Void>> updateService(
+            @PathVariable Long clientId,
+            @Valid @RequestBody UpdateClientRequest request
+    ) {
+        log.info("클라이언트 정보 수정 요청 - ClientId: {}, ServiceName: {}",
+                clientId, request.getClientName());
 
-		authClientService.updateAuthClient(clientId, request);
+        authClientService.updateAuthClient(clientId, request);
 
-		return ResponseEntity
-			.status(HttpStatus.OK)
-			.body(ApiResponse.success(HttpStatus.OK));
-	}
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(ApiResponse.success(HttpStatus.OK));
+    }
 
-	@PostMapping("/{clientId}/regenerate-secret")
-	public ResponseEntity<ApiSuccessResult<Void>> regenerateSecret(
-		@PathVariable Long clientId
-	) {
-		log.info("JWT Secret 재생성 요청 - ClientId: {}", clientId);
+    @PostMapping("/{clientId}/regenerate-secret")
+    public ResponseEntity<ApiSuccessResult<Void>> regenerateSecret(
+            @PathVariable Long clientId
+    ) {
+        log.info("JWT Secret 재생성 요청 - ClientId: {}", clientId);
 
-		authClientService.regenerateSecret(clientId);
+        authClientService.regenerateSecret(clientId);
 
-		return ResponseEntity
-			.status(HttpStatus.OK)
-			.body(ApiResponse.success(HttpStatus.OK));
-	}
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(ApiResponse.success(HttpStatus.OK));
+    }
 
-	@PostMapping("/{clientId}/activate")
-	public ResponseEntity<ApiSuccessResult<Void>> activateService(
-		@PathVariable Long clientId
-	) {
-		log.info("클라이언트 활성화 요청 - ClientId: {}", clientId);
+    @PostMapping("/{clientId}/activate")
+    public ResponseEntity<ApiSuccessResult<Void>> activateService(
+            @PathVariable Long clientId
+    ) {
+        log.info("클라이언트 활성화 요청 - ClientId: {}", clientId);
 
-		authClientService.activateAuthClient(clientId);
+        authClientService.activateAuthClient(clientId);
 
-		return ResponseEntity
-			.status(HttpStatus.OK)
-			.body(ApiResponse.success(HttpStatus.OK));
-	}
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(ApiResponse.success(HttpStatus.OK));
+    }
 
-	@PostMapping("/{clientId}/deactivate")
-	public ResponseEntity<ApiSuccessResult<Void>> deactivateService(
-		@PathVariable Long clientId
-	) {
-		log.info("클라이언트 비활성화 요청 - ClientId: {}", clientId);
+    @PostMapping("/{clientId}/deactivate")
+    public ResponseEntity<ApiSuccessResult<Void>> deactivateService(
+            @PathVariable Long clientId
+    ) {
+        log.info("클라이언트 비활성화 요청 - ClientId: {}", clientId);
 
-		authClientService.deactivateAuthClient(clientId);
+        authClientService.deactivateAuthClient(clientId);
 
-		return ResponseEntity
-			.status(HttpStatus.OK)
-			.body(ApiResponse.success(HttpStatus.OK));
-	}
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(ApiResponse.success(HttpStatus.OK));
+    }
 
-	@DeleteMapping("/{clientId}")
-	public ResponseEntity<ApiSuccessResult<Void>> deleteService(
-		@PathVariable Long clientId
-	) {
-		log.info("클라이언트 삭제 요청 - ClientId: {}", clientId);
+    @DeleteMapping("/{clientId}")
+    public ResponseEntity<ApiSuccessResult<Void>> deleteService(
+            @PathVariable Long clientId
+    ) {
+        log.info("클라이언트 삭제 요청 - ClientId: {}", clientId);
 
-		authClientService.deleteAuthClient(clientId);
+        authClientService.deleteAuthClient(clientId);
 
-		return ResponseEntity
-			.status(HttpStatus.OK)
-			.body(ApiResponse.success(HttpStatus.OK));
-	}
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(ApiResponse.success(HttpStatus.OK));
+    }
 }

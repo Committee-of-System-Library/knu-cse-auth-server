@@ -35,42 +35,42 @@ import java.util.List;
 @PreAuthorize("hasRole('FINANCE')")
 public class DuesManageController {
 
-	private final DuesRepository duesRepository;
-	private final DuesManageService duesManageService;
+    private final DuesRepository duesRepository;
+    private final DuesManageService duesManageService;
 
-	@GetMapping
-	public ResponseEntity<ApiSuccessResult<Page<DuesListResponse>>> getDuesList(
-		@ModelAttribute DuesSearchFilter filter,
-		Pageable pageable
-	) {
-		Page<DuesListResponse> page = duesRepository.findDuesList(filter, pageable);
-		return ResponseEntity.status(HttpStatus.OK)
-			.body(ApiResponse.success(HttpStatus.OK, page));
-	}
+    @GetMapping
+    public ResponseEntity<ApiSuccessResult<Page<DuesListResponse>>> getDuesList(
+            @ModelAttribute DuesSearchFilter filter,
+            Pageable pageable
+    ) {
+        Page<DuesListResponse> page = duesRepository.findDuesList(filter, pageable);
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(ApiResponse.success(HttpStatus.OK, page));
+    }
 
-	@PostMapping
-	public ResponseEntity<ApiSuccessResult<?>> createDues(
-		@Valid @RequestBody CreateDuesPostReq requestBody
-	) {
-		Long id = duesManageService.createDues(DuesMapper.toCreateDuesDto(requestBody));
-		return ResponseEntity.status(HttpStatus.CREATED)
-			.body(ApiResponse.success(HttpStatus.CREATED, "Dues created with ID: " + id));
-	}
+    @PostMapping
+    public ResponseEntity<ApiSuccessResult<?>> createDues(
+            @Valid @RequestBody CreateDuesPostReq requestBody
+    ) {
+        Long id = duesManageService.createDues(DuesMapper.toCreateDuesDto(requestBody));
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(ApiResponse.success(HttpStatus.CREATED, "Dues created with ID: " + id));
+    }
 
-	@PatchMapping("/{id}")
-	public ResponseEntity<ApiSuccessResult<?>> updateDues(
-		@PathVariable Long id,
-		@Valid @RequestBody UpdateDuesPatchReq requestBody
-	) {
-		duesManageService.updateDues(id, DuesMapper.toUpdateDuesDto(requestBody));
-		return ResponseEntity.status(HttpStatus.OK)
-			.body(ApiResponse.success(HttpStatus.OK, "Dues updated"));
-	}
+    @PatchMapping("/{id}")
+    public ResponseEntity<ApiSuccessResult<?>> updateDues(
+            @PathVariable Long id,
+            @Valid @RequestBody UpdateDuesPatchReq requestBody
+    ) {
+        duesManageService.updateDues(id, DuesMapper.toUpdateDuesDto(requestBody));
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(ApiResponse.success(HttpStatus.OK, "Dues updated"));
+    }
 
-	@DeleteMapping
-	public ResponseEntity<ApiSuccessResult<?>> deleteDues(@RequestParam("ids") List<Long> ids) {
-		duesManageService.deleteDues(ids);
-		return ResponseEntity.status(HttpStatus.OK)
-			.body(ApiResponse.success(HttpStatus.OK, "선택된 납부 내역이 삭제되었습니다."));
-	}
+    @DeleteMapping
+    public ResponseEntity<ApiSuccessResult<?>> deleteDues(@RequestParam("ids") List<Long> ids) {
+        duesManageService.deleteDues(ids);
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(ApiResponse.success(HttpStatus.OK, "선택된 납부 내역이 삭제되었습니다."));
+    }
 }

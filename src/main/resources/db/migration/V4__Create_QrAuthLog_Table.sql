@@ -1,6 +1,6 @@
 CREATE TABLE qr_auth_log
 (
-    qr_auth_log_id             BIGINT       NOT NULL AUTO_INCREMENT,
+    qr_auth_log_id BIGINT       NOT NULL AUTO_INCREMENT,
     scan_date      DATE         NOT NULL,
     student_number VARCHAR(15)  NOT NULL,
     student_name   VARCHAR(50)  NOT NULL,

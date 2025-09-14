@@ -1,14 +1,14 @@
 -- 인증 클라이언트 테이블 생성
 CREATE TABLE auth_clients
 (
-    client_id           BIGINT       NOT NULL AUTO_INCREMENT,
-    client_name         VARCHAR(100) NOT NULL,
-    client_description  VARCHAR(500),
-    jwt_secret          VARCHAR(500) NOT NULL,
-    status              VARCHAR(20)  NOT NULL DEFAULT 'ACTIVE',
+    client_id          BIGINT       NOT NULL AUTO_INCREMENT,
+    client_name        VARCHAR(100) NOT NULL,
+    client_description VARCHAR(500),
+    jwt_secret         VARCHAR(500) NOT NULL,
+    status             VARCHAR(20)  NOT NULL DEFAULT 'ACTIVE',
 
-    created_at          TIMESTAMP    NOT NULL,
-    updated_at          TIMESTAMP    NOT NULL,
+    created_at         TIMESTAMP    NOT NULL,
+    updated_at         TIMESTAMP    NOT NULL,
 
     PRIMARY KEY (client_id),
     UNIQUE KEY uq_client_name (client_name)

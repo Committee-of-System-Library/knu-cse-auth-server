@@ -12,15 +12,15 @@ import org.springframework.web.servlet.ModelAndView;
 @ControllerAdvice
 public class GlobalExceptionHandler extends BaseExceptionHandler<GlobalException> {
 
-	@ExceptionHandler(GlobalException.class)
-	public Object handleCustomException(GlobalException exception, HttpServletRequest request) {
-		String accept = request.getHeader("Accept");
-		if (accept != null && accept.contains("application/json")) {
-			return handleException(exception, exception.getHttpStatus(), exception.getErrorMsg());
-		} else {
-			ModelAndView mav = new ModelAndView("error");
-			mav.addObject("errorMsg", exception.getErrorMsg());
-			return mav;
-		}
-	}
+    @ExceptionHandler(GlobalException.class)
+    public Object handleCustomException(GlobalException exception, HttpServletRequest request) {
+        String accept = request.getHeader("Accept");
+        if (accept != null && accept.contains("application/json")) {
+            return handleException(exception, exception.getHttpStatus(), exception.getErrorMsg());
+        } else {
+            ModelAndView mav = new ModelAndView("error");
+            mav.addObject("errorMsg", exception.getErrorMsg());
+            return mav;
+        }
+    }
 }

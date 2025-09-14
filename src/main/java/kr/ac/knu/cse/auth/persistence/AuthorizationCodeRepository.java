@@ -10,10 +10,10 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 
 public interface AuthorizationCodeRepository extends JpaRepository<AuthorizationCode, String> {
-	
-	Optional<AuthorizationCode> findByCodeAndUsedFalse(String code);
-	
-	@Modifying
-	@Query("DELETE FROM AuthorizationCode ac WHERE ac.expiresAt < :now")
-	void deleteExpiredCodes(@Param("now") LocalDateTime now);
+
+    Optional<AuthorizationCode> findByCodeAndUsedFalse(String code);
+
+    @Modifying
+    @Query("DELETE FROM AuthorizationCode ac WHERE ac.expiresAt < :now")
+    void deleteExpiredCodes(@Param("now") LocalDateTime now);
 }

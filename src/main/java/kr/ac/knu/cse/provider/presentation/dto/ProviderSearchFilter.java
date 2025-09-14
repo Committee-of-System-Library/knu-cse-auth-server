@@ -6,9 +6,9 @@ import lombok.Setter;
 @Getter
 @Setter
 public class ProviderSearchFilter {
-	private String sortBy = "email";
-	private String direction = "asc";
+    private String sortBy = "email";
+    private String direction = "asc";
 
-	private String searchColumn;
-	private String searchKeyword;
+    private String searchColumn;
+    private String searchKeyword;
 }

@@ -6,9 +6,9 @@ import lombok.Setter;
 @Getter
 @Setter
 public class DuesSearchFilter {
-	private String sortBy = "duesId";
-	private String direction = "asc";
+    private String sortBy = "duesId";
+    private String direction = "asc";
 
-	private String searchColumn;
-	private String searchKeyword;
+    private String searchColumn;
+    private String searchKeyword;
 }

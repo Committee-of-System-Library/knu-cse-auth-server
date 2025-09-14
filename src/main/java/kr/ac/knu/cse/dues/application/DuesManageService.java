@@ -18,42 +18,42 @@ import java.util.List;
 @RequiredArgsConstructor
 public class DuesManageService {
 
-	private final DuesRepository duesRepository;
-	private final StudentRepository studentRepository;
+    private final DuesRepository duesRepository;
+    private final StudentRepository studentRepository;
 
-	@Transactional
-	public Long createDues(CreateDuesDto dto) {
-		Student student = studentRepository.findById(dto.studentId())
-			.orElseThrow(StudentNotFoundException::new);
-		Dues dues = Dues.builder()
-			.student(student)
-			.depositorName(dto.depositorName())
-			.amount(dto.amount())
-			.remainingSemesters(dto.remainingSemesters())
-			.submittedAt(dto.submittedAt())
-			.build();
-		duesRepository.save(dues);
-		return dues.getId();
-	}
+    @Transactional
+    public Long createDues(CreateDuesDto dto) {
+        Student student = studentRepository.findById(dto.studentId())
+                .orElseThrow(StudentNotFoundException::new);
+        Dues dues = Dues.builder()
+                .student(student)
+                .depositorName(dto.depositorName())
+                .amount(dto.amount())
+                .remainingSemesters(dto.remainingSemesters())
+                .submittedAt(dto.submittedAt())
+                .build();
+        duesRepository.save(dues);
+        return dues.getId();
+    }
 
-	@Transactional
-	public void updateDues(Long id, UpdateDuesDto dto) {
-		Dues dues = duesRepository.findById(id)
-			.orElseThrow(DuesNotFoundException::new);
-		dues.updateDuesInfo(dto.depositorName(), dto.amount(), dto.remainingSemesters());
-		duesRepository.save(dues);
-	}
+    @Transactional
+    public void updateDues(Long id, UpdateDuesDto dto) {
+        Dues dues = duesRepository.findById(id)
+                .orElseThrow(DuesNotFoundException::new);
+        dues.updateDuesInfo(dto.depositorName(), dto.amount(), dto.remainingSemesters());
+        duesRepository.save(dues);
+    }
 
-	@Transactional
-	public void deleteDues(Long id) {
-		if (!duesRepository.existsById(id)) {
-			throw new DuesNotFoundException();
-		}
-		duesRepository.deleteById(id);
-	}
+    @Transactional
+    public void deleteDues(Long id) {
+        if (!duesRepository.existsById(id)) {
+            throw new DuesNotFoundException();
+        }
+        duesRepository.deleteById(id);
+    }
 
-	@Transactional
-	public void deleteDues(List<Long> ids) {
-		duesRepository.deleteAllById(ids);
-	}
+    @Transactional
+    public void deleteDues(List<Long> ids) {
+        duesRepository.deleteAllById(ids);
+    }
 }

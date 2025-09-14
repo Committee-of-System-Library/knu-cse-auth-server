@@ -23,63 +23,63 @@ import lombok.NoArgsConstructor;
 @Table(name = "provider")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Provider extends BaseEntity {
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "provider_id")
-	private Long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "provider_id")
+    private Long id;
 
-	@Email
-	@NotNull
-	@Column(
-		name = "email",
-		nullable = false,
-		unique = true
-	)
-	private String email;
+    @Email
+    @NotNull
+    @Column(
+            name = "email",
+            nullable = false,
+            unique = true
+    )
+    private String email;
 
-	@NotNull
-	@Column(
-		name = "provider_name",
-		nullable = false
-	)
-	private String providerName;
+    @NotNull
+    @Column(
+            name = "provider_name",
+            nullable = false
+    )
+    private String providerName;
 
-	@NotNull
-	@Column(
-		name = "provider_key",
-		nullable = false
-	)
-	private String providerKey;
+    @NotNull
+    @Column(
+            name = "provider_key",
+            nullable = false
+    )
+    private String providerKey;
 
-	@OneToOne(fetch = FetchType.LAZY)
-	@JoinColumn(
-		name = "student_id",
-		nullable = true
-	)
-	private Student student;
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(
+            name = "student_id",
+            nullable = true
+    )
+    private Student student;
 
-	@Builder
-	public Provider(
-		final String email,
-		final String providerName,
-		final String providerKey
-	) {
-		this.email = email;
-		this.providerName = providerName;
-		this.providerKey = providerKey;
-	}
+    @Builder
+    public Provider(
+            final String email,
+            final String providerName,
+            final String providerKey
+    ) {
+        this.email = email;
+        this.providerName = providerName;
+        this.providerKey = providerKey;
+    }
 
-	public void connectStudent(Student student) {
-		this.student = student;
-	}
+    public void connectStudent(Student student) {
+        this.student = student;
+    }
 
-	public void updateProviderInfo(String email, String providerName, String providerKey) {
-		this.email = email;
-		this.providerName = providerName;
-		this.providerKey = providerKey;
-	}
+    public void updateProviderInfo(String email, String providerName, String providerKey) {
+        this.email = email;
+        this.providerName = providerName;
+        this.providerKey = providerKey;
+    }
 
-	public void disconnectStudent() {
-		this.student = null;
-	}
+    public void disconnectStudent() {
+        this.student = null;
+    }
 }

@@ -14,31 +14,31 @@ import java.util.Map;
 
 @Builder
 public record PrincipalDetails(
-	Student student,
-	Provider provider,
-	Map<String, Object> attributes
+        Student student,
+        Provider provider,
+        Map<String, Object> attributes
 ) implements OAuth2User {
-	@Override
-	public Collection<? extends GrantedAuthority> getAuthorities() {
-		List<GrantedAuthority> authorities = new ArrayList<>();
-		if (student != null && student.getRole() != null) {
-			authorities.add(new SimpleGrantedAuthority(student.getRole().name()));
-		} else {
-			authorities.add(new SimpleGrantedAuthority("ROLE_ANONYMOUS"));
-		}
-		return authorities;
-	}
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        List<GrantedAuthority> authorities = new ArrayList<>();
+        if (student != null && student.getRole() != null) {
+            authorities.add(new SimpleGrantedAuthority(student.getRole().name()));
+        } else {
+            authorities.add(new SimpleGrantedAuthority("ROLE_ANONYMOUS"));
+        }
+        return authorities;
+    }
 
-	@Override
-	public String getName() {
-		if (provider != null && provider.getEmail() != null) {
-			return provider.getEmail();
-		}
-		return null;
-	}
+    @Override
+    public String getName() {
+        if (provider != null && provider.getEmail() != null) {
+            return provider.getEmail();
+        }
+        return null;
+    }
 
-	@Override
-	public Map<String, Object> getAttributes() {
-		return this.attributes;
-	}
+    @Override
+    public Map<String, Object> getAttributes() {
+        return this.attributes;
+    }
 }

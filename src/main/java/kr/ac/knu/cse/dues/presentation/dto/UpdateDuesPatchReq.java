@@ -6,15 +6,15 @@ import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.PositiveOrZero;
 
 public record UpdateDuesPatchReq(
-	@NotBlank(message = "Depositor name is required")
-	String depositorName,
+        @NotBlank(message = "Depositor name is required")
+        String depositorName,
 
-	@NotNull(message = "Amount is required")
-	@Positive(message = "Amount must be positive")
-	Integer amount,
+        @NotNull(message = "Amount is required")
+        @Positive(message = "Amount must be positive")
+        Integer amount,
 
-	@NotNull(message = "Remaining semesters is required")
-	@PositiveOrZero(message = "Remaining semesters must be zero or positive")
-	Integer remainingSemesters
+        @NotNull(message = "Remaining semesters is required")
+        @PositiveOrZero(message = "Remaining semesters must be zero or positive")
+        Integer remainingSemesters
 ) {
 }

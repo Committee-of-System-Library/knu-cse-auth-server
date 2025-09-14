@@ -19,42 +19,42 @@ import java.util.List;
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class StudentService {
-	private final StudentRepository studentRepository;
+    private final StudentRepository studentRepository;
 
-	public Student getStudentByStudentNumber(String studentNumber) {
-		return studentRepository.findByStudentNumber(studentNumber)
-			.orElseThrow(StudentNotFoundException::new);
-	}
+    public Student getStudentByStudentNumber(String studentNumber) {
+        return studentRepository.findByStudentNumber(studentNumber)
+                .orElseThrow(StudentNotFoundException::new);
+    }
 
-	public Page<StudentResponse> getStudents(StudentSearchFilter filter, Pageable pageable) {
-		return studentRepository.findStudents(filter, pageable);
-	}
+    public Page<StudentResponse> getStudents(StudentSearchFilter filter, Pageable pageable) {
+        return studentRepository.findStudents(filter, pageable);
+    }
 
-	@Transactional
-	public Long saveStudent(SaveStudentDto dto) {
-		Student student = dto.of();
-		studentRepository.save(student);
-		return student.getId();
-	}
+    @Transactional
+    public Long saveStudent(SaveStudentDto dto) {
+        Student student = dto.of();
+        studentRepository.save(student);
+        return student.getId();
+    }
 
-	@Transactional
-	public void updateStudent(Long id, UpdateStudentDto dto) {
-		Student student = studentRepository.findById(id)
-			.orElseThrow(StudentNotFoundException::new);
-		student.updateStudentInfo(dto.studentNumber(), dto.name(), dto.major(), dto.role());
-		studentRepository.save(student);
-	}
+    @Transactional
+    public void updateStudent(Long id, UpdateStudentDto dto) {
+        Student student = studentRepository.findById(id)
+                .orElseThrow(StudentNotFoundException::new);
+        student.updateStudentInfo(dto.studentNumber(), dto.name(), dto.major(), dto.role());
+        studentRepository.save(student);
+    }
 
-	@Transactional
-	public void deleteStudent(Long id) {
-		if (!studentRepository.existsById(id)) {
-			throw new StudentNotFoundException();
-		}
-		studentRepository.deleteById(id);
-	}
+    @Transactional
+    public void deleteStudent(Long id) {
+        if (!studentRepository.existsById(id)) {
+            throw new StudentNotFoundException();
+        }
+        studentRepository.deleteById(id);
+    }
 
-	@Transactional
-	public void deleteStudents(List<Long> ids) {
-		studentRepository.deleteAllById(ids);
-	}
+    @Transactional
+    public void deleteStudents(List<Long> ids) {
+        studentRepository.deleteAllById(ids);
+    }
 }

@@ -18,69 +18,69 @@ import java.util.List;
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class ProviderService {
-	private final ProviderRepository providerRepository;
-	private final StudentRepository studentRepository;
+    private final ProviderRepository providerRepository;
+    private final StudentRepository studentRepository;
 
-	@Transactional
-	public Provider loadOrSaveProvider(Oauth2ResponseDto oauth2ResponseDto) {
-		return providerRepository.findByEmail(oauth2ResponseDto.getEmail())
-			.orElseGet(() -> providerRepository.save(oauth2ResponseDto.toEntity()));
-	}
+    @Transactional
+    public Provider loadOrSaveProvider(Oauth2ResponseDto oauth2ResponseDto) {
+        return providerRepository.findByEmail(oauth2ResponseDto.getEmail())
+                .orElseGet(() -> providerRepository.save(oauth2ResponseDto.toEntity()));
+    }
 
-	@Transactional
-	public void connectStudent(String email, Student student) {
-		Provider provider = providerRepository.findByEmail(email)
-			.orElseThrow(ProviderNotFoundException::new);
-		provider.connectStudent(student);
-	}
+    @Transactional
+    public void connectStudent(String email, Student student) {
+        Provider provider = providerRepository.findByEmail(email)
+                .orElseThrow(ProviderNotFoundException::new);
+        provider.connectStudent(student);
+    }
 
-	@Transactional
-	public Long createProvider(PostCreateProviderReq req) {
-		Provider provider = Provider.builder()
-			.email(req.email())
-			.providerName(req.providerName())
-			.providerKey(req.providerKey())
-			.build();
+    @Transactional
+    public Long createProvider(PostCreateProviderReq req) {
+        Provider provider = Provider.builder()
+                .email(req.email())
+                .providerName(req.providerName())
+                .providerKey(req.providerKey())
+                .build();
 
-		if (req.studentId() != null) {
-			Student student = studentRepository.findById(req.studentId())
-				.orElseThrow(() -> new RuntimeException("STUDENT_NOT_FOUND"));
-			provider.connectStudent(student);
-		}
-		providerRepository.save(provider);
-		return provider.getId();
-	}
+        if (req.studentId() != null) {
+            Student student = studentRepository.findById(req.studentId())
+                    .orElseThrow(() -> new RuntimeException("STUDENT_NOT_FOUND"));
+            provider.connectStudent(student);
+        }
+        providerRepository.save(provider);
+        return provider.getId();
+    }
 
-	@Transactional
-	public void updateProvider(Long providerId, PatchUpdateProviderReq req) {
-		Provider provider = providerRepository.findById(providerId)
-			.orElseThrow(ProviderNotFoundException::new);
+    @Transactional
+    public void updateProvider(Long providerId, PatchUpdateProviderReq req) {
+        Provider provider = providerRepository.findById(providerId)
+                .orElseThrow(ProviderNotFoundException::new);
 
-		provider.updateProviderInfo(
-			req.email(),
-			req.providerName(),
-			req.providerKey()
-		);
+        provider.updateProviderInfo(
+                req.email(),
+                req.providerName(),
+                req.providerKey()
+        );
 
-		if (req.studentId() != null) {
-			Student student = studentRepository.findById(req.studentId())
-				.orElseThrow(() -> new RuntimeException("STUDENT_NOT_FOUND"));
-			provider.connectStudent(student);
-		} else {
-			provider.disconnectStudent();
-		}
-	}
+        if (req.studentId() != null) {
+            Student student = studentRepository.findById(req.studentId())
+                    .orElseThrow(() -> new RuntimeException("STUDENT_NOT_FOUND"));
+            provider.connectStudent(student);
+        } else {
+            provider.disconnectStudent();
+        }
+    }
 
-	@Transactional
-	public void deleteProvider(Long providerId) {
-		if (!providerRepository.existsById(providerId)) {
-			throw new ProviderNotFoundException();
-		}
-		providerRepository.deleteById(providerId);
-	}
+    @Transactional
+    public void deleteProvider(Long providerId) {
+        if (!providerRepository.existsById(providerId)) {
+            throw new ProviderNotFoundException();
+        }
+        providerRepository.deleteById(providerId);
+    }
 
-	@Transactional
-	public void deleteProviders(List<Long> providerIds) {
-		providerRepository.deleteAllById(providerIds);
-	}
+    @Transactional
+    public void deleteProviders(List<Long> providerIds) {
+        providerRepository.deleteAllById(providerIds);
+    }
 }

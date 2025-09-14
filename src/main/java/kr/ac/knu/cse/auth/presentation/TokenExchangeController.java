@@ -35,75 +35,68 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 @Slf4j
 public class TokenExchangeController {
-	
-	private final AuthorizationCodeService authorizationCodeService;
-	private final JwtTokenService jwtTokenService;
-	private final ProviderRepository providerRepository;
-	private final AuthClientRepository authClientRepository;
-	private final JwtProperties jwtProperties;
-	
-	@PostMapping
-	public ResponseEntity<ApiSuccessResult<TokenExchangeResponse>> exchangeToken(
-		@Valid @RequestBody TokenExchangeRequest request,
-		HttpServletRequest httpRequest
-	) {
-		log.info("토큰 교환 요청 - Code: {}, redirectUrl: {}", request.getCode(), request.getRedirectUrl());
 
-		// Authorization Code 검증 및 소비
-		AuthorizationCode authorizationCode = authorizationCodeService
-			.validateAndConsumeCode(request.getCode(), request.getRedirectUrl());
+    private final AuthorizationCodeService authorizationCodeService;
+    private final JwtTokenService jwtTokenService;
+    private final ProviderRepository providerRepository;
+    private final AuthClientRepository authClientRepository;
+    private final JwtProperties jwtProperties;
 
-		// 클라이언트 정보 조회
+    @PostMapping
+    public ResponseEntity<ApiSuccessResult<TokenExchangeResponse>> exchangeToken(
+            @Valid @RequestBody TokenExchangeRequest request,
+            HttpServletRequest httpRequest
+    ) {
+        log.info("토큰 교환 요청 - Code: {}, redirectUrl: {}", request.getCode(), request.getRedirectUrl());
+
+        AuthorizationCode authorizationCode = authorizationCodeService
+                .validateAndConsumeCode(request.getCode(), request.getRedirectUrl());
+
         AuthClient client = authClientRepository.findById(authorizationCode.getClientId())
                 .orElseThrow(() -> {
                     log.error("클라이언트를 찾을 수 없습니다: ClientId={}", authorizationCode.getClientId());
                     return new AuthClientNotFoundException();
                 });
 
-		// 교차 검증: redirectUrl과 Origin이 일치하는지 검증
-		String origin = httpRequest.getHeader("Origin");
+        String origin = httpRequest.getHeader("Origin");
 
-		log.info("교차 검증 - Origin: {}, RedirectUrl: {}, ClientId: {}",
-			origin, authorizationCode.getRedirectUrl(), client.getClientId());
+        log.info("교차 검증 - Origin: {}, RedirectUrl: {}, ClientId: {}",
+                origin, authorizationCode.getRedirectUrl(), client.getClientId());
 
-		// redirectUrl과 origin이 같은 도메인인지 검증
-		if (!client.isValidRedirectRequest(authorizationCode.getRedirectUrl(), origin)) {
-			log.warn("redirectUrl과 Origin이 일치하지 않음 - Origin: {}, RedirectUrl: {}, ClientId: {}",
-				origin, authorizationCode.getRedirectUrl(), client.getClientId());
-			throw new UnauthorizedServiceAccessException();
-		}
-		
-		// 사용자 정보 조회
-		Provider provider = providerRepository.findByEmail(authorizationCode.getEmail())
-			.orElseThrow(() -> {
-				log.error("Provider를 찾을 수 없습니다: {}", authorizationCode.getEmail());
-				return new ProviderNotFoundException();
-			});
-		
-		// Authentication 객체 생성
-		PrincipalDetails principalDetails = PrincipalDetails.builder()
-			.provider(provider)
-			.student(provider.getStudent())
-			.attributes(null)
-			.build();
-		
-		Authentication authentication = new UsernamePasswordAuthenticationToken(
-			principalDetails, "", principalDetails.getAuthorities());
-		
-		// JWT 토큰 생성 (클라이언트별 secret 사용)
-		Token token = jwtTokenService.generateToken(authentication, client.getClientId());
-		
-		log.info("토큰 교환 완료 - Email: {}, TokenType: {}", 
-			authorizationCode.getEmail(), token.getType());
-		
-		TokenExchangeResponse response = new TokenExchangeResponse(
-			token.getValue(),
-			token.getType(),
-			jwtProperties.getExpiration()
-		);
-		
-		return ResponseEntity
+        if (!client.isValidRedirectRequest(authorizationCode.getRedirectUrl(), origin)) {
+            log.warn("redirectUrl과 Origin이 일치하지 않음 - Origin: {}, RedirectUrl: {}, ClientId: {}",
+                    origin, authorizationCode.getRedirectUrl(), client.getClientId());
+            throw new UnauthorizedServiceAccessException();
+        }
+
+        Provider provider = providerRepository.findByEmail(authorizationCode.getEmail())
+                .orElseThrow(() -> {
+                    log.error("Provider를 찾을 수 없습니다: {}", authorizationCode.getEmail());
+                    return new ProviderNotFoundException();
+                });
+
+        PrincipalDetails principalDetails = PrincipalDetails.builder()
+                .provider(provider)
+                .student(provider.getStudent())
+                .attributes(null)
+                .build();
+
+        Authentication authentication = new UsernamePasswordAuthenticationToken(
+                principalDetails, "", principalDetails.getAuthorities());
+
+        Token token = jwtTokenService.generateToken(authentication, client.getClientId());
+
+        log.info("토큰 교환 완료 - Email: {}, TokenType: {}",
+                authorizationCode.getEmail(), token.getType());
+
+        TokenExchangeResponse response = new TokenExchangeResponse(
+                token.getValue(),
+                token.getType(),
+                jwtProperties.getExpiration()
+        );
+
+        return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(ApiResponse.success(HttpStatus.OK, response));
-	}
+    }
 }

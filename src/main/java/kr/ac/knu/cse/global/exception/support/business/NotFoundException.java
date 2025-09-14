@@ -5,9 +5,9 @@ import org.springframework.http.HttpStatus;
 
 @Getter
 public abstract class NotFoundException extends ApplicationLogicException {
-	private final HttpStatus httpStatus = HttpStatus.NOT_FOUND;
+    private final HttpStatus httpStatus = HttpStatus.NOT_FOUND;
 
-	public NotFoundException(final String errorMsg) {
-		super(errorMsg);
-	}
+    public NotFoundException(final String errorMsg) {
+        super(errorMsg);
+    }
 }

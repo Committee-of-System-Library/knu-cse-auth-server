@@ -20,16 +20,12 @@ public class AdminStatisticsService {
     private final ProviderRepository providerRepository;
 
     public AdminStatisticsResponse getStatistics() {
-        // 전체 학생 수
         long totalStudents = studentRepository.count();
 
-        // 회비 납부자 수 (Dues 테이블에 데이터가 있으면 납부)
         long paidDues = duesRepository.count();
 
-        // QR 스캔 횟수
         long qrScans = qrAuthLogRepository.count();
 
-        // 활성 Provider 수
         long providers = providerRepository.count();
 
         return new AdminStatisticsResponse(totalStudents, paidDues, qrScans, providers);

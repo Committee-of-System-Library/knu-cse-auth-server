@@ -6,5 +6,5 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 public interface ProviderQueryDslRepository {
-	Page<ProviderResponse> findProviders(ProviderSearchFilter filter, Pageable pageable);
+    Page<ProviderResponse> findProviders(ProviderSearchFilter filter, Pageable pageable);
 }

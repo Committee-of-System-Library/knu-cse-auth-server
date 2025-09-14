@@ -5,9 +5,9 @@ import org.springframework.http.HttpStatus;
 
 @Getter
 public abstract class DuplicatedException extends ApplicationLogicException {
-	private final HttpStatus httpStatus = HttpStatus.CONFLICT;
+    private final HttpStatus httpStatus = HttpStatus.CONFLICT;
 
-	public DuplicatedException(final String errorMsg) {
-		super(errorMsg);
-	}
+    public DuplicatedException(final String errorMsg) {
+        super(errorMsg);
+    }
 }

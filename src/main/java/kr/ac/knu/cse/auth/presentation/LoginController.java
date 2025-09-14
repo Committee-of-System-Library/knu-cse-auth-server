@@ -17,32 +17,29 @@ import java.io.IOException;
 @RequiredArgsConstructor
 public class LoginController {
 
-	private final AuthClientRepository authClientRepository;
+    private final AuthClientRepository authClientRepository;
 
-	@GetMapping("/login")
-	public void login(
-		@RequestParam("redirectUrl") String redirectUrl,
-		HttpServletRequest request,
-		HttpServletResponse response
-	) throws IOException {
-		log.info("로그인 요청 - Redirect URL: {}", redirectUrl);
+    @GetMapping("/login")
+    public void login(
+            @RequestParam("redirectUrl") String redirectUrl,
+            HttpServletRequest request,
+            HttpServletResponse response
+    ) throws IOException {
+        log.info("로그인 요청 - Redirect URL: {}", redirectUrl);
 
-		// redirect_url 유효성 검증 (DB 기반)
-		if (authClientRepository.findByAllowedRedirectUrl(redirectUrl).isEmpty()) {
-			log.warn("허용되지 않은 Redirect URL: {}", redirectUrl);
-			response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid redirect URL");
-			return;
-		}
+        if (authClientRepository.findByAllowedRedirectUrl(redirectUrl).isEmpty()) {
+            log.warn("허용되지 않은 Redirect URL: {}", redirectUrl);
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid redirect URL");
+            return;
+        }
 
-		// 세션에 redirect URL 저장
-		HttpSession session = request.getSession();
-		session.setAttribute("redirectUrl", redirectUrl);
-		log.debug("세션에 Redirect URL 저장: {}", redirectUrl);
+        HttpSession session = request.getSession();
+        session.setAttribute("redirectUrl", redirectUrl);
+        log.debug("세션에 Redirect URL 저장: {}", redirectUrl);
 
-		// Spring Security의 OAuth2 인증 시작 URL로 리다이렉트
-		String oauth2AuthUrl = "/oauth2/authorize/google";
-		log.info("Spring Security OAuth2 인증 URL로 리다이렉트: {}", oauth2AuthUrl);
-		response.sendRedirect(oauth2AuthUrl);
-	}
+        String oauth2AuthUrl = "/oauth2/authorize/google";
+        log.info("Spring Security OAuth2 인증 URL로 리다이렉트: {}", oauth2AuthUrl);
+        response.sendRedirect(oauth2AuthUrl);
+    }
 
 }

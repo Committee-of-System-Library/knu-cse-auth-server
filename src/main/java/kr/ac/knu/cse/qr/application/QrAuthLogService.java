@@ -16,30 +16,30 @@ import java.util.List;
 @RequiredArgsConstructor
 public class QrAuthLogService {
 
-	private final QrAuthLogRepository qrAuthLogRepository;
+    private final QrAuthLogRepository qrAuthLogRepository;
 
-	@Transactional
-	public void saveLogs(LocalDate scanDate, String scannedBy, List<QrAuthLogDto> logs) {
-		for (QrAuthLogDto dto : logs) {
-			boolean alreadyExists = qrAuthLogRepository.existsByScanDateAndStudentNumberAndScannedBy(
-				scanDate, dto.studentNumber(), scannedBy
-			);
-			if (alreadyExists) {
-				log.warn("이미 저장된 로그 (중복) => studentNumber={}, scannedBy={}, date={}",
-					dto.studentNumber(), scannedBy, scanDate);
-				continue;
-			}
+    @Transactional
+    public void saveLogs(LocalDate scanDate, String scannedBy, List<QrAuthLogDto> logs) {
+        for (QrAuthLogDto dto : logs) {
+            boolean alreadyExists = qrAuthLogRepository.existsByScanDateAndStudentNumberAndScannedBy(
+                    scanDate, dto.studentNumber(), scannedBy
+            );
+            if (alreadyExists) {
+                log.warn("이미 저장된 로그 (중복) => studentNumber={}, scannedBy={}, date={}",
+                        dto.studentNumber(), scannedBy, scanDate);
+                continue;
+            }
 
-			QrAuthLog logEntity = QrAuthLog.builder()
-				.scanDate(scanDate)
-				.scannedBy(scannedBy)
-				.studentNumber(dto.studentNumber())
-				.studentName(dto.studentName())
-				.duesPaid(dto.duesPaid())
-				.build();
+            QrAuthLog logEntity = QrAuthLog.builder()
+                    .scanDate(scanDate)
+                    .scannedBy(scannedBy)
+                    .studentNumber(dto.studentNumber())
+                    .studentName(dto.studentName())
+                    .duesPaid(dto.duesPaid())
+                    .build();
 
-			qrAuthLogRepository.save(logEntity);
-		}
-	}
+            qrAuthLogRepository.save(logEntity);
+        }
+    }
 
 }

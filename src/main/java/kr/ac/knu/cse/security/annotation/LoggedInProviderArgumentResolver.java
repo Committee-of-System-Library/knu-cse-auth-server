@@ -18,29 +18,29 @@ import org.springframework.web.method.support.ModelAndViewContainer;
 @Slf4j
 public class LoggedInProviderArgumentResolver implements HandlerMethodArgumentResolver {
 
-	@Override
-	public boolean supportsParameter(@Nonnull MethodParameter parameter) {
-		return parameter.hasParameterAnnotation(LoggedInProvider.class)
-			&& parameter.getParameterType().equals(PrincipalDetails.class);
-	}
+    @Override
+    public boolean supportsParameter(@Nonnull MethodParameter parameter) {
+        return parameter.hasParameterAnnotation(LoggedInProvider.class)
+                && parameter.getParameterType().equals(PrincipalDetails.class);
+    }
 
-	@Override
-	public PrincipalDetails resolveArgument(
-		@Nonnull MethodParameter parameter,
-		ModelAndViewContainer mavContainer,
-		@Nonnull NativeWebRequest webRequest,
-		WebDataBinderFactory binderFactory
-	) {
-		Authentication authentication = SecurityContextHolder
-			.getContext()
-			.getAuthentication();
+    @Override
+    public PrincipalDetails resolveArgument(
+            @Nonnull MethodParameter parameter,
+            ModelAndViewContainer mavContainer,
+            @Nonnull NativeWebRequest webRequest,
+            WebDataBinderFactory binderFactory
+    ) {
+        Authentication authentication = SecurityContextHolder
+                .getContext()
+                .getAuthentication();
 
-		PrincipalDetails principalDetails = (PrincipalDetails)authentication.getPrincipal();
-		if (principalDetails.provider() == null)
-			throw new ProviderNotFoundException();
-		if (principalDetails.student() == null)
-			throw new NotConnectedStudentException();
+        PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
+        if (principalDetails.provider() == null)
+            throw new ProviderNotFoundException();
+        if (principalDetails.student() == null)
+            throw new NotConnectedStudentException();
 
-		return principalDetails;
-	}
+        return principalDetails;
+    }
 }

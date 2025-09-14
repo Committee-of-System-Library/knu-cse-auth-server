@@ -7,7 +7,7 @@ import java.util.Optional;
 
 public interface StudentRepository extends JpaRepository<Student, Long>, StudentQueryDslRepository {
 
-	boolean existsByStudentNumber(String studentNumber);
+    boolean existsByStudentNumber(String studentNumber);
 
-	Optional<Student> findByStudentNumber(String studentNumber);
+    Optional<Student> findByStudentNumber(String studentNumber);
 }

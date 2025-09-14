@@ -29,94 +29,94 @@ import static kr.ac.knu.cse.student.domain.QStudent.student;
 @RequiredArgsConstructor
 public class StudentQueryDslRepositoryImpl extends QueryDslSupport implements StudentQueryDslRepository {
 
-	private ComparableExpressionBase<?> getSortPath(String sortBy) {
-		return switch (sortBy) {
-			case "id" -> student.id;
-			case "name" -> student.name;
-			case "major" -> student.major;
-			case "role" -> student.role;
-			case "studentNumber" -> student.studentNumber;
-			default -> student.studentNumber;
-		};
-	}
+    private ComparableExpressionBase<?> getSortPath(String sortBy) {
+        return switch (sortBy) {
+            case "id" -> student.id;
+            case "name" -> student.name;
+            case "major" -> student.major;
+            case "role" -> student.role;
+            case "studentNumber" -> student.studentNumber;
+            default -> student.studentNumber;
+        };
+    }
 
-	@Override
-	public Page<StudentResponse> findStudents(StudentSearchFilter filter, Pageable pageable) {
-		Order order = filter.getDirection().equalsIgnoreCase("desc") ? DESC : ASC;
-		ComparableExpressionBase<?> sortPath = getSortPath(filter.getSortBy());
+    @Override
+    public Page<StudentResponse> findStudents(StudentSearchFilter filter, Pageable pageable) {
+        Order order = filter.getDirection().equalsIgnoreCase("desc") ? DESC : ASC;
+        ComparableExpressionBase<?> sortPath = getSortPath(filter.getSortBy());
 
-		BooleanBuilder whereBuilder = new BooleanBuilder();
-		if (filter.getSearchColumn() != null && !filter.getSearchColumn().isBlank() &&
-			filter.getSearchKeyword() != null && !filter.getSearchKeyword().isBlank()) {
-			String keyword = filter.getSearchKeyword();
+        BooleanBuilder whereBuilder = new BooleanBuilder();
+        if (filter.getSearchColumn() != null && !filter.getSearchColumn().isBlank() &&
+                filter.getSearchKeyword() != null && !filter.getSearchKeyword().isBlank()) {
+            String keyword = filter.getSearchKeyword();
 
-			switch (filter.getSearchColumn()) {
-				case "studentNumber":
-					whereBuilder.and(student.studentNumber.containsIgnoreCase(keyword));
-					break;
-				case "name":
-					whereBuilder.and(student.name.containsIgnoreCase(keyword));
-					break;
-				case "major":
-					whereBuilder.and(student.major.stringValue().containsIgnoreCase(keyword));
-					break;
-				case "role":
-					whereBuilder.and(student.role.stringValue().containsIgnoreCase(keyword));
-					break;
-				default:
-					break;
-			}
-		}
+            switch (filter.getSearchColumn()) {
+                case "studentNumber":
+                    whereBuilder.and(student.studentNumber.containsIgnoreCase(keyword));
+                    break;
+                case "name":
+                    whereBuilder.and(student.name.containsIgnoreCase(keyword));
+                    break;
+                case "major":
+                    whereBuilder.and(student.major.stringValue().containsIgnoreCase(keyword));
+                    break;
+                case "role":
+                    whereBuilder.and(student.role.stringValue().containsIgnoreCase(keyword));
+                    break;
+                default:
+                    break;
+            }
+        }
 
-		Expression<Boolean> hasDuesExpr = JPAExpressions
-			.selectOne()
-			.from(dues)
-			.where(dues.student.eq(student))
-			.exists();
+        Expression<Boolean> hasDuesExpr = JPAExpressions
+                .selectOne()
+                .from(dues)
+                .where(dues.student.eq(student))
+                .exists();
 
-		JPAQuery<Tuple> jpaQuery = queryFactory.select(
-				student.id,
-				student.studentNumber,
-				student.name,
-				student.major,
-				student.role,
-				hasDuesExpr
-			)
-			.from(student)
-			.where(whereBuilder)
-			.orderBy(new OrderSpecifier<>(order, sortPath))
-			.offset(pageable.getOffset())
-			.limit(pageable.getPageSize());
+        JPAQuery<Tuple> jpaQuery = queryFactory.select(
+                        student.id,
+                        student.studentNumber,
+                        student.name,
+                        student.major,
+                        student.role,
+                        hasDuesExpr
+                )
+                .from(student)
+                .where(whereBuilder)
+                .orderBy(new OrderSpecifier<>(order, sortPath))
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize());
 
-		List<Tuple> tuples = jpaQuery.fetch();
+        List<Tuple> tuples = jpaQuery.fetch();
 
-		List<StudentResponse> content = tuples.stream()
-			.map(tuple -> {
-				Long id = tuple.get(student.id);
-				String studentNumber = tuple.get(student.studentNumber);
-				String name = tuple.get(student.name);
-				Major major = tuple.get(student.major);
-				Role role = tuple.get(student.role);
-				Boolean hasDues = tuple.get(hasDuesExpr);
+        List<StudentResponse> content = tuples.stream()
+                .map(tuple -> {
+                    Long id = tuple.get(student.id);
+                    String studentNumber = tuple.get(student.studentNumber);
+                    String name = tuple.get(student.name);
+                    Major major = tuple.get(student.major);
+                    Role role = tuple.get(student.role);
+                    Boolean hasDues = tuple.get(hasDuesExpr);
 
-				return StudentResponse.of(
-					id,
-					studentNumber,
-					name,
-					major,
-					role,
-					hasDues != null && hasDues
-				);
-			})
-			.toList();
+                    return StudentResponse.of(
+                            id,
+                            studentNumber,
+                            name,
+                            major,
+                            role,
+                            hasDues != null && hasDues
+                    );
+                })
+                .toList();
 
-		return paginate(pageable, content, countQuery -> {
-			BooleanBuilder wb = new BooleanBuilder(whereBuilder);
+        return paginate(pageable, content, countQuery -> {
+            BooleanBuilder wb = new BooleanBuilder(whereBuilder);
 
-			return countQuery
-				.select(student.count())
-				.from(student)
-				.where(wb);
-		});
-	}
+            return countQuery
+                    .select(student.count())
+                    .from(student)
+                    .where(wb);
+        });
+    }
 }
