@@ -16,13 +16,14 @@ public class CorsConfig {
 	@Bean
 	public CorsConfigurationSource corsConfigurationSource() {
 		CorsConfiguration configuration = new CorsConfiguration();
-		
-		// 허용할 Origin 설정
+
+		// 허용할 Origin 설정 (정적 설정)
 		configuration.setAllowedOriginPatterns(Arrays.asList(
-			"http://localhost:5173",
+			"http://localhost:*",
+			"https://localhost:*",
 			"https://chcse.knu.ac.kr"
 		));
-		
+
 		// 허용할 HTTP 메서드
 		configuration.setAllowedMethods(Arrays.asList(
 			HttpMethod.GET.name(),
@@ -32,8 +33,8 @@ public class CorsConfig {
 			HttpMethod.DELETE.name(),
 			HttpMethod.OPTIONS.name()
 		));
-		
-		// 허용할 헤더 (보안상 구체적으로 명시)
+
+		// 허용할 헤더
 		configuration.setAllowedHeaders(Arrays.asList(
 			"Authorization",
 			"Content-Type",
@@ -44,13 +45,11 @@ public class CorsConfig {
 		));
 
 		// Exposed 헤더 설정
-		configuration.setExposedHeaders(List.of(
-                "Authorization"
-        ));
-		
-		// 자격 증명 허용 (쿠키 등)
+		configuration.setExposedHeaders(List.of("Authorization"));
+
+		// 자격 증명 허용
 		configuration.setAllowCredentials(true);
-		
+
 		// preflight 요청 캐시 시간 (초)
 		configuration.setMaxAge(3600L);
 

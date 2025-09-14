@@ -1,5 +1,6 @@
 package kr.ac.knu.cse.global.config;
 
+import jakarta.servlet.http.HttpServletResponse;
 import kr.ac.knu.cse.security.details.PrincipalDetailsOauthService;
 import kr.ac.knu.cse.security.filter.AuthorizationFilter;
 import kr.ac.knu.cse.security.handler.Oauth2SuccessHandler;
@@ -60,7 +61,14 @@ public class SecurityConfig {
 					new AntPathRequestMatcher("/h2-console/**")
 				).permitAll()
 				.anyRequest().authenticated())
-			.addFilterBefore(authorizationFilter, UsernamePasswordAuthenticationFilter.class);
+			.addFilterBefore(authorizationFilter, UsernamePasswordAuthenticationFilter.class)
+			.exceptionHandling(exceptions -> exceptions
+				.authenticationEntryPoint((request, response, authException) -> {
+					response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+					response.setContentType("application/json;charset=UTF-8");
+					response.getWriter().write("{\"status\":401,\"message\":\"Authentication required\"}");
+				})
+			);
 
 		httpSecurity
 			.oauth2Login(oauth2 -> oauth2

@@ -70,6 +70,6 @@ public class ProviderController {
 		@RequestParam("ids") List<Long> ids
 	) {
 		providerService.deleteProviders(ids);
-		return ResponseEntity.ok(ApiResponse.success(HttpStatus.OK, "선택된 서비스가 삭제되었습니다."));
+		return ResponseEntity.ok(ApiResponse.success(HttpStatus.OK, "Provider deleted."));
 	}
 }

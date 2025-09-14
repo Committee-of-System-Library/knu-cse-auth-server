@@ -26,10 +26,3 @@ app:
 
   frontend: # Frontend URL Configuration
     base-url: ${FRONTEND_BASE_URL}
-
-  access-control: # Login redirect allowed domains
-    allowed-redirects:
-      - "http://lcoalhost:5173/admin"
-      - "https://chcse.knu.ac.kr/auth"
-      - "http://localhost:5173"
-      - "http://localhost:3000"
