@@ -43,6 +43,7 @@ public class JwtTokenService {
 
     @PostConstruct
     public void init() {
+        log.info("기본 JWT 서명 키 초기화");
         this.defaultSignKey = new SecretKeySpec(
                 jwtProperties.getSecret().getBytes(StandardCharsets.UTF_8),
                 "HmacSHA256"
@@ -50,10 +51,12 @@ public class JwtTokenService {
     }
 
     public Token generateToken(Authentication authentication) {
+        log.info("기본 토큰 생성 - 사용자: {}", authentication.getName());
         return doGenerateToken(authentication, null);
     }
 
     public Token generateToken(Authentication authentication, Long clientId) {
+        log.info("클라이언트용 토큰 생성 - 사용자: {}, 클라이언트 ID: {}", authentication.getName(), clientId);
         return doGenerateToken(authentication, clientId);
     }
 
@@ -67,6 +70,7 @@ public class JwtTokenService {
                 .signWith(signKey)
                 .compact();
 
+        log.info("토큰 생성 완료 - 사용자: {}", jwtAuthentication.getName());
         return new Token(jwtProperties.getBearerType(), token);
     }
 
@@ -95,6 +99,7 @@ public class JwtTokenService {
             payload.put("clientId", clientId);
         }
 
+        log.debug("JWT 페이로드 생성: {}", payload);
         return payload;
     }
 
@@ -119,6 +124,7 @@ public class JwtTokenService {
             if (clientIdObj instanceof Number) {
                 clientId = ((Number) clientIdObj).longValue();
             }
+            log.debug("토큰에서 추출된 클라이언트 ID: {}", clientId);
 
         } catch (Exception e) {
             log.warn("토큰에서 clientId 추출 실패: {}", e.getMessage());
@@ -127,6 +133,7 @@ public class JwtTokenService {
         SecretKey signKey = getSignKey(clientId);
 
         try {
+            log.debug("JWT 검증 시작 - 클라이언트 ID: {}", clientId);
             return Jwts.parser()
                     .verifyWith(signKey)
                     .build()
@@ -153,40 +160,49 @@ public class JwtTokenService {
     public String resolveToken(HttpServletRequest request) {
         String bearerToken = request.getHeader("Authorization");
         if (bearerToken != null && bearerToken.startsWith("Bearer ")) {
+            log.debug("Authorization 헤더에서 토큰 발견");
             return bearerToken.substring(7);
         }
+        log.debug("Authorization 헤더에 토큰 없음");
         return null;
 
     }
 
     public Authentication getAuthentication(String email) {
+        log.info("인증 객체 생성 - 이메일: {}", email);
         Provider provider = providerRepository.findByEmail(email)
-                .orElseThrow(ProviderNotFoundException::new);
+                .orElseThrow(() -> {
+                    log.error("Provider를 찾을 수 없습니다: {}", email);
+                    return new ProviderNotFoundException();
+                });
         PrincipalDetails principalDetails = PrincipalDetails.builder()
                 .provider(provider)
                 .student(provider.getStudent())
                 .attributes(null)
                 .build();
-        log.info("[JwtTokenService] email : {}", email);
+        log.info("인증 객체 생성 완료 - 이메일: {}", email);
         return new UsernamePasswordAuthenticationToken(principalDetails, "", principalDetails.getAuthorities());
     }
 
     public SecretKey getSignKey(Long clientId) {
         if (clientId == null) {
+            log.debug("기본 서명 키 사용");
             return defaultSignKey;
         }
 
+        log.debug("클라이언트별 서명 키 조회 - 클라이언트 ID: {}", clientId);
         return getSignKeyFromDb(clientId);
     }
 
     @Cacheable(value = "secretKey", key = "#clientId", unless = "#clientId == null")
     public SecretKey getSignKeyFromDb(Long clientId) {
+        log.info("DB에서 클라이언트 서명 키 조회 - 클라이언트 ID: {}", clientId);
         AuthClient client = authClientRepository.findById(clientId)
                 .orElseThrow(() -> {
                     log.error("클라이언트를 찾을 수 없습니다: ClientId={}", clientId);
                     return new AuthClientNotFoundException();
                 });
-        log.debug("DB에서 클라이언트 정보 조회: ID={}, Name={}", client.getClientId(), client.getClientName());
+        log.info("DB에서 클라이언트 정보 조회 완료: ID={}, Name={}", client.getClientId(), client.getClientName());
 
         return new SecretKeySpec(
                 client.getJwtSecret().getBytes(StandardCharsets.UTF_8),
