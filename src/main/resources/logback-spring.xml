@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
     <springProperty scope="context" name="LOG_LEVEL" source="logging.level.root" defaultValue="info"/>
-    <springProperty scope="context" name="LOG_PATH" source="logging.file.path" defaultValue="/var/log/knu-cse-auth-server"/>
+    <springProperty scope="context" name="LOG_PATH" source="logging.file.path" defaultValue="logs"/>
     <springProperty scope="context" name="LOG_FILENAME" source="logging.file.name" defaultValue="knu-cse-auth-server"/>
 
     <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
