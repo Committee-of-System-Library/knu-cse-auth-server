@@ -34,42 +34,42 @@ import java.util.List;
 @PreAuthorize("hasRole('FINANCE')")
 public class ProviderController {
 
-	private final ProviderRepository providerRepository;
-	private final ProviderService providerService;
+    private final ProviderRepository providerRepository;
+    private final ProviderService providerService;
 
-	@GetMapping
-	public ResponseEntity<ApiSuccessResult<Page<ProviderResponse>>> getProviders(
-		@ModelAttribute final ProviderSearchFilter filter,
-		final Pageable pageable
-	) {
-		Page<ProviderResponse> page = providerRepository.findProviders(filter, pageable);
-		return ResponseEntity.status(HttpStatus.OK)
-			.body(ApiResponse.success(HttpStatus.OK, page));
-	}
+    @GetMapping
+    public ResponseEntity<ApiSuccessResult<Page<ProviderResponse>>> getProviders(
+            @ModelAttribute final ProviderSearchFilter filter,
+            final Pageable pageable
+    ) {
+        Page<ProviderResponse> page = providerRepository.findProviders(filter, pageable);
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(ApiResponse.success(HttpStatus.OK, page));
+    }
 
-	@PostMapping
-	public ResponseEntity<ApiSuccessResult<?>> createProvider(
-		@Valid @RequestBody PostCreateProviderReq req
-	) {
-		Long id = providerService.createProvider(req);
-		return ResponseEntity.status(HttpStatus.CREATED)
-			.body(ApiResponse.success(HttpStatus.CREATED, "Provider created with ID: " + id));
-	}
+    @PostMapping
+    public ResponseEntity<ApiSuccessResult<?>> createProvider(
+            @Valid @RequestBody PostCreateProviderReq req
+    ) {
+        Long id = providerService.createProvider(req);
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(ApiResponse.success(HttpStatus.CREATED, "Provider created with ID: " + id));
+    }
 
-	@PatchMapping("/{id}")
-	public ResponseEntity<ApiSuccessResult<?>> updateProvider(
-		@PathVariable Long id,
-		@Valid @RequestBody PatchUpdateProviderReq req
-	) {
-		providerService.updateProvider(id, req);
-		return ResponseEntity.ok(ApiResponse.success(HttpStatus.OK, "Provider updated"));
-	}
+    @PatchMapping("/{id}")
+    public ResponseEntity<ApiSuccessResult<?>> updateProvider(
+            @PathVariable Long id,
+            @Valid @RequestBody PatchUpdateProviderReq req
+    ) {
+        providerService.updateProvider(id, req);
+        return ResponseEntity.ok(ApiResponse.success(HttpStatus.OK, "Provider updated"));
+    }
 
-	@DeleteMapping
-	public ResponseEntity<ApiSuccessResult<?>> deleteProviders(
-		@RequestParam("ids") List<Long> ids
-	) {
-		providerService.deleteProviders(ids);
-		return ResponseEntity.ok(ApiResponse.success(HttpStatus.OK, "Provider deleted."));
-	}
+    @DeleteMapping
+    public ResponseEntity<ApiSuccessResult<?>> deleteProviders(
+            @RequestParam("ids") List<Long> ids
+    ) {
+        providerService.deleteProviders(ids);
+        return ResponseEntity.ok(ApiResponse.success(HttpStatus.OK, "Provider deleted."));
+    }
 }

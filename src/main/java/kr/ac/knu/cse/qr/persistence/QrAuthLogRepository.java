@@ -8,6 +8,6 @@ import java.time.LocalDate;
 
 @Repository
 public interface QrAuthLogRepository extends JpaRepository<QrAuthLog, Long> {
-	boolean existsByScanDateAndStudentNumberAndScannedBy(
-		LocalDate scanDate, String studentNumber, String scannedBy);
+    boolean existsByScanDateAndStudentNumberAndScannedBy(
+            LocalDate scanDate, String studentNumber, String scannedBy);
 }

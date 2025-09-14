@@ -5,9 +5,9 @@ import org.springframework.http.HttpStatus;
 
 @Getter
 public abstract class BadRequestException extends ApplicationLogicException {
-	private final HttpStatus httpStatus = HttpStatus.BAD_REQUEST;
+    private final HttpStatus httpStatus = HttpStatus.BAD_REQUEST;
 
-	public BadRequestException(final String errorMsg) {
-		super(errorMsg);
-	}
+    public BadRequestException(final String errorMsg) {
+        super(errorMsg);
+    }
 }

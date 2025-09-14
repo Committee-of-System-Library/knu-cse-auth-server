@@ -1,12 +1,12 @@
 CREATE TABLE student
 (
-    student_id     bigint                                                NOT NULL AUTO_INCREMENT,
-    role           varchar(20)                                               NOT NULL,
-    major          varchar(50)                                           NOT NULL,
-    name           varchar(50)                                           NOT NULL,
-    student_number varchar(15)                                           NOT NULL,
-    created_at     timestamp                                             NOT NULL,
-    updated_at     timestamp                                             NOT NULL,
+    student_id     bigint      NOT NULL AUTO_INCREMENT,
+    role           varchar(20) NOT NULL,
+    major          varchar(50) NOT NULL,
+    name           varchar(50) NOT NULL,
+    student_number varchar(15) NOT NULL,
+    created_at     timestamp   NOT NULL,
+    updated_at     timestamp   NOT NULL,
     PRIMARY KEY (student_id),
     UNIQUE KEY student_number_uq (student_number)
 );

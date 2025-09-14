@@ -16,31 +16,31 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class PrincipalDetailsOauthService extends DefaultOAuth2UserService {
-	private final ProviderService providerService;
-	private final Oauth2ResponseMatcher oauth2ResponseMatcher;
+    private final ProviderService providerService;
+    private final Oauth2ResponseMatcher oauth2ResponseMatcher;
 
-	@Override
-	public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
-		log.info("OAuth2 사용자 정보 로드를 시작합니다.");
-		OAuth2User oAuth2User = super.loadUser(userRequest);
-		String registrationId = userRequest.getClientRegistration().getRegistrationId();
-		log.debug("Registration ID: {}", registrationId);
-		log.debug("OAuth2 User Attributes: {}", oAuth2User.getAttributes());
+    @Override
+    public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
+        log.info("OAuth2 사용자 정보 로드를 시작합니다.");
+        OAuth2User oAuth2User = super.loadUser(userRequest);
+        String registrationId = userRequest.getClientRegistration().getRegistrationId();
+        log.debug("Registration ID: {}", registrationId);
+        log.debug("OAuth2 User Attributes: {}", oAuth2User.getAttributes());
 
 
-		Oauth2ResponseDto oauth2Response = oauth2ResponseMatcher.matcher(registrationId, oAuth2User);
-		log.debug("매칭된 OAuth2 응답: {}", oauth2Response);
+        Oauth2ResponseDto oauth2Response = oauth2ResponseMatcher.matcher(registrationId, oAuth2User);
+        log.debug("매칭된 OAuth2 응답: {}", oauth2Response);
 
-		Provider provider = providerService.loadOrSaveProvider(oauth2Response);
-		log.info("Provider 정보 로드/저장 완료: {}", provider.getEmail());
+        Provider provider = providerService.loadOrSaveProvider(oauth2Response);
+        log.info("Provider 정보 로드/저장 완료: {}", provider.getEmail());
 
-		PrincipalDetails principalDetails = PrincipalDetails.builder()
-			.student(provider.getStudent())
-			.provider(provider)
-			.attributes(oAuth2User.getAttributes())
-			.build();
+        PrincipalDetails principalDetails = PrincipalDetails.builder()
+                .student(provider.getStudent())
+                .provider(provider)
+                .attributes(oAuth2User.getAttributes())
+                .build();
 
-		log.info("PrincipalDetails 생성 완료: {}", principalDetails.getName());
-		return principalDetails;
-	}
+        log.info("PrincipalDetails 생성 완료: {}", principalDetails.getName());
+        return principalDetails;
+    }
 }

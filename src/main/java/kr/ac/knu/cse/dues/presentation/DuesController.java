@@ -20,14 +20,14 @@ import org.springframework.web.bind.annotation.RestController;
 public class DuesController {
     private final DuesCommandService duesCommandService;
 
-	@GetMapping("/me")
+    @GetMapping("/me")
     @PreAuthorize("isAuthenticated()")
-	public ResponseEntity<ApiSuccessResult<Boolean>> getMyDues(
+    public ResponseEntity<ApiSuccessResult<Boolean>> getMyDues(
             @LoggedInProvider PrincipalDetails principalDetails
-	) {
+    ) {
         Student student = principalDetails.student();
         boolean hasDues = duesCommandService.checkMyDues(student);
-		return ResponseEntity.status(HttpStatus.OK)
-			.body(ApiResponse.success(HttpStatus.OK, hasDues));
-	}
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(ApiResponse.success(HttpStatus.OK, hasDues));
+    }
 }

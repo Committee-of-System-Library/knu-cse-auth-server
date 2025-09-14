@@ -8,8 +8,8 @@ package kr.ac.knu.cse.student.domain;
  */
 public enum Role {
 
-	ROLE_STUDENT,
-	ROLE_EXECUTIVE,
-	ROLE_FINANCE,
-	ROLE_ADMIN
+    ROLE_STUDENT,
+    ROLE_EXECUTIVE,
+    ROLE_FINANCE,
+    ROLE_ADMIN
 }

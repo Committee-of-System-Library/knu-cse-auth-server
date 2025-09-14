@@ -44,72 +44,72 @@ import java.util.Map;
 @PreAuthorize("hasAnyRole('FINANCE','ADMIN')")
 public class QrAuthController {
 
-	private final StudentRepository studentRepository;
-	private final DuesRepository duesRepository;
-	private final QrAuthLogService qrAuthLogService;
-	private final QrAuthLogRepository qrAuthLogRepository;
-	private final QrAuthLogQueryDslRepository qrAuthLogQueryDslRepository;
+    private final StudentRepository studentRepository;
+    private final DuesRepository duesRepository;
+    private final QrAuthLogService qrAuthLogService;
+    private final QrAuthLogRepository qrAuthLogRepository;
+    private final QrAuthLogQueryDslRepository qrAuthLogQueryDslRepository;
 
-	@GetMapping("/student")
-	public ResponseEntity<ApiSuccessResult<?>> checkStudent(
-		@RequestParam String studentNumber,
-		@RequestParam(defaultValue = "false") boolean duesOnly
-	) {
-		Student student = studentRepository.findByStudentNumber(studentNumber)
-			.orElseThrow(StudentNotFoundException::new);
+    @GetMapping("/student")
+    public ResponseEntity<ApiSuccessResult<?>> checkStudent(
+            @RequestParam String studentNumber,
+            @RequestParam(defaultValue = "false") boolean duesOnly
+    ) {
+        Student student = studentRepository.findByStudentNumber(studentNumber)
+                .orElseThrow(StudentNotFoundException::new);
 
-		// 실제 회비 납부 여부 확인
-		boolean hasDues = duesRepository.findByStudent(student).isPresent();
+        // 실제 회비 납부 여부 확인
+        boolean hasDues = duesRepository.findByStudent(student).isPresent();
 
-		if (duesOnly && !hasDues) {
-			throw new DuesNotFoundException();
-		}
+        if (duesOnly && !hasDues) {
+            throw new DuesNotFoundException();
+        }
 
-		return ResponseEntity.status(HttpStatus.OK)
-			.body(ApiResponse.success(HttpStatus.OK, Map.of(
-				"studentNumber", student.getStudentNumber(),
-				"studentName", student.getName(),
-				"duesPaid", hasDues
-			)));
-	}
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(ApiResponse.success(HttpStatus.OK, Map.of(
+                        "studentNumber", student.getStudentNumber(),
+                        "studentName", student.getName(),
+                        "duesPaid", hasDues
+                )));
+    }
 
-	@PostMapping("/logs")
-	@PreAuthorize("isAuthenticated()")
-	public ResponseEntity<ApiSuccessResult<?>> saveQrAuthLogs(
-		@LoggedInProvider PrincipalDetails principalDetails,
-		@RequestBody SaveQrAuthLogsReq body
-	) {
-		String scannedBy = principalDetails.getName();
-		LocalDate today = LocalDate.now();
+    @PostMapping("/logs")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<ApiSuccessResult<?>> saveQrAuthLogs(
+            @LoggedInProvider PrincipalDetails principalDetails,
+            @RequestBody SaveQrAuthLogsReq body
+    ) {
+        String scannedBy = principalDetails.getName();
+        LocalDate today = LocalDate.now();
 
-		List<QrAuthLogDto> dtos = body.scannedStudents().stream()
-			.map(s -> new QrAuthLogDto(s.studentNumber(), s.studentName(), s.duesPaid()))
-			.toList();
+        List<QrAuthLogDto> dtos = body.scannedStudents().stream()
+                .map(s -> new QrAuthLogDto(s.studentNumber(), s.studentName(), s.duesPaid()))
+                .toList();
 
-		qrAuthLogService.saveLogs(today, scannedBy, dtos);
+        qrAuthLogService.saveLogs(today, scannedBy, dtos);
 
-		return ResponseEntity.status(HttpStatus.OK)
-			.body(ApiResponse.success(HttpStatus.OK, "QR 스캔 로그가 저장되었습니다."));
-	}
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(ApiResponse.success(HttpStatus.OK, "QR 스캔 로그가 저장되었습니다."));
+    }
 
-	@GetMapping("/logs")
-	public ResponseEntity<ApiSuccessResult<Page<QrAuthLogResponse>>> getQrAuthLogs(
-		@ModelAttribute QrAuthLogSearchFilter filter,
-		Pageable pageable
-	) {
-		Page<QrAuthLogResponse> page = qrAuthLogQueryDslRepository.findQrAuthLogs(filter, pageable);
-		return ResponseEntity.status(HttpStatus.OK)
-			.body(ApiResponse.success(HttpStatus.OK, page));
-	}
+    @GetMapping("/logs")
+    public ResponseEntity<ApiSuccessResult<Page<QrAuthLogResponse>>> getQrAuthLogs(
+            @ModelAttribute QrAuthLogSearchFilter filter,
+            Pageable pageable
+    ) {
+        Page<QrAuthLogResponse> page = qrAuthLogQueryDslRepository.findQrAuthLogs(filter, pageable);
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(ApiResponse.success(HttpStatus.OK, page));
+    }
 
-	@DeleteMapping("/logs/{id}")
-	public ResponseEntity<ApiSuccessResult<?>> deleteQrAuthLog(@PathVariable("id") Long id) {
-		if (!qrAuthLogRepository.existsById(id)) {
-			return ResponseEntity.status(HttpStatus.NOT_FOUND)
-				.body(ApiResponse.success(HttpStatus.NOT_FOUND, "해당 로그가 존재하지 않습니다."));
-		}
-		qrAuthLogRepository.deleteById(id);
-		return ResponseEntity.status(HttpStatus.OK)
-			.body(ApiResponse.success(HttpStatus.OK, "QR 로그가 삭제되었습니다."));
-	}
+    @DeleteMapping("/logs/{id}")
+    public ResponseEntity<ApiSuccessResult<?>> deleteQrAuthLog(@PathVariable("id") Long id) {
+        if (!qrAuthLogRepository.existsById(id)) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(ApiResponse.success(HttpStatus.NOT_FOUND, "해당 로그가 존재하지 않습니다."));
+        }
+        qrAuthLogRepository.deleteById(id);
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(ApiResponse.success(HttpStatus.OK, "QR 로그가 삭제되었습니다."));
+    }
 }

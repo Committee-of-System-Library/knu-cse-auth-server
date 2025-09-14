@@ -18,44 +18,44 @@ import java.util.UUID;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class AuthorizationCode extends BaseEntity {
-	
-	@Id
-	@Column(name = "code", length = 36)
-	private String code;
-	
-	@Column(name = "email", nullable = false, length = 255)
-	private String email;
-	
-	@Column(name = "redirect_uri", nullable = false, length = 500)
-	private String redirectUrl;
-	
-	@Column(name = "expires_at", nullable = false)
-	private LocalDateTime expiresAt;
-	
-	@Column(name = "used", nullable = false)
-	private boolean used = false;
 
-	@Column(name = "client_id")
-	private Long clientId;
+    @Id
+    @Column(name = "code", length = 36)
+    private String code;
 
-	@Builder
-	public AuthorizationCode(String email, String redirectUrl, LocalDateTime expiresAt, Long clientId) {
-		this.code = UUID.randomUUID().toString();
-		this.email = email;
-		this.redirectUrl = redirectUrl;
-		this.expiresAt = expiresAt;
-		this.clientId = clientId;
-	}
-	
-	public boolean isExpired() {
-		return LocalDateTime.now().isAfter(expiresAt);
-	}
+    @Column(name = "email", nullable = false, length = 255)
+    private String email;
+
+    @Column(name = "redirect_uri", nullable = false, length = 500)
+    private String redirectUrl;
+
+    @Column(name = "expires_at", nullable = false)
+    private LocalDateTime expiresAt;
+
+    @Column(name = "used", nullable = false)
+    private boolean used = false;
+
+    @Column(name = "client_id")
+    private Long clientId;
+
+    @Builder
+    public AuthorizationCode(String email, String redirectUrl, LocalDateTime expiresAt, Long clientId) {
+        this.code = UUID.randomUUID().toString();
+        this.email = email;
+        this.redirectUrl = redirectUrl;
+        this.expiresAt = expiresAt;
+        this.clientId = clientId;
+    }
+
+    public boolean isExpired() {
+        return LocalDateTime.now().isAfter(expiresAt);
+    }
 
     public void markAsUsed() {
-		this.used = true;
-	}
-	
-	public boolean isValid() {
-		return !isExpired() && !isUsed();
-	}
+        this.used = true;
+    }
+
+    public boolean isValid() {
+        return !isExpired() && !isUsed();
+    }
 }

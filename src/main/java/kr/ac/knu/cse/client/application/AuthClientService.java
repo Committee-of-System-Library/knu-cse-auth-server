@@ -22,101 +22,99 @@ import java.util.stream.Collectors;
 @Slf4j
 @Transactional(readOnly = true)
 public class AuthClientService {
-	private final AuthClientRepository serviceRepository;
+    private final AuthClientRepository serviceRepository;
 
-	@Transactional
-	public Long createAuthClient(CreateClientRequest request) {
-		// 클라이언트명 중복 확인
-		if (serviceRepository.existsByClientName(request.getClientName())) {
-			throw new DuplicateClientNameException();
-		}
+    @Transactional
+    public Long createAuthClient(CreateClientRequest request) {
+        if (serviceRepository.existsByClientName(request.getClientName())) {
+            throw new DuplicateClientNameException();
+        }
 
-		AuthClient service = AuthClient.builder()
-            .clientName(request.getClientName())
-            .clientDescription(request.getClientDescription())
-			.allowedDomains(request.getAllowedDomains())
-			.build();
+        AuthClient service = AuthClient.builder()
+                .clientName(request.getClientName())
+                .clientDescription(request.getClientDescription())
+                .allowedDomains(request.getAllowedDomains())
+                .build();
 
-		AuthClient savedAuthClient = serviceRepository.save(service);
-		log.info("클라이언트 생성 완료 - AuthClientId: {}, AuthClientName: {}",
-			savedAuthClient.getClientId(), savedAuthClient.getClientName());
+        AuthClient savedAuthClient = serviceRepository.save(service);
+        log.info("클라이언트 생성 완료 - AuthClientId: {}, AuthClientName: {}",
+                savedAuthClient.getClientId(), savedAuthClient.getClientName());
 
-		return savedAuthClient.getClientId();
-	}
+        return savedAuthClient.getClientId();
+    }
 
-	@Transactional
-	public void updateAuthClient(Long clientId, UpdateClientRequest request) {
-		AuthClient service = serviceRepository.findById(clientId)
-			.orElseThrow(AuthClientNotFoundException::new);
+    @Transactional
+    public void updateAuthClient(Long clientId, UpdateClientRequest request) {
+        AuthClient service = serviceRepository.findById(clientId)
+                .orElseThrow(AuthClientNotFoundException::new);
 
-		// 클라이언트명 변경 시 중복 확인
-		if (!service.getClientName().equals(request.getClientName()) &&
-			serviceRepository.existsByClientName(request.getClientName())) {
-			throw new DuplicateClientNameException();
-		}
+        if (!service.getClientName().equals(request.getClientName()) &&
+                serviceRepository.existsByClientName(request.getClientName())) {
+            throw new DuplicateClientNameException();
+        }
 
-		service.updateClientInfo(
-			request.getClientName(),
-			request.getClientDescription(),
-			request.getAllowedDomains()
-		);
+        service.updateClientInfo(
+                request.getClientName(),
+                request.getClientDescription(),
+                request.getAllowedDomains()
+        );
 
-		log.info("클라이언트 정보 수정 완료 - AuthClientId: {}, AuthClientName: {}",
-			service.getClientId(), service.getClientName());
-	}
+        log.info("클라이언트 정보 수정 완료 - AuthClientId: {}, AuthClientName: {}",
+                service.getClientId(), service.getClientName());
+    }
 
-	@Transactional
-	public void regenerateSecret(Long clientId) {
-		AuthClient service = serviceRepository.findById(clientId)
-			.orElseThrow(AuthClientNotFoundException::new);
+    @Transactional
+    public void regenerateSecret(Long clientId) {
+        AuthClient service = serviceRepository.findById(clientId)
+                .orElseThrow(AuthClientNotFoundException::new);
 
-		service.regenerateSecret();
-		log.info("클라이언트 JWT Secret 재생성 완료 - AuthClientId: {}", clientId);
-	}
+        service.regenerateSecret();
+        log.info("클라이언트 JWT Secret 재생성 완료 - AuthClientId: {}", clientId);
+    }
 
-	@Transactional
-	public void deactivateAuthClient(Long clientId) {
-		AuthClient service = serviceRepository.findById(clientId)
-			.orElseThrow(AuthClientNotFoundException::new);
+    @Transactional
+    public void deactivateAuthClient(Long clientId) {
+        AuthClient service = serviceRepository.findById(clientId)
+                .orElseThrow(AuthClientNotFoundException::new);
 
-		service.deactivate();
-		log.info("클라이언트 비활성화 완료 - AuthClientId: {}", clientId);
-	}
+        service.deactivate();
+        log.info("클라이언트 비활성화 완료 - AuthClientId: {}", clientId);
+    }
 
-	@Transactional
-	public void activateAuthClient(Long clientId) {
-		AuthClient service = serviceRepository.findById(clientId)
-			.orElseThrow(AuthClientNotFoundException::new);
+    @Transactional
+    public void activateAuthClient(Long clientId) {
+        AuthClient service = serviceRepository.findById(clientId)
+                .orElseThrow(AuthClientNotFoundException::new);
 
-		service.activate();
-		log.info("클라이언트 활성화 완료 - AuthClientId: {}", clientId);
-	}
+        service.activate();
+        log.info("클라이언트 활성화 완료 - AuthClientId: {}", clientId);
+    }
 
-	public AuthClientDetailResponse getAuthClientDetail(Long clientId) {
-		AuthClient service = serviceRepository.findById(clientId)
-			.orElseThrow(AuthClientNotFoundException::new);
+    public AuthClientDetailResponse getAuthClientDetail(Long clientId) {
+        AuthClient service = serviceRepository.findById(clientId)
+                .orElseThrow(AuthClientNotFoundException::new);
 
-		return AuthClientDetailResponse.from(service);
-	}
+        return AuthClientDetailResponse.from(service);
+    }
 
-	public List<AuthClientResponse> getAllAuthClients() {
-		return serviceRepository.findAll().stream()
-			.map(AuthClientResponse::from)
-			.collect(Collectors.toList());
-	}
+    public List<AuthClientResponse> getAllAuthClients() {
+        return serviceRepository.findAll().stream()
+                .map(AuthClientResponse::from)
+                .collect(Collectors.toList());
+    }
 
-	public List<AuthClientResponse> getActiveAuthClients() {
-		return serviceRepository.findAllByStatus(AuthClientStatus.ACTIVE).stream()
-			.map(AuthClientResponse::from)
-			.collect(Collectors.toList());
-	}
+    public List<AuthClientResponse> getActiveAuthClients() {
+        return serviceRepository.findAllByStatus(AuthClientStatus.ACTIVE).stream()
+                .map(AuthClientResponse::from)
+                .collect(Collectors.toList());
+    }
 
-	@Transactional
-	public void deleteAuthClient(Long clientId) {
-		AuthClient service = serviceRepository.findById(clientId)
-			.orElseThrow(AuthClientNotFoundException::new);
+    @Transactional
+    public void deleteAuthClient(Long clientId) {
+        AuthClient service = serviceRepository.findById(clientId)
+                .orElseThrow(AuthClientNotFoundException::new);
 
-		serviceRepository.delete(service);
-		log.info("클라이언트 삭제 완료 - AuthClientId: {}", clientId);
-	}
+        serviceRepository.delete(service);
+        log.info("클라이언트 삭제 완료 - AuthClientId: {}", clientId);
+    }
 }

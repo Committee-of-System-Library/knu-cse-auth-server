@@ -25,65 +25,64 @@ import org.springframework.web.cors.CorsConfigurationSource;
 @EnableMethodSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
-	private final PrincipalDetailsOauthService principalDetailsOauthService;
-	private final Oauth2SuccessHandler oauth2SuccessHandler;
-	private final AuthorizationFilter authorizationFilter;
-	private final CorsConfigurationSource corsConfigurationSource;
+    private final PrincipalDetailsOauthService principalDetailsOauthService;
+    private final Oauth2SuccessHandler oauth2SuccessHandler;
+    private final AuthorizationFilter authorizationFilter;
+    private final CorsConfigurationSource corsConfigurationSource;
 
-	@Bean
-	public RoleHierarchy roleHierarchy() {
-		return RoleHierarchyImpl.fromHierarchy(
-			"""
-				ROLE_ADMIN > ROLE_EXECUTIVE\s
-				ROLE_ADMIN > ROLE_FINANCE\s
-				ROLE_EXECUTIVE > ROLE_STUDENT\s
-				ROLE_FINANCE > ROLE_STUDENT"""
-		);
-	}
+    @Bean
+    public RoleHierarchy roleHierarchy() {
+        return RoleHierarchyImpl.fromHierarchy(
+                """
+                        ROLE_ADMIN > ROLE_EXECUTIVE\s
+                        ROLE_ADMIN > ROLE_FINANCE\s
+                        ROLE_EXECUTIVE > ROLE_STUDENT\s
+                        ROLE_FINANCE > ROLE_STUDENT"""
+        );
+    }
 
-	@Bean
-	public SecurityFilterChain securityFilterChain(
-		HttpSecurity httpSecurity
-	) throws Exception {
-		httpSecurity
-			.cors(cors -> cors.configurationSource(corsConfigurationSource))
-			.csrf(AbstractHttpConfigurer::disable)
-			.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-			.formLogin(AbstractHttpConfigurer::disable);
+    @Bean
+    public SecurityFilterChain securityFilterChain(
+            HttpSecurity httpSecurity
+    ) throws Exception {
+        httpSecurity
+                .cors(cors -> cors.configurationSource(corsConfigurationSource))
+                .csrf(AbstractHttpConfigurer::disable)
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .formLogin(AbstractHttpConfigurer::disable);
 
-		httpSecurity
-			.authorizeHttpRequests(request -> request
-				.requestMatchers(
-					new AntPathRequestMatcher("/oauth2/**"),
-					new AntPathRequestMatcher("/additional-info/**"),
-					new AntPathRequestMatcher("/token"),
-					new AntPathRequestMatcher("/login"),
-					new AntPathRequestMatcher("/h2-console/**")
-				).permitAll()
-				.anyRequest().authenticated())
-			.addFilterBefore(authorizationFilter, UsernamePasswordAuthenticationFilter.class)
-			.exceptionHandling(exceptions -> exceptions
-				.authenticationEntryPoint((request, response, authException) -> {
-					response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-					response.setContentType("application/json;charset=UTF-8");
-					response.getWriter().write("{\"status\":401,\"message\":\"Authentication required\"}");
-				})
-			);
+        httpSecurity
+                .authorizeHttpRequests(request -> request
+                        .requestMatchers(
+                                new AntPathRequestMatcher("/oauth2/**"),
+                                new AntPathRequestMatcher("/additional-info/**"),
+                                new AntPathRequestMatcher("/token"),
+                                new AntPathRequestMatcher("/login"),
+                                new AntPathRequestMatcher("/h2-console/**")
+                        ).permitAll()
+                        .anyRequest().authenticated())
+                .addFilterBefore(authorizationFilter, UsernamePasswordAuthenticationFilter.class)
+                .exceptionHandling(exceptions -> exceptions
+                        .authenticationEntryPoint((request, response, authException) -> {
+                            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                            response.setContentType("application/json;charset=UTF-8");
+                            response.getWriter().write("{\"status\":401,\"message\":\"Authentication required\"}");
+                        })
+                );
 
-		httpSecurity
-			.oauth2Login(oauth2 -> oauth2
-				.authorizationEndpoint(authorization -> authorization
-					.baseUri("/oauth2/authorize")) // OAuth2 인증 시작 URL 설정
-				.redirectionEndpoint(redirection -> redirection
-					.baseUri("/oauth2/callback/*")) // OAuth2 콜백 URL 설정
-				.userInfoEndpoint(userInfo -> userInfo
-					.userService(principalDetailsOauthService))
-				.successHandler(oauth2SuccessHandler)); // 인증 성공 핸들러
+        httpSecurity
+                .oauth2Login(oauth2 -> oauth2
+                        .authorizationEndpoint(authorization -> authorization
+                                .baseUri("/oauth2/authorize"))
+                        .redirectionEndpoint(redirection -> redirection
+                                .baseUri("/oauth2/callback/*"))
+                        .userInfoEndpoint(userInfo -> userInfo
+                                .userService(principalDetailsOauthService))
+                        .successHandler(oauth2SuccessHandler));
 
-		// X-Frame-Options 설정 (for H2 Console)
-		httpSecurity.headers(
-			headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin));
+        httpSecurity.headers(
+                headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin));
 
-		return httpSecurity.build();
-	}
+        return httpSecurity.build();
+    }
 }

@@ -9,6 +9,6 @@ import java.util.Optional;
 
 @Repository
 public interface ProviderRepository extends JpaRepository<Provider, Long>, ProviderQueryDslRepository {
-	@EntityGraph(attributePaths = "student")
-	Optional<Provider> findByEmail(String email);
+    @EntityGraph(attributePaths = "student")
+    Optional<Provider> findByEmail(String email);
 }

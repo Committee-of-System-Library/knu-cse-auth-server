@@ -34,8 +34,12 @@ import static com.querydsl.core.types.Order.DESC;
 @Repository
 public abstract class QueryDslSupport {
 
-    private EntityManager entityManager;
     protected JPAQueryFactory queryFactory;
+    private EntityManager entityManager;
+
+    protected static Order convertTo(final Sort.Order order) {
+        return order == null ? null : order.isAscending() ? ASC : DESC;
+    }
 
     @Autowired
     public void setEntityManager(final EntityManager entityManager) {
@@ -75,9 +79,5 @@ public abstract class QueryDslSupport {
         final int size = pageable.getPageSize();
         boolean hasNext = removeIfContentHasNext(mutable, size);
         return new SliceImpl<>(mutable, PageRequest.ofSize(size), hasNext);
-    }
-
-    protected static Order convertTo(final Sort.Order order) {
-        return order == null ? null : order.isAscending() ? ASC : DESC;
     }
 }

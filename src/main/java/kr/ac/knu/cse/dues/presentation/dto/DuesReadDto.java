@@ -8,21 +8,21 @@ import java.time.LocalDateTime;
 
 @Builder
 public record DuesReadDto(
-	Long duesId,
-	Long studentId,
-	String depositorName,
-	Integer amount,
-	Integer remainingSemesters,
-	LocalDateTime submittedAt
+        Long duesId,
+        Long studentId,
+        String depositorName,
+        Integer amount,
+        Integer remainingSemesters,
+        LocalDateTime submittedAt
 ) {
-	public static DuesReadDto from(Student student, Dues dues) {
-		return DuesReadDto.builder()
-			.duesId(dues.getId())
-			.studentId(student.getId())
-			.depositorName(dues.getDepositorName())
-			.amount(dues.getAmount())
-			.remainingSemesters(dues.getRemainingSemesters())
-			.submittedAt(dues.getSubmittedAt())
-			.build();
-	}
+    public static DuesReadDto from(Student student, Dues dues) {
+        return DuesReadDto.builder()
+                .duesId(dues.getId())
+                .studentId(student.getId())
+                .depositorName(dues.getDepositorName())
+                .amount(dues.getAmount())
+                .remainingSemesters(dues.getRemainingSemesters())
+                .submittedAt(dues.getSubmittedAt())
+                .build();
+    }
 }

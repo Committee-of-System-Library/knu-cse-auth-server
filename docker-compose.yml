@@ -30,7 +30,7 @@ services:
       - ${DB_PORT}:${DB_PORT}
     restart: always
     volumes:
-      - /0_services/knu-cse-auth/cse-student-fee-database:/var/lib/mysql
+      - /0_services/knu-cse-auth/knu-cse-auth-database-volume:/var/lib/mysql
     networks:
       - services
 

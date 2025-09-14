@@ -37,37 +37,37 @@ public class StudentController {
 
     @GetMapping
     public ResponseEntity<ApiSuccessResult<Page<StudentResponse>>> getStudents(
-        @ModelAttribute final StudentSearchFilter filter,
-        final Pageable pageable
+            @ModelAttribute final StudentSearchFilter filter,
+            final Pageable pageable
     ) {
         Page<StudentResponse> response = studentService.getStudents(filter, pageable);
         return ResponseEntity.status(HttpStatus.OK)
-            .body(ApiResponse.success(HttpStatus.OK, response));
+                .body(ApiResponse.success(HttpStatus.OK, response));
     }
 
     @PostMapping
     public ResponseEntity<ApiSuccessResult<?>> createStudent(
-        @Valid @RequestBody PostCreateStudentReq requestBody
+            @Valid @RequestBody PostCreateStudentReq requestBody
     ) {
         Long id = studentService.saveStudent(StudentMapper.toSaveStudentDto(requestBody));
         return ResponseEntity.status(HttpStatus.CREATED)
-            .body(ApiResponse.success(HttpStatus.CREATED, "Student created with ID: " + id));
+                .body(ApiResponse.success(HttpStatus.CREATED, "Student created with ID: " + id));
     }
 
     @PatchMapping("/{id}")
     public ResponseEntity<ApiSuccessResult<?>> updateStudent(
-        @PathVariable Long id,
-        @Valid @RequestBody PatchUpdateStudentReq requestBody
+            @PathVariable Long id,
+            @Valid @RequestBody PatchUpdateStudentReq requestBody
     ) {
         studentService.updateStudent(id, StudentMapper.toUpdateStudentDto(requestBody));
         return ResponseEntity.status(HttpStatus.OK)
-            .body(ApiResponse.success(HttpStatus.OK, "Student updated"));
+                .body(ApiResponse.success(HttpStatus.OK, "Student updated"));
     }
 
     @DeleteMapping
     public ResponseEntity<ApiSuccessResult<?>> deleteStudents(@RequestParam("ids") List<Long> ids) {
         studentService.deleteStudents(ids);
         return ResponseEntity.status(HttpStatus.OK)
-            .body(ApiResponse.success(HttpStatus.OK, "선택된 학생들이 삭제되었습니다."));
+                .body(ApiResponse.success(HttpStatus.OK, "선택된 학생들이 삭제되었습니다."));
     }
 }

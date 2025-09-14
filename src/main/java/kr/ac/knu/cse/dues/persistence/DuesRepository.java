@@ -9,5 +9,5 @@ import java.util.Optional;
 
 @Repository
 public interface DuesRepository extends JpaRepository<Dues, Long>, DuesQueryDslRepository {
-	Optional<Dues> findByStudent(Student student);
+    Optional<Dues> findByStudent(Student student);
 }

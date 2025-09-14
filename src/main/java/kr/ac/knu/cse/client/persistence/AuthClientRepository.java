@@ -13,14 +13,14 @@ import java.util.Optional;
 @Repository
 public interface AuthClientRepository extends JpaRepository<AuthClient, Long> {
 
-	Optional<AuthClient> findByClientName(String clientName);
+    Optional<AuthClient> findByClientName(String clientName);
 
-	Optional<AuthClient> findByClientIdAndStatus(Long clientId, AuthClientStatus status);
+    Optional<AuthClient> findByClientIdAndStatus(Long clientId, AuthClientStatus status);
 
-	List<AuthClient> findAllByStatus(AuthClientStatus status);
+    List<AuthClient> findAllByStatus(AuthClientStatus status);
 
-	@Query("SELECT c FROM AuthClient c JOIN c.allowedDomains d WHERE :redirectUrl LIKE CONCAT(d, '%') AND c.status = 'ACTIVE'")
-	Optional<AuthClient> findByAllowedRedirectUrl(@Param("redirectUrl") String redirectUrl);
+    @Query("SELECT c FROM AuthClient c JOIN c.allowedDomains d WHERE :redirectUrl LIKE CONCAT(d, '%') AND c.status = 'ACTIVE'")
+    Optional<AuthClient> findByAllowedRedirectUrl(@Param("redirectUrl") String redirectUrl);
 
-	boolean existsByClientName(String clientName);
+    boolean existsByClientName(String clientName);
 }

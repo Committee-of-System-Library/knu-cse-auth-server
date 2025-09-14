@@ -20,19 +20,19 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class AuthorizationController {
 
-	@GetMapping("/token-info")
-	@PreAuthorize("isAuthenticated()")
-	public ResponseEntity<ApiSuccessResult<TokenInfoDto>> tokenInfo(
-		@LoggedInProvider PrincipalDetails principalDetails
-	) {
-		log.info("토큰 정보 요청 - 사용자: {}", principalDetails.getName());
-		Provider provider = principalDetails.provider();
-		Student student = principalDetails.student();
+    @GetMapping("/token-info")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<ApiSuccessResult<TokenInfoDto>> tokenInfo(
+            @LoggedInProvider PrincipalDetails principalDetails
+    ) {
+        log.info("토큰 정보 요청 - 사용자: {}", principalDetails.getName());
+        Provider provider = principalDetails.provider();
+        Student student = principalDetails.student();
 
-		log.debug("Provider: {}, Student: {}", provider, student);
+        log.debug("Provider: {}, Student: {}", provider, student);
 
-		return ResponseEntity
-			.status(HttpStatus.OK)
-			.body(ApiResponse.success(HttpStatus.OK, TokenInfoDto.from(student, provider)));
-	}
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(ApiResponse.success(HttpStatus.OK, TokenInfoDto.from(student, provider)));
+    }
 }

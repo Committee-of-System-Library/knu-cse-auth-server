@@ -13,11 +13,11 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class DuesCommandService {
 
-	private final DuesRepository duesRepository;
+    private final DuesRepository duesRepository;
 
-	@Transactional(readOnly = true)
-	public Boolean checkMyDues(Student student) {
+    @Transactional(readOnly = true)
+    public Boolean checkMyDues(Student student) {
         Optional<Dues> optionalDues = duesRepository.findByStudent(student);
         return optionalDues.isPresent();
-	}
+    }
 }

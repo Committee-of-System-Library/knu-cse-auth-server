@@ -49,8 +49,8 @@ public class AdditionalInfoController {
 
     @PostMapping("/connect")
     public void connectStudent(
-        @RequestBody Map<String, String> body,
-        HttpServletResponse response
+            @RequestBody Map<String, String> body,
+            HttpServletResponse response
     ) throws IOException {
         String tempToken = body.get("token");
         String studentNumber = body.get("studentNumber");
@@ -70,7 +70,6 @@ public class AdditionalInfoController {
             throw new SessionExpiredException();
         }
 
-        // 임시 토큰으로 PrincipalDetails 조회 및 제거
         TempAuthStorage.TempAuthData authData = tempAuthStorage.retrieveAndRemove(tempToken);
         if (authData == null) {
             log.error("[DEBUG] 유효하지 않거나 만료된 임시 토큰: {}", tempToken);
@@ -81,25 +80,21 @@ public class AdditionalInfoController {
 
         log.info("[DEBUG] 임시 토큰 검증 성공. 사용자: {}", principalDetails.getName());
 
-        // 프로바이더 - 학생 연결
         String email = principalDetails.getName();
         Student student = studentService.getStudentByStudentNumber(studentNumber);
         providerService.connectStudent(email, student);
 
         log.info("[DEBUG] 학생 연결 완료. Authorization Code를 발급합니다.");
 
-        // Authorization Code 생성 (OAuth2SuccessHandler와 동일한 흐름)
         String authorizationCode = authorizationCodeService.generateCode(email, redirectUrl);
         log.info("사용자({})에게 Authorization Code 발급 완료", email);
 
-        // 최종적으로 원래 redirectUrl로 code와 함께 리다이렉트
         String finalRedirectUrl = UriComponentsBuilder.fromUriString(redirectUrl)
-            .queryParam("code", authorizationCode)
-            .build().toUriString();
+                .queryParam("code", authorizationCode)
+                .build().toUriString();
 
         log.info("최종 목적지인 {}로 리다이렉트합니다.", finalRedirectUrl);
 
-        // OAuth2SuccessHandler와 동일한 방식으로 리다이렉트
         response.sendRedirect(finalRedirectUrl);
     }
 }

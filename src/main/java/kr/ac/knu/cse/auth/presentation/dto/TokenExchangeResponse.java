@@ -7,14 +7,14 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class TokenExchangeResponse {
-	
-	private String accessToken;
-	private String tokenType;
-	private int expiresIn;
-	
-	public TokenExchangeResponse(String accessToken, String tokenType, int expiresIn) {
-		this.accessToken = accessToken;
-		this.tokenType = tokenType;
-		this.expiresIn = expiresIn;
-	}
+
+    private String accessToken;
+    private String tokenType;
+    private int expiresIn;
+
+    public TokenExchangeResponse(String accessToken, String tokenType, int expiresIn) {
+        this.accessToken = accessToken;
+        this.tokenType = tokenType;
+        this.expiresIn = expiresIn;
+    }
 }

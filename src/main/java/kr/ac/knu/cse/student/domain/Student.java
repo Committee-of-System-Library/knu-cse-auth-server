@@ -21,61 +21,61 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Student extends BaseEntity {
 
-	@Id
-	@Column(name = "student_id")
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
+    @Id
+    @Column(name = "student_id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-	@NotNull
-	@Column(
-		name = "student_number",
-		length = 15,
-		unique = true,
-		nullable = false
-	)
-	private String studentNumber;
+    @NotNull
+    @Column(
+            name = "student_number",
+            length = 15,
+            unique = true,
+            nullable = false
+    )
+    private String studentNumber;
 
-	@NotNull
-	@Column(
-		name = "name",
-		length = 50,
-		nullable = false
-	)
-	private String name;
+    @NotNull
+    @Column(
+            name = "name",
+            length = 50,
+            nullable = false
+    )
+    private String name;
 
-	@NotNull
-	@Column(
-		name = "major",
-		nullable = false
-	)
-	@Enumerated(EnumType.STRING)
-	private Major major;
+    @NotNull
+    @Column(
+            name = "major",
+            nullable = false
+    )
+    @Enumerated(EnumType.STRING)
+    private Major major;
 
-	@NotNull
-	@Column(
-		name = "role",
-		nullable = false
-	)
-	@Enumerated(EnumType.STRING)
-	private Role role;
+    @NotNull
+    @Column(
+            name = "role",
+            nullable = false
+    )
+    @Enumerated(EnumType.STRING)
+    private Role role;
 
-	@Builder
-	public Student(
-		final String studentNumber,
-		final String name,
-		final Major major,
-		final Role role
-	) {
-		this.studentNumber = studentNumber;
-		this.name = name;
-		this.role = role;
-		this.major = major;
-	}
+    @Builder
+    public Student(
+            final String studentNumber,
+            final String name,
+            final Major major,
+            final Role role
+    ) {
+        this.studentNumber = studentNumber;
+        this.name = name;
+        this.role = role;
+        this.major = major;
+    }
 
-	public void updateStudentInfo(String studentNumber, String name, Major major, Role role) {
-		this.studentNumber = studentNumber;
-		this.name = name;
-		this.major = major;
-		this.role = role;
-	}
+    public void updateStudentInfo(String studentNumber, String name, Major major, Role role) {
+        this.studentNumber = studentNumber;
+        this.name = name;
+        this.major = major;
+        this.role = role;
+    }
 }

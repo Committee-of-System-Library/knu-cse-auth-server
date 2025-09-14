@@ -12,42 +12,42 @@ import java.util.Arrays;
 
 @Log4j2
 public abstract class BaseExceptionHandler<T extends Throwable> {
-	@Autowired
-	private Environment env;
+    @Autowired
+    private Environment env;
 
-	protected ResponseEntity<ApiErrorResult> handleException(
-		T exception,
-		HttpStatus status,
-		String errorMsg
-	) {
-		boolean isProdProfile = isProdProfile();
+    protected ResponseEntity<ApiErrorResult> handleException(
+            T exception,
+            HttpStatus status,
+            String errorMsg
+    ) {
+        boolean isProdProfile = isProdProfile();
 
-		if (status.is4xxClientError()) {
-			if (isProdProfile) {
-				log.info("Client error: {}", exception.getMessage());
-			} else {
-				log.info("Client error: {}", exception.getMessage(), exception);
-			}
-		} else if (status.is5xxServerError()) {
-			if (isProdProfile) {
-				log.error("Server error: {}", exception.getMessage());
-			} else {
-				log.error("Server error: {}", exception.getMessage(), exception);
-			}
-		} else {
-			if (isProdProfile) {
-				log.warn("Unexpected status {}: {}", status, exception.getMessage());
-			} else {
-				log.warn("Unexpected status {}: {}", status, exception.getMessage(), exception);
-			}
-		}
+        if (status.is4xxClientError()) {
+            if (isProdProfile) {
+                log.info("Client error: {}", exception.getMessage());
+            } else {
+                log.info("Client error: {}", exception.getMessage(), exception);
+            }
+        } else if (status.is5xxServerError()) {
+            if (isProdProfile) {
+                log.error("Server error: {}", exception.getMessage());
+            } else {
+                log.error("Server error: {}", exception.getMessage(), exception);
+            }
+        } else {
+            if (isProdProfile) {
+                log.warn("Unexpected status {}: {}", status, exception.getMessage());
+            } else {
+                log.warn("Unexpected status {}: {}", status, exception.getMessage(), exception);
+            }
+        }
 
-		return ResponseEntity
-			.status(status)
-			.body(ApiResponse.error(status, errorMsg));
-	}
+        return ResponseEntity
+                .status(status)
+                .body(ApiResponse.error(status, errorMsg));
+    }
 
-	private boolean isProdProfile() {
-		return Arrays.asList(env.getActiveProfiles()).contains("prod");
-	}
+    private boolean isProdProfile() {
+        return Arrays.asList(env.getActiveProfiles()).contains("prod");
+    }
 }

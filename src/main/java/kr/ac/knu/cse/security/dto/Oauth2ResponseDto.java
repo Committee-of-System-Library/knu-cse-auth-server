@@ -3,13 +3,13 @@ package kr.ac.knu.cse.security.dto;
 import kr.ac.knu.cse.provider.domain.Provider;
 
 public interface Oauth2ResponseDto {
-	String getProvider();
+    String getProvider();
 
-	String getProviderId();
+    String getProviderId();
 
-	String getEmail();
+    String getEmail();
 
-	String getName();
+    String getName();
 
-	Provider toEntity();
+    Provider toEntity();
 }
