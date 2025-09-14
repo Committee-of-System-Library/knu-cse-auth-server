@@ -55,16 +55,23 @@ public class QrAuthController {
             @RequestParam String studentNumber,
             @RequestParam(defaultValue = "false") boolean duesOnly
     ) {
+        log.info("학생 정보 조회 요청 - 학번: {}, 회비 납부자만: {}", studentNumber, duesOnly);
         Student student = studentRepository.findByStudentNumber(studentNumber)
-                .orElseThrow(StudentNotFoundException::new);
+                .orElseThrow(() -> {
+                    log.error("학생을 찾을 수 없습니다: {}", studentNumber);
+                    return new StudentNotFoundException();
+                });
 
         // 실제 회비 납부 여부 확인
         boolean hasDues = duesRepository.findByStudent(student).isPresent();
+        log.info("학생 회비 납부 여부: {}", hasDues);
 
         if (duesOnly && !hasDues) {
+            log.warn("회비 미납부 학생 접근 - 학번: {}", studentNumber);
             throw new DuesNotFoundException();
         }
 
+        log.info("학생 정보 조회 완료 - 학번: {}", studentNumber);
         return ResponseEntity.status(HttpStatus.OK)
                 .body(ApiResponse.success(HttpStatus.OK, Map.of(
                         "studentNumber", student.getStudentNumber(),
@@ -81,12 +88,14 @@ public class QrAuthController {
     ) {
         String scannedBy = principalDetails.getName();
         LocalDate today = LocalDate.now();
+        log.info("QR 스캔 로그 저장 요청 - 스캔한 사람: {}, 날짜: {}, 학생 수: {}", scannedBy, today, body.scannedStudents().size());
 
         List<QrAuthLogDto> dtos = body.scannedStudents().stream()
                 .map(s -> new QrAuthLogDto(s.studentNumber(), s.studentName(), s.duesPaid()))
                 .toList();
 
         qrAuthLogService.saveLogs(today, scannedBy, dtos);
+        log.info("QR 스캔 로그 저장 완료");
 
         return ResponseEntity.status(HttpStatus.OK)
                 .body(ApiResponse.success(HttpStatus.OK, "QR 스캔 로그가 저장되었습니다."));
@@ -97,18 +106,23 @@ public class QrAuthController {
             @ModelAttribute QrAuthLogSearchFilter filter,
             Pageable pageable
     ) {
+        log.info("QR 스캔 로그 조회 요청 - 필터: {}, 페이지: {}", filter, pageable);
         Page<QrAuthLogResponse> page = qrAuthLogQueryDslRepository.findQrAuthLogs(filter, pageable);
+        log.info("QR 스캔 로그 조회 완료 - 총 {}개", page.getTotalElements());
         return ResponseEntity.status(HttpStatus.OK)
                 .body(ApiResponse.success(HttpStatus.OK, page));
     }
 
     @DeleteMapping("/logs/{id}")
     public ResponseEntity<ApiSuccessResult<?>> deleteQrAuthLog(@PathVariable("id") Long id) {
+        log.info("QR 스캔 로그 삭제 요청 - ID: {}", id);
         if (!qrAuthLogRepository.existsById(id)) {
+            log.error("QR 스캔 로그를 찾을 수 없습니다: {}", id);
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body(ApiResponse.success(HttpStatus.NOT_FOUND, "해당 로그가 존재하지 않습니다."));
         }
         qrAuthLogRepository.deleteById(id);
+        log.info("QR 스캔 로그 삭제 완료 - ID: {}", id);
         return ResponseEntity.status(HttpStatus.OK)
                 .body(ApiResponse.success(HttpStatus.OK, "QR 로그가 삭제되었습니다."));
     }
