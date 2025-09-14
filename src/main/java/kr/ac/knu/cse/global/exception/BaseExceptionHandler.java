@@ -2,7 +2,7 @@ package kr.ac.knu.cse.global.exception;
 
 import kr.ac.knu.cse.global.api.ApiErrorResult;
 import kr.ac.knu.cse.global.api.ApiResponse;
-import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
@@ -10,7 +10,7 @@ import org.springframework.http.ResponseEntity;
 
 import java.util.Arrays;
 
-@Log4j2
+@Slf4j
 public abstract class BaseExceptionHandler<T extends Throwable> {
     @Autowired
     private Environment env;
