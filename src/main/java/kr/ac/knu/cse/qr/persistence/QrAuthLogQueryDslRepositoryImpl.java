@@ -5,9 +5,12 @@ import com.querydsl.core.Tuple;
 import com.querydsl.core.types.Order;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.ComparableExpressionBase;
+import kr.ac.knu.cse.dues.persistence.DuesRepository;
 import kr.ac.knu.cse.global.support.QueryDslSupport;
 import kr.ac.knu.cse.qr.presentation.dto.QrAuthLogResponse;
 import kr.ac.knu.cse.qr.presentation.dto.QrAuthLogSearchFilter;
+import kr.ac.knu.cse.student.persistence.StudentRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
@@ -19,7 +22,11 @@ import static com.querydsl.core.types.Order.DESC;
 import static kr.ac.knu.cse.qr.domain.QQrAuthLog.qrAuthLog;
 
 @Repository
+@RequiredArgsConstructor
 public class QrAuthLogQueryDslRepositoryImpl extends QueryDslSupport implements QrAuthLogQueryDslRepository {
+
+	private final StudentRepository studentRepository;
+	private final DuesRepository duesRepository;
 
 	@Override
 	public Page<QrAuthLogResponse> findQrAuthLogs(QrAuthLogSearchFilter filter, Pageable pageable) {
@@ -63,14 +70,22 @@ public class QrAuthLogQueryDslRepositoryImpl extends QueryDslSupport implements 
 			.fetch();
 
 		List<QrAuthLogResponse> content = tuples.stream()
-			.map(t -> new QrAuthLogResponse(
-				t.get(qrAuthLog.id),
-				t.get(qrAuthLog.scanDate),
-				t.get(qrAuthLog.studentNumber),
-				t.get(qrAuthLog.studentName),
-				t.get(qrAuthLog.duesPaid),
-				t.get(qrAuthLog.scannedBy)
-			))
+			.map(t -> {
+				String studentNumber = t.get(qrAuthLog.studentNumber);
+				// 실시간 회비 납부 여부 확인
+				boolean actualDuesPaid = studentRepository.findByStudentNumber(studentNumber)
+					.map(student -> duesRepository.findByStudent(student).isPresent())
+					.orElse(false);
+
+				return new QrAuthLogResponse(
+					t.get(qrAuthLog.id),
+					t.get(qrAuthLog.scanDate),
+					studentNumber,
+					t.get(qrAuthLog.studentName),
+					actualDuesPaid,  // 실시간 납부 여부 사용
+					t.get(qrAuthLog.scannedBy)
+				);
+			})
 			.toList();
 
 		// 페이지네이션

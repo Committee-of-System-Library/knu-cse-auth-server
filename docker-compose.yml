@@ -7,16 +7,16 @@ services:
     env_file:
       - ${ENV_FILE}
     depends_on:
-      - cse-student-fee-database
+      - knu-cse-auth-database
     ports:
       - ${SPRING_PORT}:${SPRING_PORT}
     restart: always
     networks:
       - services
 
-  cse-student-fee-database:
+  knu-cse-auth-database:
     image: mysql:8.4.4
-    container_name: cse-student-fee-database
+    container_name: knu-cse-auth-database
     environment:
       MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
       MYSQL_DATABASE: ${DB_DATABASE}
@@ -30,7 +30,7 @@ services:
       - ${DB_PORT}:${DB_PORT}
     restart: always
     volumes:
-      - /0_services/cse-student-fee/cse-student-fee-database:/var/lib/mysql
+      - /0_services/knu-cse-auth/cse-student-fee-database:/var/lib/mysql
     networks:
       - services
 

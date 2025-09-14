@@ -58,18 +58,18 @@ public class QrAuthController {
 		Student student = studentRepository.findByStudentNumber(studentNumber)
 			.orElseThrow(StudentNotFoundException::new);
 
-		if (duesOnly) {
-			boolean hasDues = duesRepository.findByStudent(student).isPresent();
-			if (!hasDues) {
-				throw new DuesNotFoundException();
-			}
+		// 실제 회비 납부 여부 확인
+		boolean hasDues = duesRepository.findByStudent(student).isPresent();
+
+		if (duesOnly && !hasDues) {
+			throw new DuesNotFoundException();
 		}
 
 		return ResponseEntity.status(HttpStatus.OK)
 			.body(ApiResponse.success(HttpStatus.OK, Map.of(
 				"studentNumber", student.getStudentNumber(),
 				"studentName", student.getName(),
-				"duesPaid", duesOnly
+				"duesPaid", hasDues
 			)));
 	}
 

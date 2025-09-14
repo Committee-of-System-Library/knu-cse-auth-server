@@ -3,7 +3,7 @@ package kr.ac.knu.cse.auth.presentation;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
-import kr.ac.knu.cse.global.properties.AppProperties;
+import kr.ac.knu.cse.client.persistence.AuthClientRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
@@ -17,7 +17,7 @@ import java.io.IOException;
 @RequiredArgsConstructor
 public class LoginController {
 
-	private final AppProperties appProperties;
+	private final AuthClientRepository authClientRepository;
 
 	@GetMapping("/login")
 	public void login(
@@ -27,8 +27,8 @@ public class LoginController {
 	) throws IOException {
 		log.info("로그인 요청 - Redirect URL: {}", redirectUrl);
 
-		// redirect_url 유효성 검증
-		if (!isAllowedRedirectUrl(redirectUrl)) {
+		// redirect_url 유효성 검증 (DB 기반)
+		if (authClientRepository.findByAllowedRedirectUrl(redirectUrl).isEmpty()) {
 			log.warn("허용되지 않은 Redirect URL: {}", redirectUrl);
 			response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid redirect URL");
 			return;
@@ -45,13 +45,4 @@ public class LoginController {
 		response.sendRedirect(oauth2AuthUrl);
 	}
 
-	private boolean isAllowedRedirectUrl(String redirectUrl) {
-		if (redirectUrl == null || redirectUrl.isBlank()) {
-			return false;
-		}
-
-		return appProperties.getAllowedRedirects()
-			.stream()
-			.anyMatch(redirectUrl::startsWith);
-	}
 }

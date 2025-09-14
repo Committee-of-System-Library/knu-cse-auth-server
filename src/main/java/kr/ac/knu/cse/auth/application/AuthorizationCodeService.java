@@ -3,6 +3,9 @@ package kr.ac.knu.cse.auth.application;
 import kr.ac.knu.cse.auth.domain.AuthorizationCode;
 import kr.ac.knu.cse.auth.exception.InvalidAuthorizationCodeException;
 import kr.ac.knu.cse.auth.persistence.AuthorizationCodeRepository;
+import kr.ac.knu.cse.client.domain.AuthClient;
+import kr.ac.knu.cse.client.exception.AuthClientNotFoundException;
+import kr.ac.knu.cse.client.persistence.AuthClientRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -18,23 +21,32 @@ import java.time.LocalDateTime;
 public class AuthorizationCodeService {
 	
 	private final AuthorizationCodeRepository authorizationCodeRepository;
+	private final AuthClientRepository serviceRepository;
 	
 	private static final int CODE_EXPIRATION_MINUTES = 10;
 	
 	@Transactional
 	public String generateCode(String email, String redirectUrl) {
+		// redirectUrl로 클라이언트 찾기
+		AuthClient client = serviceRepository.findByAllowedRedirectUrl(redirectUrl)
+			.orElseThrow(() -> {
+				log.warn("허용되지 않은 Redirect URL: {}", redirectUrl);
+				return new AuthClientNotFoundException();
+			});
+
 		LocalDateTime expiresAt = LocalDateTime.now().plusMinutes(CODE_EXPIRATION_MINUTES);
-		
+
 		AuthorizationCode authorizationCode = AuthorizationCode.builder()
 			.email(email)
 			.redirectUrl(redirectUrl)
 			.expiresAt(expiresAt)
+			.clientId(client.getClientId())
 			.build();
-		
+
 		AuthorizationCode savedCode = authorizationCodeRepository.save(authorizationCode);
-		log.info("Authorization Code 생성 완료 - Email: {}, Code: {}, 만료시간: {}", 
-			email, savedCode.getCode(), expiresAt);
-		
+		log.info("Authorization Code 생성 완료 - Email: {}, Code: {}, ClientId: {}, 만료시간: {}",
+			email, savedCode.getCode(), client.getClientId(), expiresAt);
+
 		return savedCode.getCode();
 	}
 	

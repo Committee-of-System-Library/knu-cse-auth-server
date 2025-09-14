@@ -12,5 +12,4 @@ CREATE TABLE qr_auth_log
 
     PRIMARY KEY (qr_auth_log_id),
     UNIQUE KEY uq_qr_auth_log (scan_date, student_number, scanned_by)
-) ENGINE = InnoDB
-  DEFAULT CHARSET = utf8mb4;
+);

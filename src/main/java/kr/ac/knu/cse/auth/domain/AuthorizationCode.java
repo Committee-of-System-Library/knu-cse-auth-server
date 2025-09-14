@@ -34,24 +34,24 @@ public class AuthorizationCode extends BaseEntity {
 	
 	@Column(name = "used", nullable = false)
 	private boolean used = false;
-	
+
+	@Column(name = "client_id")
+	private Long clientId;
+
 	@Builder
-	public AuthorizationCode(String email, String redirectUrl, LocalDateTime expiresAt) {
+	public AuthorizationCode(String email, String redirectUrl, LocalDateTime expiresAt, Long clientId) {
 		this.code = UUID.randomUUID().toString();
 		this.email = email;
 		this.redirectUrl = redirectUrl;
 		this.expiresAt = expiresAt;
+		this.clientId = clientId;
 	}
 	
 	public boolean isExpired() {
 		return LocalDateTime.now().isAfter(expiresAt);
 	}
-	
-	public boolean isUsed() {
-		return used;
-	}
-	
-	public void markAsUsed() {
+
+    public void markAsUsed() {
 		this.used = true;
 	}
 	
