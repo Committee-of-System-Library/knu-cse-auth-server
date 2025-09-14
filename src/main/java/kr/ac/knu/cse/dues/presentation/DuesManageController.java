@@ -11,6 +11,7 @@ import kr.ac.knu.cse.dues.presentation.dto.UpdateDuesPatchReq;
 import kr.ac.knu.cse.global.api.ApiResponse;
 import kr.ac.knu.cse.global.api.ApiSuccessResult;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -33,6 +34,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping("/dues")
 @PreAuthorize("hasRole('FINANCE')")
+@Slf4j
 public class DuesManageController {
 
     private final DuesRepository duesRepository;
@@ -43,7 +45,9 @@ public class DuesManageController {
             @ModelAttribute DuesSearchFilter filter,
             Pageable pageable
     ) {
+        log.info("학생회비 납부 목록 조회 요청 - 필터: {}, 페이지: {}", filter, pageable);
         Page<DuesListResponse> page = duesRepository.findDuesList(filter, pageable);
+        log.info("학생회비 납부 목록 조회 완료 - 총 {}개", page.getTotalElements());
         return ResponseEntity.status(HttpStatus.OK)
                 .body(ApiResponse.success(HttpStatus.OK, page));
     }
@@ -52,7 +56,9 @@ public class DuesManageController {
     public ResponseEntity<ApiSuccessResult<?>> createDues(
             @Valid @RequestBody CreateDuesPostReq requestBody
     ) {
+        log.info("학생회비 납부 정보 생성 요청 - {}", requestBody);
         Long id = duesManageService.createDues(DuesMapper.toCreateDuesDto(requestBody));
+        log.info("학생회비 납부 정보 생성 완료 - ID: {}", id);
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(ApiResponse.success(HttpStatus.CREATED, "Dues created with ID: " + id));
     }
@@ -62,14 +68,18 @@ public class DuesManageController {
             @PathVariable Long id,
             @Valid @RequestBody UpdateDuesPatchReq requestBody
     ) {
+        log.info("학생회비 납부 정보 수정 요청 - ID: {}, {}", id, requestBody);
         duesManageService.updateDues(id, DuesMapper.toUpdateDuesDto(requestBody));
+        log.info("학생회비 납부 정보 수정 완료 - ID: {}", id);
         return ResponseEntity.status(HttpStatus.OK)
                 .body(ApiResponse.success(HttpStatus.OK, "Dues updated"));
     }
 
     @DeleteMapping
     public ResponseEntity<ApiSuccessResult<?>> deleteDues(@RequestParam("ids") List<Long> ids) {
+        log.info("학생회비 납부 정보 삭제 요청 - ID 목록: {}", ids);
         duesManageService.deleteDues(ids);
+        log.info("학생회비 납부 정보 삭제 완료");
         return ResponseEntity.status(HttpStatus.OK)
                 .body(ApiResponse.success(HttpStatus.OK, "선택된 납부 내역이 삭제되었습니다."));
     }
