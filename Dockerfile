@@ -13,7 +13,7 @@ RUN gradle build --no-daemon -x test
 
 # 2. OpenJDK 17을 이용하여 실행
 
-FROM openjdk:17-jdk AS runtime
+FROM amazoncorretto:17 AS runtime
 WORKDIR /app
 
 # 빌드된 JAR 파일 복사
