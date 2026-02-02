@@ -41,3 +41,21 @@ logging:
         descriptor:
           sql:
             BasicBinder: TRACE
+
+app:
+  frontend: # Frontend URL Configuration
+    base-url: http://localhost:3000
+
+keycloak:
+  base-url: http://localhost:8080
+  realm: your-realm
+  admin:
+    client-id: admin-cli-client
+    client-secret: admin-cli-secret
+
+sso:
+  redirect-allowlist:
+    - https://service-a.example.com/auth/callback
+    - https://service-b.example.com/auth/callback
+
+
