@@ -21,7 +21,11 @@ public class SignupService {
 
     @Transactional
     public SignupResponse signup(SignupCommand command) {
-        validate(command.providerName(), command.providerKey());
+        validate(
+                command.providerName(),
+                command.providerKey(),
+                command.studentNumber()
+        );
 
         Student student = Student.of(
                 command.major(),
@@ -29,7 +33,12 @@ public class SignupService {
                 command.studentNumber(),
                 command.grade()
         );
-        studentRepository.save(student);
+
+        try {
+            studentRepository.save(student);
+        } catch (DataIntegrityViolationException e) {
+            throw new AlreadySignedUpException();
+        }
 
         Provider provider = Provider.of(
                 command.email(),
@@ -49,12 +58,11 @@ public class SignupService {
 
     private void validate(
             String providerName,
-            String providerKey
+            String providerKey,
+            String studentNumber
     ) {
-        if (providerRepository.findByProviderNameAndProviderKey(
-                providerName,
-                providerKey
-        ).isPresent()) {
+        if (providerRepository.findByProviderNameAndProviderKey(providerName, providerKey).isPresent()
+                || studentRepository.existsByStudentNumber(studentNumber)) {
             throw new AlreadySignedUpException();
         }
     }

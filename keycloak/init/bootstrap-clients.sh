@@ -60,7 +60,7 @@ AUTH_CLIENT_WEB_ORIGINS_JSON="$(csv_to_json_array "$AUTH_CLIENT_WEB_ORIGINS")"
   -s "secret=${AUTH_CLIENT_SECRET}" \
   -s "redirectUris=${AUTH_CLIENT_REDIRECT_URIS_JSON}" \
   -s "webOrigins=${AUTH_CLIENT_WEB_ORIGINS_JSON}" \
-  -s "attributes.post.logout.redirect.uris=${AUTH_CLIENT_POST_LOGOUT_REDIRECT_URIS}" >/dev/null
+  -s "attributes.\"post.logout.redirect.uris\"=${AUTH_CLIENT_POST_LOGOUT_REDIRECT_URIS}" >/dev/null
 
 ADMIN_CLIENT_UUID="$(get_client_uuid "$ADMIN_CLIENT_ID")"
 if [ -z "$ADMIN_CLIENT_UUID" ]; then

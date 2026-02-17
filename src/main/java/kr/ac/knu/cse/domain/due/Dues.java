@@ -42,8 +42,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class Dues extends BaseTimeEntity {
 
-    public static final int MIN_VALID_REMAINING_SEMESTERS = 1;
-
     @Id
     @GeneratedValue(strategy = IDENTITY)
     @Column(name = "dues_id")

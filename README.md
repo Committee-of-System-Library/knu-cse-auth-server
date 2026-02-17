@@ -93,7 +93,17 @@ docker compose --env-file .env.standalone -f docker-compose.standalone.yml up -d
 
 초기 세팅이 끝난 뒤에는 `init` 없이 실행합니다.
 
-## 5) 중지 / 초기화
+## 5) Keycloak 토큰 만료 기본값
+
+`keycloak/import/cse-sso-realm.json`의 기본 만료 정책은 아래와 같습니다.
+
+- Access Token: 300초 (5분)
+- SSO Session Idle Timeout: 3600초 (1시간)
+- SSO Session Max Lifespan: 28800초 (8시간)
+- Offline Session Idle/Max Lifespan: 2592000초 (30일)
+- OAuth Authorization Code(Login): 300초 (5분)
+
+## 6) 중지 / 초기화
 
 중지:
 
@@ -107,7 +117,7 @@ docker compose --env-file .env.standalone -f docker-compose.standalone.yml down
 docker compose --env-file .env.standalone -f docker-compose.standalone.yml down -v
 ```
 
-## 6) 관련 파일
+## 7) 관련 파일
 
 - Compose: `docker-compose.standalone.yml`
 - Env template: `.env.standalone.example`

@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
+import org.springframework.core.annotation.Order;
 import org.springframework.core.env.Environment;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -30,11 +31,11 @@ public class SecurityConfig {
     private final OAuth2LogoutSuccessHandler logoutSuccessHandler;
     private final OAuth2AuthorizationRequestResolver authorizationRequestResolver;
     private final InternalApiKeyFilter internalApiKeyFilter;
+    private final InternalApiProperties internalApiProperties;
     private final Environment environment;
 
-    private static final String INTERNAL_PATH_PATTERN = "/internal/**";
-
     @Bean
+    @Order(2)
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(AbstractHttpConfigurer::disable)
@@ -58,9 +59,8 @@ public class SecurityConfig {
                 )
 
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(INTERNAL_PATH_PATTERN).permitAll()
+                        .requestMatchers(internalPathPattern()).permitAll()
                         .requestMatchers(GET, "/login/**").permitAll()
-                        .requestMatchers("/h2-console/**").permitAll()
                         .requestMatchers(POST, "/logout/**").authenticated()
                         .anyRequest().authenticated()
                 )
@@ -79,5 +79,15 @@ public class SecurityConfig {
         }
 
         return http.build();
+    }
+
+    private String internalPathPattern() {
+        String prefix = internalApiProperties.pathPrefix();
+
+        if (prefix.endsWith("/")) {
+            return prefix + "**";
+        }
+
+        return prefix + "/**";
     }
 }

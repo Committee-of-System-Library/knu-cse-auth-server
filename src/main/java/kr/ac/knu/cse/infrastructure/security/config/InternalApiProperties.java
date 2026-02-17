@@ -7,5 +7,7 @@ import org.springframework.validation.annotation.Validated;
 @Validated
 @ConfigurationProperties(prefix = "app.internal")
 public record InternalApiProperties(
+        @NotBlank String pathPrefix,
+        @NotBlank String headerName,
         @NotBlank String apiKey
 ) {}

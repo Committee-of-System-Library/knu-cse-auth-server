@@ -1,6 +1,5 @@
 package kr.ac.knu.cse.global.exception.auth;
 
-import static kr.ac.knu.cse.global.exception.auth.AuthErrorCode.ACCOUNT_DISABLED;
 import static kr.ac.knu.cse.global.exception.auth.AuthErrorCode.UNAUTHORIZED_OAUTH_CLIENT;
 
 import kr.ac.knu.cse.global.exception.BusinessException;
