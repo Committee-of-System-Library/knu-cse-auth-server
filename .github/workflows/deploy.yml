@@ -92,8 +92,8 @@ jobs:
       - name: Executing container using Docker Compose
         run: |
           docker compose \
-          -f ${{ secrets.LEDGER_DOCKERFILE_PATH }} \
-          --env-file ${{ secrets.LEDGER_ENV_PATH }} \
+          -f ${{ secrets.SSO_DOCKERFILE_PATH }} \
+          --env-file ${{ secrets.SSO_ENV_PATH }} \
           up -d --no-build --pull never \
           $CONT_NAME
 
