@@ -1,28 +1,55 @@
-server:
-  port: 40001
-
 spring:
+  application:
+    name: auth-server
   profiles:
-    group:
-      local-profile: local
-      prod-profile: prod
-    default: local-profile
+    default: local
+  autoconfigure:
+    exclude: org.springframework.boot.autoconfigure.security.servlet.UserDetailsServiceAutoConfiguration
+
+  jpa:
+    open-in-view: false
+    properties:
+      hibernate:
+        jdbc:
+          time_zone: ${HIBERNATE_JDBC_TIME_ZONE:Asia/Seoul}
+        default_batch_fetch_size: ${HIBERNATE_DEFAULT_BATCH_FETCH_SIZE:20}
 
   security:
     oauth2:
       client:
         registration:
-          google:
-            client-id: ${GOOGLE_CLIENT_ID}
-            client-secret: ${GOOGLE_CLIENT_SECRET}
-            scope: profile, email
-            redirect-uri: ${GOOGLE_REDIRECT_URI}
-app:
-  jwt: # JWT Configuration
-    secret: ${JWT_SECRET}
-    bearer-type: ${JWT_BEARER_TYPE}
-    auth-header: ${JWT_AUTH_HEADER}
-    expiration: ${JWT_ACCESS_TOKEN_EXPIRE_TIME}
+          keycloak:
+            scope:
+              - openid
+              - profile
+              - email
+            authorization-grant-type: authorization_code
+            redirect-uri: "{baseUrl}/login/oauth2/code/{registrationId}"
 
-  frontend: # Frontend URL Configuration
-    base-url: ${FRONTEND_BASE_URL}
+keycloak:
+  http:
+    connect-timeout-seconds: ${KEYCLOAK_CONNECT_TIMEOUT_SECONDS:5}
+    read-timeout-seconds: ${KEYCLOAK_READ_TIMEOUT_SECONDS:10}
+
+app:
+  auth:
+    allowed-email-domain: ${APP_AUTH_ALLOWED_EMAIL_DOMAIN:@knu.ac.kr}
+  internal:
+    path-prefix: ${APP_INTERNAL_PATH_PREFIX:/internal}
+    header-name: ${APP_INTERNAL_HEADER_NAME:X-Internal-Api-Key}
+  security:
+    cookie:
+      name: ${APP_COOKIE_NAME:ACCESS_TOKEN}
+      path: ${APP_COOKIE_PATH:/}
+      max-age-seconds: ${APP_COOKIE_MAX_AGE_SECONDS:3600}
+      same-site: ${APP_COOKIE_SAME_SITE:LAX}
+      http-only: ${APP_COOKIE_HTTP_ONLY:true}
+      secure: ${APP_COOKIE_SECURE:true}
+  role-sync:
+    zone: ${APP_ROLE_SYNC_ZONE:Asia/Seoul}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "health,info"

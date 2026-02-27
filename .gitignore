@@ -72,6 +72,8 @@ Temporary Items
 
 .env
 .env.*
+!.env.example
+!.env.standalone.example
 
 test.sh
 output.txt
@@ -81,3 +83,13 @@ CLAUDE.md
 GEMINI.md
 .claude
 dummy-data.sql
+
+# Keycloak realm export/import files can contain secrets (IdP client secrets, etc.)
+keycloak/import/*.json
+!keycloak/import/cse-sso-realm.json
+
+# application config
+src/main/resources/application*.yml
+!src/main/resources/application.yml
+!src/main/resources/application-prod.yml
+src/test/resources/application*.yml

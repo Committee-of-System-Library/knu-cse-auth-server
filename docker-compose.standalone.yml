@@ -1,0 +1,89 @@
+services:
+  auth-server:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: auth-server-standalone
+    env_file:
+      - .env.standalone
+    depends_on:
+      mysql:
+        condition: service_healthy
+      keycloak:
+        condition: service_healthy
+    ports:
+      - "${AUTH_SERVER_PORT}:${AUTH_SERVER_PORT}"
+    restart: unless-stopped
+
+  mysql:
+    image: mysql:8.4.4
+    container_name: auth-mysql-standalone
+    env_file:
+      - .env.standalone
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${DB_NAME}
+      MYSQL_USER: ${DB_USERNAME}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+    command:
+      - --max_allowed_packet=32M
+    ports:
+      - "${DB_PORT}:3306"
+    volumes:
+      - mysql_standalone_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-u", "root", "-p${DB_ROOT_PASSWORD}"]
+      interval: 10s
+      timeout: 5s
+      retries: 15
+      start_period: 30s
+    restart: unless-stopped
+
+  keycloak:
+    image: quay.io/keycloak/keycloak:26.5.2
+    container_name: keycloak-standalone
+    env_file:
+      - .env.standalone
+    command:
+      - start-dev
+      - --http-port=8080
+      - --import-realm
+    environment:
+      KC_BOOTSTRAP_ADMIN_USERNAME: ${KC_BOOTSTRAP_ADMIN_USERNAME}
+      KC_BOOTSTRAP_ADMIN_PASSWORD: ${KC_BOOTSTRAP_ADMIN_PASSWORD}
+      KC_HEALTH_ENABLED: "true"
+      KC_HOSTNAME: localhost
+      KC_HOSTNAME_STRICT: "false"
+      KC_HTTP_ENABLED: "true"
+    ports:
+      - "${KEYCLOAK_PORT}:8080"
+    volumes:
+      - ./keycloak/import:/opt/keycloak/data/import:ro
+      - keycloak_standalone_data:/opt/keycloak/data
+    healthcheck:
+      test: ["CMD-SHELL", "bash -c ': > /dev/tcp/127.0.0.1/8080'"]
+      interval: 10s
+      timeout: 5s
+      retries: 20
+      start_period: 20s
+    restart: unless-stopped
+
+  keycloak-init:
+    profiles: ["init"]
+    image: quay.io/keycloak/keycloak:26.5.2
+    container_name: keycloak-init-standalone
+    env_file:
+      - .env.standalone
+    depends_on:
+      keycloak:
+        condition: service_healthy
+    environment:
+      KEYCLOAK_BASE_URL_INTERNAL: http://keycloak:8080
+    volumes:
+      - ./keycloak/init:/init:ro
+    entrypoint: ["/bin/bash", "/init/bootstrap-clients.sh"]
+    restart: "no"
+
+volumes:
+  mysql_standalone_data:
+  keycloak_standalone_data:
