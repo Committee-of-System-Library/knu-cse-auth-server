@@ -92,7 +92,7 @@ jobs:
       - name: Executing container using Docker Compose
         run: |
           docker compose \
-          -f ${{ secrets.SSO_DOCKERFILE_PATH }} \
+          -f ${{ secrets.SSO_DOCKER_COMPOSE_FILE_PATH }} \
           --env-file ${{ secrets.SSO_ENV_PATH }} \
           up -d --no-build --pull never \
           $CONT_NAME
