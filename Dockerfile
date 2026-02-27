@@ -1,23 +1,9 @@
-# 1. Gradle을 이용하여 빌드
-FROM gradle:8.12.1-jdk17 AS builder
+FROM amazoncorretto:17
 WORKDIR /app
+ARG JAR_FILE=build/libs/*.jar
+COPY ${JAR_FILE} app.jar
 
-# Gradle 캐시 활용을 위해 build.gradle과 settings.gradle을 먼저 복사
-COPY build.gradle settings.gradle ./
-COPY gradle ./gradle
-RUN gradle dependencies --no-daemon
+RUN mkdir -p /app/logs && chmod -R 755 /app/logs
+VOLUME ["/app/logs"]
 
-# 소스 코드 복사 및 빌드
-COPY . .
-RUN gradle build --no-daemon -x test
-
-# 2. OpenJDK 17을 이용하여 실행
-
-FROM amazoncorretto:17 AS runtime
-WORKDIR /app
-
-# 빌드된 JAR 파일 복사
-COPY --from=builder /app/build/libs/*.jar /app.jar
-
-# 실행
-ENTRYPOINT ["java", "-Duser.timezone=GMT+9", "-Djava.security.egd=file:/dev/./urandom", "-Dspring.profiles.active=prod-profile", "-jar", "/app.jar"]
+ENTRYPOINT ["sh", "-c", "java ${JAVA_OPTS} -Duser.timezone=GMT+9 -Djava.security.egd=file:/dev/./urandom -jar /app/app.jar"]

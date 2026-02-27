@@ -1,0 +1,16 @@
+.git
+.github
+.gradle
+.idea
+build
+!build/libs/
+!build/libs/*.jar
+out
+logs
+data
+*.iml
+*.log
+.DS_Store
+.env
+.env.*
+!/.env.example

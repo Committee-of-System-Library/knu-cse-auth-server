@@ -33,13 +33,13 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'org.springframework.boot:spring-boot-starter-cache'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
 
     // Caffeine
     implementation 'com.github.ben-manes.caffeine:caffeine'
 
     // Security OAuth2 Client
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
-
 
     // jjwt
     implementation 'io.jsonwebtoken:jjwt-api:0.12.6'
@@ -61,12 +61,13 @@ dependencies {
     implementation 'org.flywaydb:flyway-core'
     implementation 'org.flywaydb:flyway-mysql'
 
-    // QueryDSL
-    implementation "com.querydsl:querydsl-jpa:5.0.0:jakarta"
-    annotationProcessor "com.querydsl:querydsl-apt:5.0.0:jakarta"
-    annotationProcessor "jakarta.annotation:jakarta.annotation-api:3.0.0"
-    annotationProcessor "jakarta.persistence:jakarta.persistence-api:3.1.0"
-
     // Logback
     implementation 'ch.qos.logback:logback-classic'
+
+    //keycloak
+    implementation 'org.keycloak:keycloak-admin-client:26.0.8'
+}
+
+test {
+    useJUnitPlatform()
 }
