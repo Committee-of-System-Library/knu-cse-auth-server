@@ -34,7 +34,7 @@ public class LoginController {
         session.setAttribute("SSO_NONCE", UUID.randomUUID().toString());
 
         return ResponseEntity.status(302)
-                .header(HttpHeaders.LOCATION, "/oauth2/authorization/keycloak")
+                .header(HttpHeaders.LOCATION, "oauth2/authorization/keycloak")
                 .build();
     }
 }
