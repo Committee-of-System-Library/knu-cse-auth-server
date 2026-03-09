@@ -1,6 +1,13 @@
 server:
   port: ${AUTH_SERVER_PORT}
   forward-headers-strategy: framework
+  servlet:
+    session:
+      cookie:
+        same-site: lax
+        secure: true
+        http-only: true
+        path: /
 
 spring:
   datasource:
