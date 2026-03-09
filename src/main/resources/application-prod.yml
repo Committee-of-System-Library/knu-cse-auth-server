@@ -66,3 +66,6 @@ logging:
     org.springframework.security: ${SPRING_SECURITY_LOG_LEVEL:INFO}
     org.springframework.security.oauth2: ${SPRING_SECURITY_OAUTH2_LOG_LEVEL:INFO}
     org.type.descriptor.sql.BasicBinder: ${SQL_BINDER_LOG_LEVEL:WARN}
+    org.apache.catalina.session: DEBUG
+    org.springframework.session: DEBUG
+    org.springframework.web.filter.CommonsRequestLoggingFilter: DEBUG
