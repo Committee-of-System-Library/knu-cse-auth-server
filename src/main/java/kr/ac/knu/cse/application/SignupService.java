@@ -31,7 +31,8 @@ public class SignupService {
                 command.major(),
                 command.name(),
                 command.studentNumber(),
-                command.grade()
+                command.grade(),
+                command.gender()
         );
 
         try {

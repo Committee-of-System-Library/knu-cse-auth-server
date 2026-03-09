@@ -10,6 +10,7 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import java.time.LocalDateTime;
 import kr.ac.knu.cse.domain.role.RoleType;
 import kr.ac.knu.cse.global.base.BaseTimeEntity;
 import kr.ac.knu.cse.global.exception.provisioning.InvalidRoleException;
@@ -18,43 +19,15 @@ import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-/*
-### Student
-
-### Mapping Table
-
-`student`
-
-### Fields
-
-| Field Name | Type | Description |
-| --- | --- | --- |
-| id | Long | PK, column name `student_id` |
-| role | RoleType | Top-level organizational role |
-| major | String | Major, max 50 characters |
-| name | String | Name, max 50 characters |
-| studentNumber | String | Student number, max 15 characters, unique |
-| grade | String | grade, max 15 characters |
-| createdAt | LocalDateTime | Creation timestamp |
-| updatedAt | LocalDateTime | Last modified timestamp |
-
-### Constraints
-
-- `student_number` is unique across the entire system.
-- The concept of account status is not included.
-
-### Roles and Responsibilities
-
-- Student stores **only the top-level organizational role**.
-- `ROLE_MEMBER` is not stored in Student.
-- The relationship with Provider is expressed by Provider holding `student_id`.
-*/
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.SQLRestriction;
 
 @Getter
 @EqualsAndHashCode(callSuper = false)
 @Entity
 @Table(name = "student")
+@SQLDelete(sql = "UPDATE student SET deleted_at = NOW() WHERE student_id = ?")
+@SQLRestriction("deleted_at IS NULL")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class Student extends BaseTimeEntity {
@@ -65,23 +38,33 @@ public class Student extends BaseTimeEntity {
     private Long id;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "role", nullable = false, length = 20)
+    @Column(name = "role")
     private RoleType role;
-    @Column(name = "major", nullable = false, length = 50)
+
+    @Column(name = "major")
     private String major;
-    @Column(name = "name", nullable = false, length = 50)
+
+    @Column(name = "name")
     private String name;
-    @Column(name = "student_number", nullable = false, length = 15, unique = true)
+
+    @Column(name = "student_number")
     private String studentNumber;
+
     @Enumerated(EnumType.STRING)
-    @Column(name = "grade", nullable = false, length = 15)
     private Grade grade;
+
+    @Enumerated(EnumType.STRING)
+    private Gender gender;
+
+    @Column(name = "deleted_at")
+    private LocalDateTime deletedAt;
 
     public static Student of(
             String major,
             String name,
             String studentNumber,
-            Grade grade
+            Grade grade,
+            Gender gender
     ) {
         validate(major, name, studentNumber, grade);
 
@@ -91,7 +74,9 @@ public class Student extends BaseTimeEntity {
                 major,
                 name,
                 studentNumber,
-                grade
+                grade,
+                gender != null ? gender : Gender.BLANK,
+                null
         );
     }
 
@@ -109,9 +94,5 @@ public class Student extends BaseTimeEntity {
         }
 
         this.role = role;
-    }
-
-    public void setIdForTest(Long id) {
-        this.id = id;
     }
 }

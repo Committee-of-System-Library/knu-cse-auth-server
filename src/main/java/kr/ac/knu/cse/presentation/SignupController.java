@@ -46,7 +46,8 @@ public class SignupController {
                 request.studentNumber(),
                 fullName,
                 request.major(),
-                request.grade()
+                request.grade(),
+                request.gender()
         );
 
         SignupResponse response = signupService.signup(command);
