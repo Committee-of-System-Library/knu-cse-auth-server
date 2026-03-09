@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+  <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
+
+  <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+    <encoder>
+      <pattern>%clr(%d{HH:mm:ss.SSS}){faint}|%clr(${level:-%5p})|%32X{traceId:-},%16X{spanId:-}|%clr(%-40.40logger{39}){cyan}%clr(|){faint}%m%n%nopex</pattern>
+      <charset>utf8</charset>
+    </encoder>
+  </appender>
+
+  <logger name="kr.ac.knu.cse" level="DEBUG"/>
+
+  <!-- Spring Web / MVC -->
+  <logger name="org.springframework.web" level="DEBUG"/>
+  <logger name="org.springframework.web.servlet.DispatcherServlet" level="DEBUG"/>
+
+  <!-- Spring Security & OAuth2 -->
+  <logger name="org.springframework.security" level="DEBUG"/>
+  <logger name="org.springframework.security.oauth2" level="DEBUG"/>
+  <logger name="org.springframework.security.web" level="DEBUG"/>
+
+  <!-- HTTP Client (Keycloak token/userinfo 통신) -->
+  <logger name="org.springframework.web.client.RestTemplate" level="DEBUG"/>
+  <logger name="org.springframework.http.client" level="DEBUG"/>
+
+  <!-- Session -->
+  <logger name="org.apache.catalina.session" level="DEBUG"/>
+
+  <!-- DB -->
+  <logger name="com.zaxxer.hikari.pool" level="WARN"/>
+  <logger name="org.hibernate.orm.jdbc" level="WARN"/>
+  <logger name="org.hibernate.orm.core" level="WARN"/>
+
+  <root level="INFO">
+    <appender-ref ref="STDOUT"/>
+</root>
+</configuration>
