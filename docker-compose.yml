@@ -20,13 +20,14 @@ services:
     image: quay.io/keycloak/keycloak:26.0.8
     container_name: keycloak
     command:
-      - start-dev
+      - start
       - --http-port=8080
+      - --proxy-headers=xforwarded
+      - --hostname=https://chcse.knu.ac.kr
     environment:
       KC_BOOTSTRAP_ADMIN_USERNAME: ${KC_BOOTSTRAP_ADMIN_USERNAME:-admin}
       KC_BOOTSTRAP_ADMIN_PASSWORD: ${KC_BOOTSTRAP_ADMIN_PASSWORD:-admin}
       KC_HEALTH_ENABLED: "true"
-      KC_HOSTNAME_STRICT: "false"
       KC_HTTP_ENABLED: "true"
     ports:
       - "${KEYCLOAK_PORT:-8080}:8080"
