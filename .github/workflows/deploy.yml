@@ -55,7 +55,7 @@ jobs:
       - name: Pull and restart
         run: |
           docker pull $REGISTRY/$ORG/$IMAGE_NAME:latest
-          docker compose -f /opt/docker/compose/compose/docker-compose.services.yml up -d knu-cse-auth-server
+          docker compose -f /opt/docker/compose/docker-compose.services.yml up -d knu-cse-auth-server
 
       - name: Cleanup
         run: docker image prune -f
