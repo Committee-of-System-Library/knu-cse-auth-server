@@ -16,7 +16,7 @@ permissions:
 env:
   REGISTRY: ghcr.io
   ORG: committee-of-system-library
-  IMAGE_NAME: sso-be
+  IMAGE_NAME: knu-cse-auth-server
 
 jobs:
   build-and-push:
