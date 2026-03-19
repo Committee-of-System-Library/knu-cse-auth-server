@@ -5,7 +5,8 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Objects;
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
 import kr.ac.knu.cse.global.exception.BusinessException;
 import kr.ac.knu.cse.global.exception.internal.InternalApiForbiddenException;
 import kr.ac.knu.cse.infrastructure.security.config.InternalApiProperties;
@@ -46,7 +47,9 @@ public class InternalApiKeyFilter extends OncePerRequestFilter {
     }
 
     private void validateApiKey(String apiKey) {
-        if (!Objects.equals(properties.apiKey(), apiKey)) {
+        byte[] expected = properties.apiKey().getBytes(StandardCharsets.UTF_8);
+        byte[] actual = apiKey != null ? apiKey.getBytes(StandardCharsets.UTF_8) : new byte[0];
+        if (!MessageDigest.isEqual(expected, actual)) {
             throw new InternalApiForbiddenException();
         }
     }
