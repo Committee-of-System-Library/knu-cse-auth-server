@@ -50,6 +50,18 @@ public class AuthClient extends BaseTimeEntity {
     @Column(name = "domain")
     private Set<String> allowedDomains;
 
+    public static AuthClient createForApplication(
+            String clientName, String description, String jwtSecret, Set<String> allowedDomains
+    ) {
+        AuthClient client = new AuthClient();
+        client.clientName = clientName;
+        client.clientDescription = description;
+        client.jwtSecret = jwtSecret;
+        client.status = AuthClientStatus.ACTIVE;
+        client.allowedDomains = allowedDomains;
+        return client;
+    }
+
     public boolean isActive() {
         return this.status == AuthClientStatus.ACTIVE;
     }

@@ -7,6 +7,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
 import java.net.URLEncoder;
+import kr.ac.knu.cse.application.JwtTokenService;
 import kr.ac.knu.cse.application.OAuthLoginService;
 import kr.ac.knu.cse.application.dto.OAuthLoginResult;
 import kr.ac.knu.cse.global.exception.BusinessException;
@@ -44,6 +45,10 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
     private final OAuth2AuthorizedClientService authorizedClientService;
     private final FilterBusinessExceptionWriter filterBusinessExceptionWriter;
     private final CookieCreator cookieCreator;
+    private final JwtTokenService jwtTokenService;
+
+    private static final String SESSION_STUDENT_ID = "SSO_STUDENT_ID";
+    private static final String SESSION_EMAIL = "SSO_EMAIL";
 
     @Override
     public void onAuthenticationSuccess(
@@ -59,6 +64,12 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
                 redirectToSignup(response);
                 return;
             }
+
+            // 세션에 studentId, email 저장 (JWT 생성 시 사용)
+            OidcUser oidcUser = (OidcUser) authentication.getPrincipal();
+            HttpSession loginSession = request.getSession();
+            loginSession.setAttribute(SESSION_STUDENT_ID, result.studentId());
+            loginSession.setAttribute(SESSION_EMAIL, oidcUser.getEmail());
 
             OAuth2AccessToken accessToken = extractAccessToken(
                     (OAuth2AuthenticationToken) authentication
@@ -138,6 +149,12 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
                 (String) session.getAttribute(LoginController.SESSION_REDIRECT_URI);
         String state =
                 (String) session.getAttribute(LoginController.SESSION_STATE);
+        String clientId =
+                (String) session.getAttribute(LoginController.SESSION_CLIENT_ID);
+        Long studentId =
+                (Long) session.getAttribute(SESSION_STUDENT_ID);
+        String email =
+                (String) session.getAttribute(SESSION_EMAIL);
 
         if (redirectUri == null || state == null) {
             throw new InvalidSessionException();
@@ -145,12 +162,23 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
 
         session.removeAttribute(LoginController.SESSION_REDIRECT_URI);
         session.removeAttribute(LoginController.SESSION_STATE);
+        session.removeAttribute(LoginController.SESSION_CLIENT_ID);
+        session.removeAttribute(SESSION_STUDENT_ID);
+        session.removeAttribute(SESSION_EMAIL);
 
-        String target = UriComponentsBuilder.fromUriString(redirectUri)
-                .queryParam("state", state)
-                .build(true)
-                .toUriString();
+        UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(redirectUri)
+                .queryParam("state", state);
 
+        if (clientId != null && studentId != null && email != null) {
+            try {
+                String token = jwtTokenService.generateToken(studentId, email, clientId);
+                builder.queryParam("token", token);
+            } catch (Exception ignored) {
+                // 내부 클라이언트 등 AuthClient가 없는 경우 토큰 없이 진행
+            }
+        }
+
+        String target = builder.build(true).toUriString();
         response.sendRedirect(target);
     }
 }

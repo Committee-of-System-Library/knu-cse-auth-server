@@ -27,7 +27,7 @@ public class SignupService {
     private final CseStudentRegistryRepository registryRepository;
 
     @Transactional
-    public void signup(SignupCommand command) {
+    public Long signup(SignupCommand command) {
         validateProvider(command.providerName(), command.providerKey());
 
         String studentNumber = resolveStudentNumber(command.studentNumber());
@@ -65,6 +65,7 @@ public class SignupService {
             throw new AlreadySignedUpException();
         }
 
+        return student.getId();
     }
 
     private String resolveStudentNumber(String studentNumber) {
