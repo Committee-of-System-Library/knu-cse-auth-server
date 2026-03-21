@@ -19,6 +19,7 @@ spring:
   flyway:
     enabled: ${FLYWAY_ENABLED}
     baseline-on-migrate: ${FLYWAY_BASELINE_ON_MIGRATE}
+    baseline-version: ${FLYWAY_BASELINE_VERSION:1}
 
   jpa:
     database-platform: ${JPA_DATABASE_PLATFORM}
