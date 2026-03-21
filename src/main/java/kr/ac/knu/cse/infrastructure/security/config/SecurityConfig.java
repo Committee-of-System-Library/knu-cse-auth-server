@@ -63,6 +63,7 @@ public class SecurityConfig {
                         .requestMatchers("/appfn/api/admin/**").authenticated()
                         .requestMatchers("/appfn/api/developer/**").authenticated()
                         .requestMatchers("/appfn/api/verification/**").authenticated()
+                        .requestMatchers(GET, "/auth/me").permitAll()
                         .requestMatchers(GET, "/login/**").permitAll()
                         .requestMatchers(POST, "/logout/**").authenticated()
                         .anyRequest().authenticated()
