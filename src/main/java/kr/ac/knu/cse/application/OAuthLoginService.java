@@ -25,7 +25,7 @@ public class OAuthLoginService {
     public OAuthLoginResult login(OAuthUserInfo userInfo) {
         Optional<Provider> provider = findProvider(userInfo);
 
-        if (provider.isEmpty()) {
+        if (provider.isEmpty() || provider.get().getStudentId() == null) {
             return OAuthLoginResult.newUser();
         }
         Student student = findStudent(provider.get());
