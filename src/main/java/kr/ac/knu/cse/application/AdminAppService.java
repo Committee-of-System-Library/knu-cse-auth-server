@@ -52,21 +52,20 @@ public class AdminAppService {
         }
 
         String clientId = "cse-" + UUID.randomUUID().toString().substring(0, 8);
-        String clientSecret = UUID.randomUUID().toString();
+        String clientSecret = generateSecret();
         String secretHash = DeveloperAppService.hashSecret(clientSecret);
-        String jwtSecret = generateJwtSecret();
 
         app.approve(clientId, secretHash, null);
 
         AuthClient authClient = AuthClient.createForApplication(
                 clientId,
                 app.getAppName(),
-                jwtSecret,
+                clientSecret,
                 extractDomains(app.getRedirectUris())
         );
         authClientRepository.save(authClient);
 
-        return new AppApproveResponse(app.getId(), clientId, clientSecret, jwtSecret);
+        return new AppApproveResponse(app.getId(), clientId, clientSecret);
     }
 
     @Transactional
@@ -93,7 +92,7 @@ public class AdminAppService {
         return app;
     }
 
-    private String generateJwtSecret() {
+    private String generateSecret() {
         byte[] bytes = new byte[32];
         new SecureRandom().nextBytes(bytes);
         return Base64.getEncoder().encodeToString(bytes);

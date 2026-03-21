@@ -8,8 +8,6 @@ import java.util.Date;
 import javax.crypto.SecretKey;
 import kr.ac.knu.cse.domain.client.AuthClient;
 import kr.ac.knu.cse.domain.client.AuthClientRepository;
-import kr.ac.knu.cse.domain.provider.Provider;
-import kr.ac.knu.cse.domain.provider.ProviderRepository;
 import kr.ac.knu.cse.domain.student.Student;
 import kr.ac.knu.cse.domain.student.StudentRepository;
 import lombok.RequiredArgsConstructor;
@@ -27,7 +25,6 @@ public class JwtTokenService {
     private String issuerUrl;
 
     private final StudentRepository studentRepository;
-    private final ProviderRepository providerRepository;
     private final AuthClientRepository authClientRepository;
 
     @Transactional(readOnly = true)
