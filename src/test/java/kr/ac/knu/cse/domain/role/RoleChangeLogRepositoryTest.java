@@ -22,8 +22,8 @@ class RoleChangeLogRepositoryTest {
         //given
         roleChangeLogRepository.save(RoleChangeLog.of(
                 1L,
-                RoleType.ROLE_USER,
-                RoleType.ROLE_MEMBER,
+                Role.STUDENT,
+                Role.EXECUTIVE,
                 LocalDateTime.now()
         ));
 
@@ -43,8 +43,8 @@ class RoleChangeLogRepositoryTest {
         for (long i = 1; i <= 101; i++) {
             roleChangeLogRepository.save(RoleChangeLog.of(
                     i,
-                    RoleType.ROLE_USER,
-                    RoleType.ROLE_MEMBER,
+                    Role.STUDENT,
+                    Role.EXECUTIVE,
                     LocalDateTime.now()
             ));
         }

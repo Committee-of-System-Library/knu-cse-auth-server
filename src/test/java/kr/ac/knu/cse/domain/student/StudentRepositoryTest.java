@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import jakarta.persistence.EntityManager;
 import java.util.Optional;
+import kr.ac.knu.cse.domain.role.Role;
 import kr.ac.knu.cse.support.JpaIntegrationTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -32,7 +33,10 @@ class StudentRepositoryTest {
                 "컴퓨터학부",
                 "학생1",
                 studentNumber,
-                Grade.SECOND
+                Grade.SECOND,
+                Gender.BLANK,
+                UserType.CSE_STUDENT,
+                Role.STUDENT
         );
 
        studentRepository.save(student1);
@@ -42,7 +46,10 @@ class StudentRepositoryTest {
                 "컴퓨터학부",
                 "학생2",
                 studentNumber,
-                Grade.THIRD
+                Grade.THIRD,
+                Gender.BLANK,
+                UserType.CSE_STUDENT,
+                Role.STUDENT
         );
 
         //when && then
@@ -61,7 +68,10 @@ class StudentRepositoryTest {
                 "컴퓨터학부",
                 "학생1",
                 studentNumber,
-                Grade.SECOND
+                Grade.SECOND,
+                Gender.BLANK,
+                UserType.CSE_STUDENT,
+                Role.STUDENT
         );
 
         Student saved = studentRepository.save(student);
@@ -84,7 +94,10 @@ class StudentRepositoryTest {
                 "컴퓨터학부",
                 "학생1",
                 studentNumber,
-                Grade.SECOND
+                Grade.SECOND,
+                Gender.BLANK,
+                UserType.CSE_STUDENT,
+                Role.STUDENT
         );
 
         studentRepository.save(student);

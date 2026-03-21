@@ -13,8 +13,8 @@ class RoleChangeLogTest {
     void of() {
         assertThat(RoleChangeLog.of(
                 1L,
-                RoleType.ROLE_USER,
-                RoleType.ROLE_EXEC,
+                Role.STUDENT,
+                Role.EXECUTIVE,
                 LocalDateTime.now()).getProcessedAt()
         ).isNull();
     }
@@ -25,8 +25,8 @@ class RoleChangeLogTest {
         //given
         RoleChangeLog log = RoleChangeLog.of(
                 1L,
-                RoleType.ROLE_USER,
-                RoleType.ROLE_EXEC,
+                Role.STUDENT,
+                Role.EXECUTIVE,
                 LocalDateTime.now());
 
         log.markProcessed();

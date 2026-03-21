@@ -5,9 +5,12 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import jakarta.persistence.EntityManager;
 import java.util.Optional;
+import kr.ac.knu.cse.domain.role.Role;
+import kr.ac.knu.cse.domain.student.Gender;
 import kr.ac.knu.cse.domain.student.Grade;
 import kr.ac.knu.cse.domain.student.Student;
 import kr.ac.knu.cse.domain.student.StudentRepository;
+import kr.ac.knu.cse.domain.student.UserType;
 import kr.ac.knu.cse.global.exception.provisioning.ProviderWithoutStudentException;
 import kr.ac.knu.cse.support.JpaIntegrationTest;
 import org.junit.jupiter.api.BeforeEach;
@@ -36,7 +39,10 @@ class ProviderRepositoryTest {
                 "컴퓨터학부",
                 "학생1",
                 "2022111111",
-                Grade.SECOND
+                Grade.SECOND,
+                Gender.BLANK,
+                UserType.CSE_STUDENT,
+                Role.STUDENT
         );
         studentRepository.save(student);
         flushAndClear();

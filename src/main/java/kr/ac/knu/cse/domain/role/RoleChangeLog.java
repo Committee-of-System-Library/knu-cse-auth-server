@@ -15,32 +15,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-/*
-### RoleChangeLog
-
-### Mapping Table
-
-role_change_log
-
-### Fields
-
-Field Name     | Type           | Description
-| --- | --- | --- |
-id             | Long           | PK, column name `role_change_log_id`
-studentId      | Long           | FK, column name `student_id`
-beforeRole     | RoleType       | Role before the change, max 20 characters
-afterRole      | RoleType       | Role after the change, max 20 characters
-changedAt      | LocalDateTime  | Timestamp when the role change occurred
-processedAt    | LocalDateTime  | Timestamp when synchronization with the Keycloak DB was completed
-
-### Roles and Responsibilities
-
-- The relationship with Student is expressed only via the FK id (`student_id`); no direct entity association is defined.
-- beforeRole represents the user's role prior to the role change.
-- afterRole represents the user's role after the role change.
-- processedAt remains null until synchronization with the Keycloak database is completed.
-
- */
 @Getter
 @Entity
 @Table(name = "role_change_log")
@@ -58,11 +32,11 @@ public class RoleChangeLog{
 
     @Enumerated(EnumType.STRING)
     @Column(name = "before_role", nullable = false, length = 20)
-    private RoleType beforeRole;
+    private Role beforeRole;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "after_role", nullable = false, length = 20)
-    private RoleType afterRole;
+    private Role afterRole;
 
     @Column(name = "changed_at", nullable = false)
     private LocalDateTime changedAt;
@@ -72,8 +46,8 @@ public class RoleChangeLog{
 
     public static RoleChangeLog of(
             Long studentId,
-            RoleType beforeRole,
-            RoleType afterRole,
+            Role beforeRole,
+            Role afterRole,
             LocalDateTime changedAt
     ) {
         return new RoleChangeLog(

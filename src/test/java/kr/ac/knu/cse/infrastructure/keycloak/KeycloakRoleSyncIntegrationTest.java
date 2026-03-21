@@ -10,9 +10,9 @@ import static org.mockito.Mockito.verifyNoInteractions;
 import java.time.LocalDateTime;
 import kr.ac.knu.cse.domain.provider.Provider;
 import kr.ac.knu.cse.domain.provider.ProviderRepository;
+import kr.ac.knu.cse.domain.role.Role;
 import kr.ac.knu.cse.domain.role.RoleChangeLog;
 import kr.ac.knu.cse.domain.role.RoleChangeLogRepository;
-import kr.ac.knu.cse.domain.role.RoleType;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -62,8 +62,8 @@ class KeycloakRoleSyncIntegrationTest {
         RoleChangeLog log = roleChangeLogRepository.save(
                 RoleChangeLog.of(
                         20L,
-                        RoleType.ROLE_USER,
-                        RoleType.ROLE_ADMIN,
+                        Role.STUDENT,
+                        Role.ADMIN,
                         now.minusMinutes(10)
                 )
         );
@@ -84,7 +84,7 @@ class KeycloakRoleSyncIntegrationTest {
 
         verify(keycloakAdminClient).updateRoleInKeycloak(
                 "keycloak-subject",
-                "ROLE_ADMIN"
+                "ADMIN"
         );
     }
 
@@ -104,8 +104,8 @@ class KeycloakRoleSyncIntegrationTest {
         RoleChangeLog log = roleChangeLogRepository.save(
                 RoleChangeLog.of(
                         30L,
-                        RoleType.ROLE_USER,
-                        RoleType.ROLE_ADMIN,
+                        Role.STUDENT,
+                        Role.ADMIN,
                         now.minusMinutes(5)
                 )
         );
@@ -131,8 +131,8 @@ class KeycloakRoleSyncIntegrationTest {
         RoleChangeLog log = roleChangeLogRepository.save(
                 RoleChangeLog.of(
                         40L,
-                        RoleType.ROLE_USER,
-                        RoleType.ROLE_ADMIN,
+                        Role.STUDENT,
+                        Role.ADMIN,
                         now.minusMinutes(3)
                 )
         );
@@ -148,4 +148,3 @@ class KeycloakRoleSyncIntegrationTest {
         verifyNoInteractions(keycloakAdminClient);
     }
 }
-

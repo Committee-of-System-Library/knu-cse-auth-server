@@ -1,7 +1,6 @@
 package kr.ac.knu.cse.domain.student;
 
 import static jakarta.persistence.GenerationType.IDENTITY;
-import static kr.ac.knu.cse.domain.role.RoleType.ROLE_USER;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -11,7 +10,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
-import kr.ac.knu.cse.domain.role.RoleType;
+import kr.ac.knu.cse.domain.role.Role;
 import kr.ac.knu.cse.global.base.BaseTimeEntity;
 import kr.ac.knu.cse.global.exception.provisioning.InvalidRoleException;
 import lombok.AccessLevel;
@@ -39,7 +38,11 @@ public class Student extends BaseTimeEntity {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "role")
-    private RoleType role;
+    private Role role;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "user_type", nullable = false)
+    private UserType userType;
 
     @Column(name = "major")
     private String major;
@@ -64,13 +67,16 @@ public class Student extends BaseTimeEntity {
             String name,
             String studentNumber,
             Grade grade,
-            Gender gender
+            Gender gender,
+            UserType userType,
+            Role role
     ) {
         validate(major, name, studentNumber, grade);
 
         return new Student(
                 null,
-                ROLE_USER,
+                role,
+                userType,
                 major,
                 name,
                 studentNumber,
@@ -88,7 +94,7 @@ public class Student extends BaseTimeEntity {
 
     }
 
-    public void grantRole(RoleType role) {
+    public void grantRole(Role role) {
         if (role == null) {
             throw new InvalidRoleException();
         }

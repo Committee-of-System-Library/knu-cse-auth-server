@@ -12,9 +12,9 @@ import java.util.List;
 import java.util.Optional;
 import kr.ac.knu.cse.domain.provider.Provider;
 import kr.ac.knu.cse.domain.provider.ProviderRepository;
+import kr.ac.knu.cse.domain.role.Role;
 import kr.ac.knu.cse.domain.role.RoleChangeLog;
 import kr.ac.knu.cse.domain.role.RoleChangeLogRepository;
-import kr.ac.knu.cse.domain.role.RoleType;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -76,8 +76,8 @@ class KeycloakRoleSyncServiceTest {
         //RoleChangeLog
         RoleChangeLog log =  RoleChangeLog.of(
                 20L,
-                RoleType.ROLE_USER,
-                RoleType.ROLE_ADMIN,
+                Role.STUDENT,
+                Role.ADMIN,
                 now.minusMinutes(10)
         );
         given(roleChangeLogRepository
@@ -90,7 +90,7 @@ class KeycloakRoleSyncServiceTest {
         // then
         verify(keycloakAdminClient).updateRoleInKeycloak(
                 "keycloak-subject",
-                "ROLE_ADMIN"
+                "ADMIN"
         );
     }
 
@@ -111,8 +111,8 @@ class KeycloakRoleSyncServiceTest {
         // RoleChangeLog
         RoleChangeLog log =  RoleChangeLog.of(
                 20L,
-                RoleType.ROLE_USER,
-                RoleType.ROLE_ADMIN,
+                Role.STUDENT,
+                Role.ADMIN,
                 now.minusMinutes(10)
         );
         given(roleChangeLogRepository
@@ -141,8 +141,8 @@ class KeycloakRoleSyncServiceTest {
         // RoleChangeLog
         RoleChangeLog log =  RoleChangeLog.of(
                 20L,
-                RoleType.ROLE_USER,
-                RoleType.ROLE_ADMIN,
+                Role.STUDENT,
+                Role.ADMIN,
                 now.minusMinutes(10)
         );
         given(roleChangeLogRepository

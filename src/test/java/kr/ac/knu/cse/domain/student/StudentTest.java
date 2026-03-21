@@ -1,6 +1,6 @@
 package kr.ac.knu.cse.domain.student;
 
-import static kr.ac.knu.cse.domain.role.RoleType.ROLE_USER;
+import static kr.ac.knu.cse.domain.role.Role.STUDENT;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Test;
 
 class StudentTest {
 
-    @DisplayName("Creates a student with ROLE_USER.")
+    @DisplayName("Creates a student with STUDENT role and CSE_STUDENT type.")
     @Test
     void of() {
         //given && when
@@ -18,12 +18,16 @@ class StudentTest {
                 "컴퓨터학부",
                 "이름",
                 "2022111111",
-                Grade.SECOND
+                Grade.SECOND,
+                Gender.BLANK,
+                UserType.CSE_STUDENT,
+                STUDENT
         );
 
         //then
         assertThat(student.getId()).isNull();
-        assertThat(student.getRole()).isEqualTo(ROLE_USER);
+        assertThat(student.getRole()).isEqualTo(STUDENT);
+        assertThat(student.getUserType()).isEqualTo(UserType.CSE_STUDENT);
     }
 
 
@@ -35,7 +39,10 @@ class StudentTest {
                 "컴퓨터학부",
                 "이름",
                 "2022111111",
-                Grade.SECOND
+                Grade.SECOND,
+                Gender.BLANK,
+                UserType.CSE_STUDENT,
+                STUDENT
         );
 
         //when && then
