@@ -31,6 +31,9 @@ public class GlobalExceptionHandler {
     private HttpStatus resolveStatus(BusinessException ex) {
         String code = ex.getCode();
 
+        if (code.equals("AUTH_012")) {
+            return HttpStatus.FORBIDDEN;
+        }
         if (code.startsWith("AUTH_")) {
             return HttpStatus.UNAUTHORIZED;
         }

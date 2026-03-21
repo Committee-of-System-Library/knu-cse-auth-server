@@ -101,4 +101,15 @@ public class Student extends BaseTimeEntity {
 
         this.role = role;
     }
+
+    public void changeUserType(UserType userType) {
+        this.userType = userType;
+        if (userType == UserType.EXTERNAL) {
+            this.role = null;
+        }
+    }
+
+    public boolean isAdmin() {
+        return this.role == Role.ADMIN;
+    }
 }

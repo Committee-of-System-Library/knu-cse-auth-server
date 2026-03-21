@@ -60,7 +60,7 @@ public class SecurityConfig {
 
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(internalPathPattern()).permitAll()
-                        .requestMatchers("/appfn/api/admin/registry/**").authenticated()
+                        .requestMatchers("/appfn/api/admin/**").authenticated()
                         .requestMatchers("/appfn/api/verification/**").authenticated()
                         .requestMatchers(GET, "/login/**").permitAll()
                         .requestMatchers(POST, "/logout/**").authenticated()

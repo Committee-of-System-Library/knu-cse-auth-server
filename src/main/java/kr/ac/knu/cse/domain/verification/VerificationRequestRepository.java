@@ -11,4 +11,8 @@ public interface VerificationRequestRepository extends JpaRepository<Verificatio
     boolean existsByStudentIdAndStatus(Long studentId, VerificationStatus status);
 
     List<VerificationRequest> findByStudentIdOrderByCreatedAtDesc(Long studentId);
+
+    List<VerificationRequest> findByStatusOrderByCreatedAtAsc(VerificationStatus status);
+
+    List<VerificationRequest> findAllByOrderByCreatedAtDesc();
 }

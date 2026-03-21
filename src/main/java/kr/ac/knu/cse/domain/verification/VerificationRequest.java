@@ -71,4 +71,18 @@ public class VerificationRequest {
     public boolean isPending() {
         return this.status == VerificationStatus.PENDING;
     }
+
+    public void approve(Long reviewerId, String comment) {
+        this.status = VerificationStatus.APPROVED;
+        this.reviewerId = reviewerId;
+        this.reviewComment = comment;
+        this.reviewedAt = LocalDateTime.now();
+    }
+
+    public void reject(Long reviewerId, String comment) {
+        this.status = VerificationStatus.REJECTED;
+        this.reviewerId = reviewerId;
+        this.reviewComment = comment;
+        this.reviewedAt = LocalDateTime.now();
+    }
 }
