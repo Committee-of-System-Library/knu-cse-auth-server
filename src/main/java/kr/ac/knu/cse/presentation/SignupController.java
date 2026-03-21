@@ -4,9 +4,11 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
+import java.util.Map;
 import kr.ac.knu.cse.application.SignupService;
 import kr.ac.knu.cse.application.dto.SignupCommand;
 import kr.ac.knu.cse.application.dto.SignupResponse;
+import kr.ac.knu.cse.domain.registry.CseStudentRegistryRepository;
 import kr.ac.knu.cse.global.exception.auth.InvalidOidcUserException;
 import kr.ac.knu.cse.global.exception.auth.MissingEmailClaimException;
 import kr.ac.knu.cse.infrastructure.security.support.CookieCreator;
@@ -22,9 +24,11 @@ import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.oauth2.core.oidc.user.OidcUser;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -35,9 +39,32 @@ public class SignupController {
 
     private static final String PROVIDER_NAME = "KEYCLOAK";
 
+    private static final String KNU_EMAIL_DOMAIN = "@knu.ac.kr";
+
     private final SignupService signupService;
+    private final CseStudentRegistryRepository registryRepository;
     private final OAuth2AuthorizedClientService authorizedClientService;
     private final CookieCreator cookieCreator;
+
+    @GetMapping("/verify")
+    public ResponseEntity<?> verify(
+            @AuthenticationPrincipal OidcUser oidcUser,
+            @RequestParam("studentNumber") String studentNumber
+    ) {
+        if (oidcUser == null) {
+            throw new InvalidOidcUserException();
+        }
+
+        String email = extractEmail(oidcUser);
+        boolean isCseStudent = registryRepository.existsByStudentNumber(studentNumber);
+        boolean isKnuEmail = email.endsWith(KNU_EMAIL_DOMAIN);
+
+        return ResponseEntity.ok(Map.of(
+                "isCseStudent", isCseStudent,
+                "isKnuEmail", isKnuEmail,
+                "email", email
+        ));
+    }
 
     @PostMapping
     public ResponseEntity<SignupResponse> signup(
@@ -62,7 +89,8 @@ public class SignupController {
                 fullName,
                 request.major(),
                 request.grade(),
-                request.gender()
+                request.gender(),
+                request.userType()
         );
 
         signupService.signup(command);

@@ -33,7 +33,7 @@ public class SignupService {
         String studentNumber = resolveStudentNumber(command.studentNumber());
         validateStudentNumber(studentNumber);
 
-        UserType userType = determineUserType(command.email(), studentNumber);
+        UserType userType = resolveUserType(command.userType(), command.email(), studentNumber);
         Role role = (userType == UserType.CSE_STUDENT) ? Role.STUDENT : null;
 
         Student student = Student.of(
@@ -74,12 +74,19 @@ public class SignupService {
         return studentNumber;
     }
 
-    private UserType determineUserType(String email, String studentNumber) {
-        if (email != null && email.endsWith(KNU_EMAIL_DOMAIN)) {
-            if (!studentNumber.startsWith(TEMP_STUDENT_NUMBER_PREFIX)
-                    && registryRepository.existsByStudentNumber(studentNumber)) {
-                return UserType.CSE_STUDENT;
-            }
+    private UserType resolveUserType(UserType requested, String email, String studentNumber) {
+        boolean isKnuEmail = email != null && email.endsWith(KNU_EMAIL_DOMAIN);
+        boolean isCseVerified = !studentNumber.startsWith(TEMP_STUDENT_NUMBER_PREFIX)
+                && registryRepository.existsByStudentNumber(studentNumber);
+
+        if (requested == UserType.CSE_STUDENT) {
+            return isCseVerified ? UserType.CSE_STUDENT : UserType.EXTERNAL;
+        }
+        if (requested == UserType.KNU_OTHER_DEPT) {
+            return isKnuEmail ? UserType.KNU_OTHER_DEPT : UserType.EXTERNAL;
+        }
+        if (isCseVerified) {
+            return UserType.CSE_STUDENT;
         }
         return UserType.EXTERNAL;
     }
