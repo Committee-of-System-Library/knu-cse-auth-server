@@ -34,6 +34,9 @@ public class GlobalExceptionHandler {
         if (code.startsWith("AUTH_")) {
             return HttpStatus.UNAUTHORIZED;
         }
+        if (code.startsWith("VERIFY_")) {
+            return HttpStatus.BAD_REQUEST;
+        }
         if (code.startsWith("COMMON_")) {
             return HttpStatus.BAD_REQUEST;
         }

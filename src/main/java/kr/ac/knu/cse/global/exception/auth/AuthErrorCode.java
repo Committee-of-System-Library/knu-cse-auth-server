@@ -14,7 +14,9 @@ public enum AuthErrorCode implements ErrorCode {
     INVALID_OAUTH_CLIENT("AUTH_006", "인증 서버 설정 오류입니다."),
     UNAUTHORIZED_OAUTH_CLIENT("AUTH_007", "허용되지 않은 인증 클라이언트입니다."),
     INVALID_SESSION("AUTH_008", "유효하지 않은 세션입니다."),
-    OAUTH_AUTHENTICATION_FAILED("AUTH_009", "OAuth 인증에 실패했습니다.");
+    OAUTH_AUTHENTICATION_FAILED("AUTH_009", "OAuth 인증에 실패했습니다."),
+    INVALID_CLIENT("AUTH_010", "존재하지 않거나 미승인 클라이언트입니다."),
+    CLIENT_SUSPENDED("AUTH_011", "일시 정지된 클라이언트입니다.");
 
     private final String code;
     private final String message;

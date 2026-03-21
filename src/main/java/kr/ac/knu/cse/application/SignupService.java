@@ -1,5 +1,6 @@
 package kr.ac.knu.cse.application;
 
+import java.util.UUID;
 import kr.ac.knu.cse.application.dto.SignupCommand;
 import kr.ac.knu.cse.application.dto.SignupResponse;
 import kr.ac.knu.cse.domain.provider.Provider;
@@ -20,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class SignupService {
 
     private static final String KNU_EMAIL_DOMAIN = "@knu.ac.kr";
+    private static final String TEMP_STUDENT_NUMBER_PREFIX = "EXT_";
 
     private final ProviderRepository providerRepository;
     private final StudentRepository studentRepository;
@@ -27,19 +29,18 @@ public class SignupService {
 
     @Transactional
     public SignupResponse signup(SignupCommand command) {
-        validate(
-                command.providerName(),
-                command.providerKey(),
-                command.studentNumber()
-        );
+        validateProvider(command.providerName(), command.providerKey());
 
-        UserType userType = determineUserType(command.email(), command.studentNumber());
+        String studentNumber = resolveStudentNumber(command.studentNumber());
+        validateStudentNumber(studentNumber);
+
+        UserType userType = determineUserType(command.email(), studentNumber);
         Role role = (userType == UserType.CSE_STUDENT) ? Role.STUDENT : null;
 
         Student student = Student.of(
                 command.major(),
                 command.name(),
-                command.studentNumber(),
+                studentNumber,
                 command.grade(),
                 command.gender(),
                 userType,
@@ -68,22 +69,32 @@ public class SignupService {
         return new SignupResponse(student.getId());
     }
 
+    private String resolveStudentNumber(String studentNumber) {
+        if (studentNumber == null || studentNumber.isBlank()) {
+            return TEMP_STUDENT_NUMBER_PREFIX + UUID.randomUUID().toString().substring(0, 8);
+        }
+        return studentNumber;
+    }
+
     private UserType determineUserType(String email, String studentNumber) {
         if (email != null && email.endsWith(KNU_EMAIL_DOMAIN)) {
-            if (registryRepository.existsByStudentNumber(studentNumber)) {
+            if (!studentNumber.startsWith(TEMP_STUDENT_NUMBER_PREFIX)
+                    && registryRepository.existsByStudentNumber(studentNumber)) {
                 return UserType.CSE_STUDENT;
             }
         }
         return UserType.EXTERNAL;
     }
 
-    private void validate(
-            String providerName,
-            String providerKey,
-            String studentNumber
-    ) {
-        if (providerRepository.findByProviderNameAndProviderKey(providerName, providerKey).isPresent()
-                || studentRepository.existsByStudentNumber(studentNumber)) {
+    private void validateProvider(String providerName, String providerKey) {
+        if (providerRepository.findByProviderNameAndProviderKey(providerName, providerKey).isPresent()) {
+            throw new AlreadySignedUpException();
+        }
+    }
+
+    private void validateStudentNumber(String studentNumber) {
+        if (!studentNumber.startsWith(TEMP_STUDENT_NUMBER_PREFIX)
+                && studentRepository.existsByStudentNumber(studentNumber)) {
             throw new AlreadySignedUpException();
         }
     }

@@ -23,7 +23,6 @@ public class SignupController {
 
     private static final String PROVIDER_NAME = "KEYCLOAK";
 
-
     private final SignupService signupService;
 
     @PostMapping
@@ -75,12 +74,17 @@ public class SignupController {
     }
 
     private String extractFullName(OidcUser oidcUser) {
-        String fullName = oidcUser.getFullName();
+        String name = oidcUser.getFullName();
 
-        if (fullName == null || fullName.isBlank()) {
+        if (name != null && !name.isBlank()) {
+            return name;
+        }
+
+        String preferredUsername = oidcUser.getPreferredUsername();
+        if (preferredUsername == null || preferredUsername.isBlank()) {
             throw new InvalidOidcUserException();
         }
 
-        return fullName;
+        return preferredUsername;
     }
 }
