@@ -2,7 +2,6 @@ package kr.ac.knu.cse.application;
 
 import java.util.UUID;
 import kr.ac.knu.cse.application.dto.SignupCommand;
-import kr.ac.knu.cse.application.dto.SignupResponse;
 import kr.ac.knu.cse.domain.provider.Provider;
 import kr.ac.knu.cse.domain.provider.ProviderRepository;
 import kr.ac.knu.cse.domain.registry.CseStudentRegistryRepository;
@@ -28,7 +27,7 @@ public class SignupService {
     private final CseStudentRegistryRepository registryRepository;
 
     @Transactional
-    public SignupResponse signup(SignupCommand command) {
+    public void signup(SignupCommand command) {
         validateProvider(command.providerName(), command.providerKey());
 
         String studentNumber = resolveStudentNumber(command.studentNumber());
@@ -66,7 +65,6 @@ public class SignupService {
             throw new AlreadySignedUpException();
         }
 
-        return new SignupResponse(student.getId());
     }
 
     private String resolveStudentNumber(String studentNumber) {

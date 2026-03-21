@@ -1,20 +1,32 @@
 package kr.ac.knu.cse.presentation;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import kr.ac.knu.cse.application.SignupService;
 import kr.ac.knu.cse.application.dto.SignupCommand;
 import kr.ac.knu.cse.application.dto.SignupResponse;
 import kr.ac.knu.cse.global.exception.auth.InvalidOidcUserException;
 import kr.ac.knu.cse.global.exception.auth.MissingEmailClaimException;
+import kr.ac.knu.cse.infrastructure.security.support.CookieCreator;
 import kr.ac.knu.cse.presentation.dto.SignupRequest;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
+import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
+import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.util.UriComponentsBuilder;
 
 @RestController
 @RequiredArgsConstructor
@@ -24,11 +36,15 @@ public class SignupController {
     private static final String PROVIDER_NAME = "KEYCLOAK";
 
     private final SignupService signupService;
+    private final OAuth2AuthorizedClientService authorizedClientService;
+    private final CookieCreator cookieCreator;
 
     @PostMapping
     public ResponseEntity<SignupResponse> signup(
             @AuthenticationPrincipal OidcUser oidcUser,
-            @Valid @RequestBody SignupRequest request
+            @Valid @RequestBody SignupRequest request,
+            HttpServletRequest httpRequest,
+            HttpServletResponse httpResponse
     ) {
         if (oidcUser == null) {
             throw new InvalidOidcUserException();
@@ -49,9 +65,54 @@ public class SignupController {
                 request.gender()
         );
 
-        SignupResponse response = signupService.signup(command);
+        signupService.signup(command);
 
-        return ResponseEntity.ok(response);
+        // 가입 성공 → 바로 로그인 처리 (OAuth 재트리거 불필요)
+        setAccessTokenCookie(httpResponse);
+        String redirectUrl = buildClientRedirectUrl(httpRequest);
+
+        return ResponseEntity.ok(new SignupResponse(redirectUrl));
+    }
+
+    private void setAccessTokenCookie(HttpServletResponse response) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (!(auth instanceof OAuth2AuthenticationToken token)) {
+            return;
+        }
+
+        OAuth2AuthorizedClient client = authorizedClientService.loadAuthorizedClient(
+                token.getAuthorizedClientRegistrationId(), token.getName()
+        );
+
+        if (client != null && client.getAccessToken() != null) {
+            ResponseCookie cookie = cookieCreator.createWithValue(
+                    client.getAccessToken().getTokenValue()
+            );
+            response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
+        }
+    }
+
+    private String buildClientRedirectUrl(HttpServletRequest request) {
+        HttpSession session = request.getSession(false);
+        if (session == null) {
+            return null;
+        }
+
+        String redirectUri = (String) session.getAttribute(LoginController.SESSION_REDIRECT_URI);
+        String state = (String) session.getAttribute(LoginController.SESSION_STATE);
+
+        if (redirectUri == null || state == null) {
+            return null;
+        }
+
+        session.removeAttribute(LoginController.SESSION_REDIRECT_URI);
+        session.removeAttribute(LoginController.SESSION_STATE);
+        session.removeAttribute(LoginController.SESSION_CLIENT_ID);
+
+        return UriComponentsBuilder.fromUriString(redirectUri)
+                .queryParam("state", state)
+                .build(true)
+                .toUriString();
     }
 
     private String extractEmail(OidcUser oidcUser) {
