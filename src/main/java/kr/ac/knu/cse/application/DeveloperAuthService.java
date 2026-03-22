@@ -30,7 +30,7 @@ public class DeveloperAuthService {
         Student student = studentRepository.findById(provider.getStudentId())
                 .orElseThrow(ProviderWithoutStudentException::new);
 
-        if (student.getUserType() != UserType.CSE_STUDENT) {
+        if (student.getUserType() != UserType.CSE_STUDENT && !student.isAdmin()) {
             throw new AdminAccessDeniedException();
         }
 
