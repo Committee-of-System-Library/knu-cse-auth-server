@@ -140,6 +140,11 @@ public class SignupController {
         session.removeAttribute(LoginController.SESSION_STATE);
         session.removeAttribute(LoginController.SESSION_CLIENT_ID);
 
+        // 내부 클라이언트는 프론트에서 직접 라우팅하므로 redirectUrl 불필요
+        if ("cse-internal".equals(clientId)) {
+            return null;
+        }
+
         UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(redirectUri)
                 .queryParam("state", state);
 
