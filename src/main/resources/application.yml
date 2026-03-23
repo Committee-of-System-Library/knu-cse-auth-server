@@ -1,3 +1,10 @@
+server:
+  servlet:
+    encoding:
+      charset: UTF-8
+      enabled: true
+      force: true
+
 spring:
   application:
     name: auth-server
@@ -6,10 +13,17 @@ spring:
   autoconfigure:
     exclude: org.springframework.boot.autoconfigure.security.servlet.UserDetailsServiceAutoConfiguration
 
+  datasource:
+    hikari:
+      connection-init-sql: "SET NAMES utf8mb4 COLLATE utf8mb4_unicode_ci"
+
   jpa:
     open-in-view: false
     properties:
       hibernate:
+        connection:
+          characterEncoding: utf-8
+          useUnicode: true
         jdbc:
           time_zone: ${HIBERNATE_JDBC_TIME_ZONE:Asia/Seoul}
         default_batch_fetch_size: ${HIBERNATE_DEFAULT_BATCH_FETCH_SIZE:20}
