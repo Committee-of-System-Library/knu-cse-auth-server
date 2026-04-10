@@ -35,6 +35,9 @@ public class CseStudentRegistry {
     @Column(name = "grade")
     private Integer grade;
 
+    @Column(name = "enrollment_status", length = 30)
+    private String enrollmentStatus;
+
     @Column(name = "is_manually_added")
     private Boolean isManuallyAdded;
 
@@ -49,6 +52,7 @@ public class CseStudentRegistry {
             String name,
             String major,
             Integer grade,
+            String enrollmentStatus,
             boolean isManuallyAdded
     ) {
         return new CseStudentRegistry(
@@ -57,16 +61,23 @@ public class CseStudentRegistry {
                 name,
                 major,
                 grade,
+                enrollmentStatus,
                 isManuallyAdded,
                 LocalDateTime.now(),
                 LocalDateTime.now()
         );
     }
 
-    public void update(String name, String major, Integer grade) {
+    public void update(String name, String major, Integer grade, String enrollmentStatus) {
         this.name = name;
         this.major = major;
         this.grade = grade;
+        this.enrollmentStatus = enrollmentStatus;
+        this.updatedAt = LocalDateTime.now();
+    }
+
+    public void updateEnrollmentStatus(String enrollmentStatus) {
+        this.enrollmentStatus = enrollmentStatus;
         this.updatedAt = LocalDateTime.now();
     }
 }

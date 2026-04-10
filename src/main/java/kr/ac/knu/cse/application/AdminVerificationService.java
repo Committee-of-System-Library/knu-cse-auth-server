@@ -73,6 +73,7 @@ public class AdminVerificationService {
                     student.getName(),
                     student.getMajor(),
                     null,
+                    null,
                     true
             ));
         }

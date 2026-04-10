@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -59,7 +60,21 @@ public class RegistryAdminController {
                 request.studentNumber(),
                 request.name(),
                 request.major(),
-                request.grade()
+                request.grade(),
+                request.enrollmentStatus()
+        );
+        return ResponseEntity.ok(registry);
+    }
+
+    @PutMapping("/{studentNumber}/enrollment-status")
+    public ResponseEntity<CseStudentRegistry> changeEnrollmentStatus(
+            @AuthenticationPrincipal OidcUser oidcUser,
+            @PathVariable String studentNumber,
+            @RequestBody java.util.Map<String, String> body
+    ) {
+        adminAuthService.requireAdmin(oidcUser);
+        CseStudentRegistry registry = registryService.changeEnrollmentStatus(
+                studentNumber, body.get("enrollmentStatus")
         );
         return ResponseEntity.ok(registry);
     }

@@ -6,6 +6,7 @@ public record RegistryAddRequest(
         @NotBlank String studentNumber,
         @NotBlank String name,
         String major,
-        Integer grade
+        Integer grade,
+        String enrollmentStatus
 ) {
 }

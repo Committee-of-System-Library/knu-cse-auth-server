@@ -36,9 +36,11 @@ public class SignupService {
         UserType userType = resolveUserType(command.userType(), command.email(), studentNumber);
         Role role = (userType == UserType.CSE_STUDENT) ? Role.STUDENT : null;
 
+        String name = resolveNameFromRegistry(command.email(), studentNumber, command.name());
+
         Student student = Student.of(
                 command.major(),
-                command.name(),
+                name,
                 studentNumber,
                 command.grade(),
                 command.gender(),
@@ -90,6 +92,16 @@ public class SignupService {
             return UserType.CSE_STUDENT;
         }
         return UserType.EXTERNAL;
+    }
+
+    private String resolveNameFromRegistry(String email, String studentNumber, String fallbackName) {
+        if (email != null && email.endsWith(KNU_EMAIL_DOMAIN)
+                && !studentNumber.startsWith(TEMP_STUDENT_NUMBER_PREFIX)) {
+            return registryRepository.findByStudentNumber(studentNumber)
+                    .map(registry -> registry.getName())
+                    .orElse(fallbackName);
+        }
+        return fallbackName;
     }
 
     private void validateProvider(String providerName, String providerKey) {

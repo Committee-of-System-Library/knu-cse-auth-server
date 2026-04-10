@@ -33,7 +33,7 @@ public class RegistryService {
 
         try (CSVParser parser = CSVFormat.DEFAULT
                 .builder()
-                .setHeader("학번", "이름", "전공", "학년")
+                .setHeader("학번", "이름", "전공", "학년", "학적상태")
                 .setSkipHeaderRecord(true)
                 .setIgnoreEmptyLines(true)
                 .setTrim(true)
@@ -47,6 +47,7 @@ public class RegistryService {
                     String name = record.get("이름");
                     String major = record.get("전공");
                     String gradeStr = record.get("학년");
+                    String enrollmentStatus = record.isMapped("학적상태") ? record.get("학적상태") : null;
 
                     Integer grade = parseGrade(gradeStr);
 
@@ -54,11 +55,11 @@ public class RegistryService {
                             registryRepository.findByStudentNumber(studentNumber);
 
                     if (existing.isPresent()) {
-                        existing.get().update(name, major, grade);
+                        existing.get().update(name, major, grade, enrollmentStatus);
                         updatedCount++;
                     } else {
                         CseStudentRegistry registry = CseStudentRegistry.of(
-                                studentNumber, name, major, grade, false
+                                studentNumber, name, major, grade, enrollmentStatus, false
                         );
                         registryRepository.save(registry);
                         insertedCount++;
@@ -85,20 +86,29 @@ public class RegistryService {
             String studentNumber,
             String name,
             String major,
-            Integer grade
+            Integer grade,
+            String enrollmentStatus
     ) {
         Optional<CseStudentRegistry> existing =
                 registryRepository.findByStudentNumber(studentNumber);
 
         if (existing.isPresent()) {
-            existing.get().update(name, major, grade);
+            existing.get().update(name, major, grade, enrollmentStatus);
             return existing.get();
         }
 
         CseStudentRegistry registry = CseStudentRegistry.of(
-                studentNumber, name, major, grade, true
+                studentNumber, name, major, grade, enrollmentStatus, true
         );
         return registryRepository.save(registry);
+    }
+
+    @Transactional
+    public CseStudentRegistry changeEnrollmentStatus(String studentNumber, String enrollmentStatus) {
+        CseStudentRegistry registry = registryRepository.findByStudentNumber(studentNumber)
+                .orElseThrow(() -> new IllegalArgumentException("학생을 찾을 수 없습니다: " + studentNumber));
+        registry.updateEnrollmentStatus(enrollmentStatus);
+        return registry;
     }
 
     @Transactional
