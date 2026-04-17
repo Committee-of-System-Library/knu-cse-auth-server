@@ -1,11 +1,11 @@
 package kr.ac.knu.cse.application;
 
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.security.Keys;
 import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.util.Date;
 import javax.crypto.SecretKey;
+import javax.crypto.spec.SecretKeySpec;
 import kr.ac.knu.cse.domain.client.AuthClient;
 import kr.ac.knu.cse.domain.client.AuthClientRepository;
 import kr.ac.knu.cse.domain.student.Student;
@@ -46,8 +46,13 @@ public class JwtTokenService {
         Assert.hasText(email,
                 "email must not be blank (student_id=" + student.getId() + ")");
 
-        SecretKey key = Keys.hmacShaKeyFor(
-                client.getJwtSecret().getBytes(StandardCharsets.UTF_8)
+        // Pin HS256 explicitly. Keys.hmacShaKeyFor() picks an algorithm based
+        // on key length (>=384 bits → HS384), which doesn't match the
+        // resource server's NimbusJwtDecoder.withSecretKey default of HS256
+        // and produced "Another algorithm expected" 401s.
+        SecretKey key = new SecretKeySpec(
+                client.getJwtSecret().getBytes(StandardCharsets.UTF_8),
+                "HmacSHA256"
         );
 
         Instant now = Instant.now();
@@ -64,7 +69,7 @@ public class JwtTokenService {
                 .issuer(issuerUrl)
                 .issuedAt(Date.from(now))
                 .expiration(Date.from(now.plusSeconds(TOKEN_VALIDITY_SECONDS)))
-                .signWith(key)
+                .signWith(key, Jwts.SIG.HS256)
                 .compact();
     }
 }
