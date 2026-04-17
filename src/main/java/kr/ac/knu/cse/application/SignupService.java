@@ -37,9 +37,10 @@ public class SignupService {
         Role role = (userType == UserType.CSE_STUDENT) ? Role.STUDENT : null;
 
         String name = resolveNameFromRegistry(command.email(), studentNumber, command.name());
+        String major = resolveMajor(userType, studentNumber, command.major());
 
         Student student = Student.of(
-                command.major(),
+                major,
                 name,
                 studentNumber,
                 command.grade(),
@@ -92,6 +93,16 @@ public class SignupService {
             return UserType.CSE_STUDENT;
         }
         return UserType.EXTERNAL;
+    }
+
+    private String resolveMajor(UserType userType, String studentNumber, String requestedMajor) {
+        if (userType != UserType.CSE_STUDENT) {
+            return requestedMajor;
+        }
+        return registryRepository.findByStudentNumber(studentNumber)
+                .map(registry -> registry.getMajor())
+                .filter(major -> major != null && !major.isBlank())
+                .orElse(requestedMajor);
     }
 
     private String resolveNameFromRegistry(String email, String studentNumber, String fallbackName) {

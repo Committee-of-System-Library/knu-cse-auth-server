@@ -58,14 +58,15 @@ public class SignupController {
         }
 
         String email = extractEmail(oidcUser);
-        boolean isCseStudent = registryRepository.existsByStudentNumber(studentNumber);
         boolean isKnuEmail = email.endsWith(KNU_EMAIL_DOMAIN);
+        var registry = registryRepository.findByStudentNumber(studentNumber);
 
-        return ResponseEntity.ok(Map.of(
-                "isCseStudent", isCseStudent,
-                "isKnuEmail", isKnuEmail,
-                "email", email
-        ));
+        Map<String, Object> body = new java.util.HashMap<>();
+        body.put("isCseStudent", registry.isPresent());
+        body.put("isKnuEmail", isKnuEmail);
+        body.put("email", email);
+        body.put("major", registry.map(r -> r.getMajor()).orElse(null));
+        return ResponseEntity.ok(body);
     }
 
     @PostMapping
