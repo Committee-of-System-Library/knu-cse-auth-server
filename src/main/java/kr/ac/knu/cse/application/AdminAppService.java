@@ -93,6 +93,11 @@ public class AdminAppService {
     }
 
     private String generateSecret() {
+        // 32 random bytes → 44-char Base64 string. The Base64 STRING bytes
+        // are what JwtTokenService feeds into the HS256 HMAC key (via
+        // SecretKeySpec), so the effective key length is 44 bytes = 352 bits
+        // — comfortably above the 256-bit minimum HS256 requires.
+        // Don't shrink this without re-checking JwtTokenService's HS256 pin.
         byte[] bytes = new byte[32];
         new SecureRandom().nextBytes(bytes);
         return Base64.getEncoder().encodeToString(bytes);
