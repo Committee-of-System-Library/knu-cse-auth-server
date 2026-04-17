@@ -10,10 +10,12 @@ import kr.ac.knu.cse.domain.client.AuthClient;
 import kr.ac.knu.cse.domain.client.AuthClientRepository;
 import kr.ac.knu.cse.domain.student.Student;
 import kr.ac.knu.cse.domain.student.StudentRepository;
+import kr.ac.knu.cse.domain.student.UserType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.Assert;
 
 @Service
 @RequiredArgsConstructor
@@ -35,6 +37,15 @@ public class JwtTokenService {
         AuthClient client = authClientRepository.findByClientName(clientName)
                 .orElseThrow(() -> new IllegalArgumentException("클라이언트를 찾을 수 없습니다."));
 
+        UserType userType = student.getUserType();
+        String studentNumber = student.getStudentNumber();
+        Assert.notNull(userType,
+                "student.userType must not be null (student_id=" + student.getId() + ")");
+        Assert.hasText(studentNumber,
+                "student.studentNumber must not be blank (student_id=" + student.getId() + ")");
+        Assert.hasText(email,
+                "email must not be blank (student_id=" + student.getId() + ")");
+
         SecretKey key = Keys.hmacShaKeyFor(
                 client.getJwtSecret().getBytes(StandardCharsets.UTF_8)
         );
@@ -43,11 +54,11 @@ public class JwtTokenService {
 
         return Jwts.builder()
                 .subject(String.valueOf(student.getId()))
-                .claim("student_number", student.getStudentNumber())
+                .claim("student_number", studentNumber)
                 .claim("name", student.getName())
                 .claim("email", email)
                 .claim("major", student.getMajor())
-                .claim("user_type", student.getUserType().name())
+                .claim("user_type", userType.name())
                 .claim("role", student.getRole() != null ? student.getRole().name() : null)
                 .audience().add(clientName).and()
                 .issuer(issuerUrl)
