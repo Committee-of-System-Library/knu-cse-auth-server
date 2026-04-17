@@ -82,6 +82,13 @@ public class SnackEventService {
     }
 
     @Transactional
+    public void deleteEvent(Long eventId) {
+        SnackEvent event = findEventOrThrow(eventId);
+        eventRepository.delete(event);
+        // snack_handout rows are removed by FK ON DELETE CASCADE
+    }
+
+    @Transactional
     public HandoutScanResult handout(Long eventId, String studentNumber) {
         SnackEvent event = findEventOrThrow(eventId);
         if (!event.isOpen()) {
