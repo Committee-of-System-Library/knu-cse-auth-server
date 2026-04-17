@@ -46,6 +46,15 @@ public class GlobalExceptionHandler {
         if (code.startsWith("PROVISION_") || code.startsWith("KC_")) {
             return HttpStatus.INTERNAL_SERVER_ERROR;
         }
+        if (code.equals("SNACK_001")) {
+            return HttpStatus.NOT_FOUND;
+        }
+        if (code.equals("SNACK_002") || code.equals("SNACK_003")) {
+            return HttpStatus.CONFLICT;
+        }
+        if (code.equals("SNACK_004")) {
+            return HttpStatus.BAD_GATEWAY;
+        }
 
         return HttpStatus.INTERNAL_SERVER_ERROR;
     }

@@ -51,6 +51,12 @@ app:
   internal:
     path-prefix: ${APP_INTERNAL_PATH_PREFIX:/internal}
     header-name: ${APP_INTERNAL_HEADER_NAME:X-Internal-Api-Key}
+
+ledger:
+  internal:
+    base-url: ${LEDGER_INTERNAL_BASE_URL:http://localhost:8081}
+    header-name: ${LEDGER_INTERNAL_HEADER_NAME:X-Internal-Api-Key}
+    api-key: ${LEDGER_INTERNAL_API_KEY:}
   security:
     cookie:
       name: ${APP_COOKIE_NAME:ACCESS_TOKEN}

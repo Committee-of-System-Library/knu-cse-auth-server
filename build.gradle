@@ -67,6 +67,9 @@ dependencies {
     // CSV parsing
     implementation 'org.apache.commons:commons-csv:1.12.0'
 
+    // XLSX export (Apache POI)
+    implementation 'org.apache.poi:poi-ooxml:5.2.5'
+
     //keycloak
     implementation 'org.keycloak:keycloak-admin-client:26.0.8'
 }
