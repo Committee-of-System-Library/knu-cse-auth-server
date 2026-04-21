@@ -1,5 +1,6 @@
 server:
   servlet:
+    context-path: /appfn/api
     encoding:
       charset: UTF-8
       enabled: true
