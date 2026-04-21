@@ -25,7 +25,7 @@ public class LedgerDuesClient {
         try {
             DuesStatusResponse response = restClient.get()
                     .uri(uriBuilder -> uriBuilder
-                            .path("/internal/dues/{studentNumber}")
+                            .path("/api/ledger/internal/dues/{studentNumber}")
                             .queryParam("semester", semester)
                             .build(studentNumber))
                     .headers(this::addInternalApiKey)
