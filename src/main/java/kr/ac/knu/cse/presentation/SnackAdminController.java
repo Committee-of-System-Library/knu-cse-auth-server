@@ -33,7 +33,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/appfn/api/admin/snacks")
+@RequestMapping("/admin/snacks")
 public class SnackAdminController {
 
     private final AdminAuthService adminAuthService;

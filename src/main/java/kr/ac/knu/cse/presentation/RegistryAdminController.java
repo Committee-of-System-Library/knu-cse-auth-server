@@ -26,7 +26,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/appfn/api/admin/registry")
+@RequestMapping("/admin/registry")
 public class RegistryAdminController {
 
     private final AdminAuthService adminAuthService;

@@ -24,7 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/appfn/api/developer/apps")
+@RequestMapping("/developer/apps")
 public class DeveloperAppController {
 
     private final DeveloperAuthService developerAuthService;

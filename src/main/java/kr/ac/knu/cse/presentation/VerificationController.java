@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/appfn/api/verification")
+@RequestMapping("/verification")
 public class VerificationController {
 
     private final VerificationService verificationService;

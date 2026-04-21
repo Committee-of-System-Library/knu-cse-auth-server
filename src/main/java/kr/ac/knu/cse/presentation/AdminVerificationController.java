@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/appfn/api/admin/verifications")
+@RequestMapping("/admin/verifications")
 public class AdminVerificationController {
 
     private final AdminAuthService adminAuthService;
