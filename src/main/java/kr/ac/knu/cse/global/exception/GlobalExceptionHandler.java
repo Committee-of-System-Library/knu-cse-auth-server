@@ -43,8 +43,23 @@ public class GlobalExceptionHandler {
         if (code.startsWith("COMMON_")) {
             return HttpStatus.BAD_REQUEST;
         }
-        if (code.startsWith("PROVISION_") || code.startsWith("KC_")) {
-            return HttpStatus.INTERNAL_SERVER_ERROR;
+        if (code.equals("PROVISION_001")) {
+            return HttpStatus.FORBIDDEN;
+        }
+        if (code.equals("PROVISION_004")) {
+            return HttpStatus.NOT_FOUND;
+        }
+        if (code.startsWith("PROVISION_")) {
+            return HttpStatus.BAD_REQUEST;
+        }
+        if (code.equals("KC_003")) {
+            return HttpStatus.NOT_FOUND;
+        }
+        if (code.equals("KC_004")) {
+            return HttpStatus.SERVICE_UNAVAILABLE;
+        }
+        if (code.startsWith("KC_")) {
+            return HttpStatus.BAD_GATEWAY;
         }
         if (code.equals("SNACK_001")) {
             return HttpStatus.NOT_FOUND;
