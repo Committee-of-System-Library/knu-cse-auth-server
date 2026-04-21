@@ -2,6 +2,7 @@ package kr.ac.knu.cse.application;
 
 import kr.ac.knu.cse.domain.provider.Provider;
 import kr.ac.knu.cse.domain.provider.ProviderRepository;
+import kr.ac.knu.cse.domain.role.Role;
 import kr.ac.knu.cse.domain.student.Student;
 import kr.ac.knu.cse.domain.student.StudentRepository;
 import kr.ac.knu.cse.global.exception.auth.AdminAccessDeniedException;
@@ -34,6 +35,29 @@ public class AdminAuthService {
                 .orElseThrow(ProviderWithoutStudentException::new);
 
         if (!student.isAdmin()) {
+            throw new AdminAccessDeniedException();
+        }
+
+        return student;
+    }
+
+    @Transactional(readOnly = true)
+    public Student requireStaff(OidcUser oidcUser) {
+        String providerKey = oidcUser.getSubject();
+
+        Provider provider = providerRepository
+                .findByProviderNameAndProviderKey("KEYCLOAK", providerKey)
+                .orElseThrow(AdminAccessDeniedException::new);
+
+        if (provider.getStudentId() == null) {
+            throw new ProviderWithoutStudentException();
+        }
+
+        Student student = studentRepository.findById(provider.getStudentId())
+                .orElseThrow(ProviderWithoutStudentException::new);
+
+        Role role = student.getRole();
+        if (role == null || !role.isHigherOrEqual(Role.EXECUTIVE)) {
             throw new AdminAccessDeniedException();
         }
 
