@@ -1,5 +1,6 @@
 package kr.ac.knu.cse.domain.application;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -34,6 +35,7 @@ public class ClientApplication {
     @Column(name = "client_id", unique = true)
     private String clientId;
 
+    @JsonIgnore
     @Column(name = "client_secret_hash")
     private String clientSecretHash;
 
@@ -53,6 +55,7 @@ public class ClientApplication {
     @Column(name = "rejection_reason", columnDefinition = "TEXT")
     private String rejectionReason;
 
+    @JsonIgnore
     @Column(name = "keycloak_client_uuid")
     private String keycloakClientUuid;
 
