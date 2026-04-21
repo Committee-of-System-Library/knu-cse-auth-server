@@ -26,6 +26,10 @@ public class AdminAuthService {
                 .findByProviderNameAndProviderKey("KEYCLOAK", providerKey)
                 .orElseThrow(AdminAccessDeniedException::new);
 
+        if (provider.getStudentId() == null) {
+            throw new ProviderWithoutStudentException();
+        }
+
         Student student = studentRepository.findById(provider.getStudentId())
                 .orElseThrow(ProviderWithoutStudentException::new);
 
