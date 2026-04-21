@@ -18,7 +18,6 @@ class StudentTest {
                 "컴퓨터학부",
                 "이름",
                 "2022111111",
-                Grade.SECOND,
                 Gender.BLANK,
                 UserType.CSE_STUDENT,
                 STUDENT
@@ -39,7 +38,6 @@ class StudentTest {
                 "컴퓨터학부",
                 "이름",
                 "2022111111",
-                Grade.SECOND,
                 Gender.BLANK,
                 UserType.CSE_STUDENT,
                 STUDENT

@@ -54,9 +54,6 @@ public class Student extends BaseTimeEntity {
     private String studentNumber;
 
     @Enumerated(EnumType.STRING)
-    private Grade grade;
-
-    @Enumerated(EnumType.STRING)
     private Gender gender;
 
     @Column(name = "deleted_at")
@@ -66,13 +63,10 @@ public class Student extends BaseTimeEntity {
             String major,
             String name,
             String studentNumber,
-            Grade grade,
             Gender gender,
             UserType userType,
             Role role
     ) {
-        validate(major, name, studentNumber, grade);
-
         return new Student(
                 null,
                 role,
@@ -80,18 +74,9 @@ public class Student extends BaseTimeEntity {
                 major,
                 name,
                 studentNumber,
-                grade,
                 gender != null ? gender : Gender.BLANK,
                 null
         );
-    }
-
-    private static void validate(
-            String major,
-            String name,
-            String studentNumber,
-            Grade grade) {
-
     }
 
     public void grantRole(Role role) {

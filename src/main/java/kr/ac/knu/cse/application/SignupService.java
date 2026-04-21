@@ -43,7 +43,6 @@ public class SignupService {
                 major,
                 name,
                 studentNumber,
-                command.grade(),
                 command.gender(),
                 userType,
                 role

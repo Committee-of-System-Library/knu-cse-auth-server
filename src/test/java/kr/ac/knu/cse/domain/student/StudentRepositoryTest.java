@@ -33,7 +33,6 @@ class StudentRepositoryTest {
                 "컴퓨터학부",
                 "학생1",
                 studentNumber,
-                Grade.SECOND,
                 Gender.BLANK,
                 UserType.CSE_STUDENT,
                 Role.STUDENT
@@ -46,7 +45,6 @@ class StudentRepositoryTest {
                 "컴퓨터학부",
                 "학생2",
                 studentNumber,
-                Grade.THIRD,
                 Gender.BLANK,
                 UserType.CSE_STUDENT,
                 Role.STUDENT
@@ -68,7 +66,6 @@ class StudentRepositoryTest {
                 "컴퓨터학부",
                 "학생1",
                 studentNumber,
-                Grade.SECOND,
                 Gender.BLANK,
                 UserType.CSE_STUDENT,
                 Role.STUDENT
@@ -94,7 +91,6 @@ class StudentRepositoryTest {
                 "컴퓨터학부",
                 "학생1",
                 studentNumber,
-                Grade.SECOND,
                 Gender.BLANK,
                 UserType.CSE_STUDENT,
                 Role.STUDENT

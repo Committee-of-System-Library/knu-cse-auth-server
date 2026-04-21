@@ -91,7 +91,6 @@ public class SignupController {
                 request.studentNumber(),
                 fullName,
                 request.major(),
-                request.grade(),
                 request.gender(),
                 request.userType()
         );
