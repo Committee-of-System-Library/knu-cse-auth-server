@@ -17,6 +17,7 @@ env:
   REGISTRY: ghcr.io
   ORG: ${{ github.repository_owner }}
   IMAGE_NAME: ${{ github.event.repository.name }}
+  CONT_NAME: ${{ github.event.repository.name }}
 
 jobs:
   build-and-push:
